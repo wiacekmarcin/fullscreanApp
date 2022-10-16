@@ -3,12 +3,12 @@
 
 #include <QMainWindow>
 #include <QtCore/QVariant>
-#include <QtWidgets/QAction>
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QButtonGroup>
-#include <QtWidgets/QHeaderView>
-#include <QtWidgets/QMainWindow>
-#include <QtWidgets/QWidget>
+#include <QAction>
+#include <QApplication>
+#include <QButtonGroup>
+#include <QHeaderView>
+#include <QMainWindow>
+#include <QWidget>
 #include "analogclock.h"
 #include "zegar.h"
 
@@ -25,7 +25,7 @@ public:
 
     void retranslateUi(QMainWindow *MainWindow)
     {
-        MainWindow->setWindowTitle(QApplication::translate("MainWindow", "MagicMirrorQt", Q_NULLPTR));
+        MainWindow->setWindowTitle(QApplication::translate("MainWindow", "MagicMirrorQt", 0));
     } // retranslateUi
 
 };

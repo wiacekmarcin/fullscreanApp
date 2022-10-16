@@ -10,7 +10,7 @@
 AnalogClock::AnalogClock(QWidget * parent): BlackWidget(parent), setWschodZachod(0x00)
 {
     QTimer *timer = new QTimer(this);
-    connect(timer, &QTimer::timeout, this, QOverload<>::of(&AnalogClock::update));
+    connect(timer, SIGNAL(timeout()), this, SLOT(update()));
     timer->start(1000);
 
     setWindowTitle(tr("Analog Clock"));
@@ -19,7 +19,7 @@ AnalogClock::AnalogClock(QWidget * parent): BlackWidget(parent), setWschodZachod
 
 void AnalogClock::setWschod(int hour, int min)
 {
-    startArcWschod = //16.0*360.0*(60.0*hour + min)/(12.0*60.0);
+    startArcWschod = 16.0*360.0*(60.0*hour + min)/(12.0*60.0);
     startArcWschod = (720 - 60.0*hour + min) * 8;
     //qDebug() << s << int(16*360*s);
 

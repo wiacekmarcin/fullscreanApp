@@ -9,7 +9,7 @@ Zegar::Zegar(QWidget *parent) :
     timer(this)
 {
     ui->setupUi(this);
-    connect(&timer, &QTimer::timeout, this, &Zegar::update);
+    connect(&timer, SIGNAL(timeout()), this, SLOT(update()));
     timer.setInterval(1000);
     timer.start();
 }

@@ -51,7 +51,7 @@ void MainWindow::paintEvent(QPaintEvent * e)
 void Ui::Ui_MainWindow::setupUi(QMainWindow *MainWindow)
 {
     if (MainWindow->objectName().isEmpty())
-        MainWindow->setObjectName(QStringLiteral("MainWindow"));
+        MainWindow->setObjectName(QString("MainWindow"));
     MainWindow->resize(1080, 1920);
     QSizePolicy sizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     sizePolicy.setHorizontalStretch(0);
@@ -122,14 +122,14 @@ void Ui::Ui_MainWindow::setupUi(QMainWindow *MainWindow)
     MainWindow->setPalette(palette);
     MainWindow->setMouseTracking(false);
     MainWindow->setAutoFillBackground(false);
-    MainWindow->setStyleSheet(QStringLiteral(""));
+    MainWindow->setStyleSheet(QString(""));
     centralWidget = new QWidget(MainWindow);
-    centralWidget->setObjectName(QStringLiteral("centralWidget"));
+    centralWidget->setObjectName(QString("centralWidget"));
     digitalClock = new ::Zegar(centralWidget);
-    digitalClock->setObjectName(QStringLiteral("digitalClock"));
+    digitalClock->setObjectName(QString("digitalClock"));
     digitalClock->setGeometry(QRect(40, 30, 680, 210));
     analogClock = new AnalogClock(centralWidget);
-    analogClock->setObjectName(QStringLiteral("analogClock"));
+    analogClock->setObjectName(QString("analogClock"));
     analogClock->setGeometry(QRect(650, 40, 250, 250));
     sizePolicy.setHeightForWidth(analogClock->sizePolicy().hasHeightForWidth());
     analogClock->setSizePolicy(sizePolicy);

@@ -5,7 +5,7 @@
 #include <QTimer>
 #include "blackwidget.h"
 namespace Ui {
-class Zegar;
+    class Zegar;
 }
 
 class Zegar : public BlackWidget
@@ -14,6 +14,8 @@ class Zegar : public BlackWidget
 
 public:
     explicit Zegar(QWidget *parent = nullptr);
+    void setWschod(int h, int m);
+    void setZachod(int h, int m);
     ~Zegar();
 private slots:
     void update();

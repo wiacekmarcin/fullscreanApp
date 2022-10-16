@@ -113,7 +113,7 @@ void AnalogClock::paintEvent(QPaintEvent *event)
     painter.drawConvexPolygon(secondHand, 3);
     painter.restore();
 
-    if (setWschodZachod == 0x03) {
+    if (false && setWschodZachod == 0x03) {
         QPen pen(color);
         pen.setWidth(10);
 

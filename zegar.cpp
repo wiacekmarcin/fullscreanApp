@@ -14,6 +14,24 @@ Zegar::Zegar(QWidget *parent) :
     timer.start();
 }
 
+void Zegar::setWschod(int h, int m)
+{
+    QString ms = QString::number(m);
+    if (m < 10)
+        ms = "0"+ms;
+    QString hs = QString::number(h);
+    ui->wschod->setText(QString("%1:%2").arg(hs,ms));
+}
+
+void Zegar::setZachod(int h, int m)
+{
+    QString ms = QString::number(m);
+    if (m < 10)
+        ms = "0"+ms;
+    QString hs = QString::number(h);
+    ui->zachod->setText(QString("%1:%2").arg(hs,ms));
+}
+
 Zegar::~Zegar()
 {
     delete ui;
@@ -29,5 +47,8 @@ void Zegar::update()
     QString monthname = monts[d.month()];
     ui->ldate->setText(d.toString("%1, %2 %3 %4").arg(dayname).arg(d.day()).arg(monthname).arg(d.year()));
     ui->ltime->setText(t.toString("HH:mm"));
-    ui->lsec->setText(QString("%1").arg(t.second()));
+    QString ms = QString::number(t.second());
+    if (t.second() < 10)
+        ms = "0" + ms;
+    ui->lsec->setText(ms);
 }

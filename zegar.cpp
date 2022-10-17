@@ -5,13 +5,9 @@
 
 Zegar::Zegar(QWidget *parent) :
     BlackWidget(parent),
-    ui(new Ui::Zegar),
-    timer(this)
+    ui(new Ui::Zegar)
 {
     ui->setupUi(this);
-    connect(&timer, SIGNAL(timeout()), this, SLOT(update()));
-    timer.setInterval(1000);
-    timer.start();
 }
 
 void Zegar::setWschod(int h, int m)
@@ -37,18 +33,23 @@ Zegar::~Zegar()
     delete ui;
 }
 
-void Zegar::update()
+void Zegar::update(int year, int month, int day, int dayweek, int hour, int min, int sec)
 {
-    QDate d = QDate::currentDate();
-    QTime t = QTime::currentTime();
     QString days[] = {"", "Poniedziałek", "Wtorek", "Środa", "Czwartek", "Piątek", "Sobota", "Niedziela"};
-    QString dayname = days[d.dayOfWeek()];
+    QString dayname = days[dayweek];
     QString monts[] = {"", "styczeń", "luty", "marzec", "kwiecień", "maj", "czerwiec", "lipiec", "sierpień", "wrzesień", "październik", "listopad", "grudzień"};
-    QString monthname = monts[d.month()];
-    ui->ldate->setText(d.toString("%1, %2 %3 %4").arg(dayname).arg(d.day()).arg(monthname).arg(d.year()));
-    ui->ltime->setText(t.toString("HH:mm"));
-    QString ms = QString::number(t.second());
-    if (t.second() < 10)
+    QString monthname = monts[month];
+    ui->ldate->setText(QString("%1, %2 %3 %4").arg(dayname).arg(day).arg(monthname).arg(year));
+    QString hs = QString::number(hour);
+    if (hour < 10)
+        hs = " " + hs;
+    QString ms = QString::number(min);
+    if (min < 10)
         ms = "0" + ms;
-    ui->lsec->setText(ms);
+
+    ui->ltime->setText(QString("%1:%2").arg(hs, ms));
+    QString ss = QString::number(sec);
+    if (sec < 10)
+        ss = "0" + ss;
+    ui->lsec->setText(ss);
 }

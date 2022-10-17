@@ -17,12 +17,11 @@ public:
     void setWschod(int h, int m);
     void setZachod(int h, int m);
     ~Zegar();
-private slots:
-    void update();
+
+    virtual void update(int year, int month, int day, int dayweek, int hour, int min, int sec);
 
 private:
     Ui::Zegar *ui;
-    QTimer timer;
 };
 
 #endif // ZEGAR_H

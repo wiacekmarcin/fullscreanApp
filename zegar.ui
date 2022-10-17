@@ -44,7 +44,7 @@ color: rgb(255, 255, 255);</string>
    <property name="font">
     <font>
      <family>Serif</family>
-     <pointsize>32</pointsize>
+     <pointsize>28</pointsize>
     </font>
    </property>
   </widget>
@@ -53,14 +53,14 @@ color: rgb(255, 255, 255);</string>
     <rect>
      <x>0</x>
      <y>60</y>
-     <width>420</width>
-     <height>151</height>
+     <width>311</width>
+     <height>81</height>
     </rect>
    </property>
    <property name="font">
     <font>
      <family>Sans Serif</family>
-     <pointsize>100</pointsize>
+     <pointsize>72</pointsize>
      <weight>75</weight>
      <bold>true</bold>
     </font>
@@ -75,16 +75,16 @@ color: rgb(255, 255, 255);</string>
   <widget class="QLabel" name="lsec">
    <property name="geometry">
     <rect>
-     <x>419</x>
+     <x>320</x>
      <y>60</y>
      <width>81</width>
-     <height>70</height>
+     <height>51</height>
     </rect>
    </property>
    <property name="font">
     <font>
      <family>Sans Serif</family>
-     <pointsize>42</pointsize>
+     <pointsize>36</pointsize>
     </font>
    </property>
    <property name="text">
@@ -94,26 +94,7 @@ color: rgb(255, 255, 255);</string>
   <widget class="QLabel" name="label">
    <property name="geometry">
     <rect>
-     <x>510</x>
-     <y>50</y>
-     <width>48</width>
-     <height>48</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string/>
-   </property>
-   <property name="pixmap">
-    <pixmap>sun-small.jpg</pixmap>
-   </property>
-   <property name="scaledContents">
-    <bool>true</bool>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_2">
-   <property name="geometry">
-    <rect>
-     <x>510</x>
+     <x>10</x>
      <y>150</y>
      <width>48</width>
      <height>48</height>
@@ -123,7 +104,26 @@ color: rgb(255, 255, 255);</string>
     <string/>
    </property>
    <property name="pixmap">
-    <pixmap>moon-small.jpg</pixmap>
+    <pixmap resource="ikony.qrc">:/new/prefix1/sun.png</pixmap>
+   </property>
+   <property name="scaledContents">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_2">
+   <property name="geometry">
+    <rect>
+     <x>190</x>
+     <y>150</y>
+     <width>48</width>
+     <height>48</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="pixmap">
+    <pixmap resource="ikony.qrc">:/new/prefix1/moon.png</pixmap>
    </property>
    <property name="scaledContents">
     <bool>true</bool>
@@ -132,8 +132,8 @@ color: rgb(255, 255, 255);</string>
   <widget class="QLabel" name="wschod">
    <property name="geometry">
     <rect>
-     <x>570</x>
-     <y>60</y>
+     <x>60</x>
+     <y>160</y>
      <width>100</width>
      <height>32</height>
     </rect>
@@ -141,7 +141,7 @@ color: rgb(255, 255, 255);</string>
    <property name="font">
     <font>
      <family>Serif</family>
-     <pointsize>23</pointsize>
+     <pointsize>18</pointsize>
     </font>
    </property>
    <property name="text">
@@ -151,7 +151,7 @@ color: rgb(255, 255, 255);</string>
   <widget class="QLabel" name="zachod">
    <property name="geometry">
     <rect>
-     <x>560</x>
+     <x>240</x>
      <y>160</y>
      <width>100</width>
      <height>32</height>
@@ -160,7 +160,7 @@ color: rgb(255, 255, 255);</string>
    <property name="font">
     <font>
      <family>Serif</family>
-     <pointsize>23</pointsize>
+     <pointsize>18</pointsize>
     </font>
    </property>
    <property name="text">
@@ -168,6 +168,8 @@ color: rgb(255, 255, 255);</string>
    </property>
   </widget>
  </widget>
- <resources/>
+ <resources>
+  <include location="ikony.qrc"/>
+ </resources>
  <connections/>
 </ui>

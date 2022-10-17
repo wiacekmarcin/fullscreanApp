@@ -1,5 +1,5 @@
 #include "blackwidget.h"
-//#include "ui_blackwidget.h"
+
 
 BlackWidget::BlackWidget(QWidget *parent) :
     QWidget(parent)

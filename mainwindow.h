@@ -1,6 +1,6 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
-
+#include <QTimer>
 #include <QMainWindow>
 #include <QtCore/QVariant>
 #include <QAction>
@@ -11,6 +11,7 @@
 #include <QWidget>
 #include "analogclock.h"
 #include "zegar.h"
+#include <QVector>
 
 namespace Ui {
 
@@ -42,10 +43,12 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
     void paintEvent(QPaintEvent * e);
-
+private slots:
+    void update();
 private:
     Ui::MainWindow *ui;
-    //Zegar * zegar;
+    QTimer timer;
+    QVector<BlackWidget*> widgets;
 };
 
 #endif // MAINWINDOW_H

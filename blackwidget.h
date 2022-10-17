@@ -3,9 +3,6 @@
 
 #include <QWidget>
 
-namespace Ui {
-class BlackWidget;
-}
 
 class BlackWidget : public QWidget
 {
@@ -14,9 +11,10 @@ class BlackWidget : public QWidget
 public:
     explicit BlackWidget(QWidget *parent = 0);
     ~BlackWidget();
+    virtual void update(int year, int month, int day, int dayweek, int hour, int min, int sec) { }
 
 private:
-    Ui::BlackWidget *ui;
+
 };
 
 #endif // BLACKWIDGET_H

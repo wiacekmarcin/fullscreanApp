@@ -1,7 +1,7 @@
 #include "mainwindow.h"
 
 #include "zegar.h"
-
+#include <QDateTime>
 
 #include <QPainter>
 
@@ -20,6 +20,13 @@ MainWindow::MainWindow(QWidget *parent) :
     setAutoFillBackground(true);
     setPalette(pal);
     ui->setupUi(this);
+    ui->centralWidget->setCursor(Qt::BlankCursor);
+
+    widgets.push_back(ui->analogClock);
+    widgets.push_back(ui->digitalClock);
+    connect(&timer, SIGNAL(timeout()), this, SLOT(update()));
+    timer.setInterval(1000);
+    timer.start();
 
     //zegar = new Zegar(ui->lgodzina, ui->lminuta, ui->ldzien, ui->lnazwaDnia);
 
@@ -46,6 +53,16 @@ void MainWindow::paintEvent(QPaintEvent * e)
     // painter.drawPixmap(QPoint(0,0),QPixmap(QString::fromUtf8(":/new/prefix1/tlo")));
 
     QMainWindow::paintEvent(e);
+}
+
+void MainWindow::update()
+{
+    QDateTime dt = QDateTime::currentDateTime();
+    for(auto it = widgets.begin(); it != widgets.end(); ++it) {
+        (*it)->update(dt.date().year(), dt.date().month(), dt.date().day(), dt.date().dayOfWeek(),
+                   dt.time().hour(),dt.time().minute(),dt.time().second());
+
+    }
 }
 
 void Ui::Ui_MainWindow::setupUi(QMainWindow *MainWindow)
@@ -130,7 +147,7 @@ void Ui::Ui_MainWindow::setupUi(QMainWindow *MainWindow)
     digitalClock->setGeometry(QRect(40, 30, 680, 210));
     analogClock = new AnalogClock(centralWidget);
     analogClock->setObjectName(QString("analogClock"));
-    analogClock->setGeometry(QRect(650, 40, 250, 250));
+    analogClock->setGeometry(QRect(580, 40, 500, 500));
     sizePolicy.setHeightForWidth(analogClock->sizePolicy().hasHeightForWidth());
     analogClock->setSizePolicy(sizePolicy);
     MainWindow->setCentralWidget(centralWidget);

@@ -43,3 +43,4 @@ FORMS += \
 
 RESOURCES += \
     ikony.qrc
+

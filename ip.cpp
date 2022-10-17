@@ -32,12 +32,17 @@ QRect IP::getRect()
 void IP::setNetworkManager(QNetworkAccessManager *mnt)
 {
     netMng = mnt;
-    //connect(netMng, SIGNAL(finished()), this, SLOT(parseMessage()));
+    connect(netMng, SIGNAL(finished(QNetworkReply *)), this, SLOT(parseMessage(QNetworkReply*)));
 }
 
-void IP::parseMessage()
+void IP::parseMessage(QNetworkReply* reply)
 {
-
+    QJsonDocument doc = QJsonDocument::fromJson(reply->readAll());
+    if (doc.isNull() || doc.isEmpty())
+        ui->ip->setText("No internet");
+    else {
+        ui->ip->setText(doc.toVariant().toMap()["origin"].toString());
+    }
 }
 
 void IP::update(int, int, int, int, int, int min, int)
@@ -47,10 +52,10 @@ void IP::update(int, int, int, int, int, int min, int)
         return;
 
     m = min;
-    //QString eth = "enxb827eb0a4265";
-    QString eth = "enp0s31f6";
-    //QString wifi = "wlan0";
-    QString wifi = "wlp1s0";
+    QString eth = "enxb827eb0a4265";
+    //QString eth = "enp0s31f6";
+    QString wifi = "wlan0";
+    //QString wifi = "wlp1s0";
 
     foreach (const QNetworkInterface& networkInterface, QNetworkInterface::allInterfaces()) {
         qDebug() << "interface"<< networkInterface.humanReadableName();
@@ -71,16 +76,7 @@ void IP::update(int, int, int, int, int, int min, int)
         }
     }
     if (netMng) {
-        QNetworkReply* reply = netMng->get(request);
-         // connect to signal  when its done using lambda)
-        QObject::connect(reply, &QNetworkReply::finished, [reply, this]() {
-            QJsonDocument doc = QJsonDocument::fromJson(reply->readAll());
-            if (doc.isNull() || doc.isEmpty())
-                ui->ip->setText("No internet");
-            else {
-                ui->ip->setText(doc.toVariant().toMap()["origin"].toString());
-            }
-        });
+        netMng->get(request);
     }
 }
 /*

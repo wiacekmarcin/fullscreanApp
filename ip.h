@@ -22,7 +22,7 @@ public:
     QRect getRect();
     void setNetworkManager(QNetworkAccessManager * mnt);
 private slots:
-    void parseMessage();
+    void parseMessage(QNetworkReply *reply);
 private:
     Ui::IP *ui;
     int m;

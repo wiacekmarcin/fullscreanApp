@@ -4,7 +4,7 @@
 #include <QHostInfo>
 #include <QNetworkInterface>
 #include <QNetworkAddressEntry>
-#include <QJsonDocument>
+#include "QJsonDocument.h"
 
 IP::IP(QWidget *parent) :
     BlackWidget(parent),

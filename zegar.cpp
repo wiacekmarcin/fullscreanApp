@@ -10,6 +10,8 @@ Zegar::Zegar(QWidget *parent) :
     ui->setupUi(this);
 }
 
+
+
 void Zegar::setWschod(int h, int m)
 {
     QString ms = QString::number(m);
@@ -35,9 +37,26 @@ Zegar::~Zegar()
 
 void Zegar::update(int year, int month, int day, int dayweek, int hour, int min, int sec)
 {
-    QString days[] = {"", "Poniedziałek", "Wtorek", "Środa", "Czwartek", "Piątek", "Sobota", "Niedziela"};
+    QString days[] = {"", QString::fromUtf8("Poniedziałek"),
+                      QString::fromUtf8("Wtorek"),
+                      QString::fromUtf8("Środa"),
+                      QString::fromUtf8("Czwartek"),
+                      QString::fromUtf8("Piątek"),
+                      QString::fromUtf8("Sobota"),
+                      QString::fromUtf8("Niedziela")};
     QString dayname = days[dayweek];
-    QString monts[] = {"", "styczeń", "luty", "marzec", "kwiecień", "maj", "czerwiec", "lipiec", "sierpień", "wrzesień", "październik", "listopad", "grudzień"};
+    QString monts[] = {"", QString::fromUtf8("styczeń"),
+                       QString::fromUtf8("luty"),
+                       QString::fromUtf8("marzec"),
+                       QString::fromUtf8("kwiecień"),
+                       QString::fromUtf8("maj"),
+                       QString::fromUtf8("czerwiec"),
+                       QString::fromUtf8("lipiec"),
+                       QString::fromUtf8("sierpień"),
+                       QString::fromUtf8("wrzesień"),
+                       QString::fromUtf8("październik"),
+                       QString::fromUtf8("listopad"),
+                       QString::fromUtf8("grudzień")};
     QString monthname = monts[month];
     ui->ldate->setText(QString("%1, %2 %3 %4").arg(dayname).arg(day).arg(monthname).arg(year));
     QString hs = QString::number(hour);
@@ -52,4 +71,9 @@ void Zegar::update(int year, int month, int day, int dayweek, int hour, int min,
     if (sec < 10)
         ss = "0" + ss;
     ui->lsec->setText(ss);
+}
+
+QRect Zegar::getRect()
+{
+    return QRect(0, 0, width(), height());
 }

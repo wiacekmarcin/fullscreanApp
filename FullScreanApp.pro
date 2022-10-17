@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui network
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -29,17 +29,20 @@ SOURCES += \
     blackwidget.cpp \
     rssitem.cpp \
     zegar.cpp \
-    analogclock.cpp
+    analogclock.cpp \
+    ip.cpp
 
 HEADERS += \
         mainwindow.h \
     blackwidget.h \
     rssitem.h \
     zegar.h \
-    analogclock.h
+    analogclock.h \
+    ip.h
 
 FORMS += \
-        zegar.ui
+        zegar.ui \
+    ip.ui
 
 RESOURCES += \
     ikony.qrc

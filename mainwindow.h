@@ -11,8 +11,9 @@
 #include <QWidget>
 #include "analogclock.h"
 #include "zegar.h"
+#include "ip.h"
 #include <QVector>
-
+#include <QNetworkAccessManager>
 namespace Ui {
 
 class Ui_MainWindow
@@ -21,6 +22,7 @@ public:
     QWidget *centralWidget;
     ::Zegar *digitalClock;
     ::AnalogClock *analogClock;
+    ::IP *ipWidget;
 
     void setupUi(QMainWindow *MainWindow);
 
@@ -45,10 +47,15 @@ public:
     void paintEvent(QPaintEvent * e);
 private slots:
     void update();
+    void getOutIp();
 private:
     Ui::MainWindow *ui;
     QTimer timer;
     QVector<BlackWidget*> widgets;
+    QNetworkAccessManager m_manager;
 };
+
+
+
 
 #endif // MAINWINDOW_H

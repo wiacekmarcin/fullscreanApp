@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 
 #include "zegar.h"
+#include "ip.h"
 #include <QDateTime>
 
 #include <QPainter>
@@ -24,6 +25,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
     widgets.push_back(ui->analogClock);
     widgets.push_back(ui->digitalClock);
+    widgets.push_back(ui->ipWidget);
+
+    ui->ipWidget->setNetworkManager(&m_manager);
     connect(&timer, SIGNAL(timeout()), this, SLOT(update()));
     timer.setInterval(1000);
     timer.start();
@@ -63,6 +67,13 @@ void MainWindow::update()
                    dt.time().hour(),dt.time().minute(),dt.time().second());
 
     }
+}
+
+void MainWindow::getOutIp()
+{
+    // make request
+     QNetworkRequest request = QNetworkRequest(QUrl("http://httpbin.org/ip"));
+
 }
 
 void Ui::Ui_MainWindow::setupUi(QMainWindow *MainWindow)
@@ -142,14 +153,22 @@ void Ui::Ui_MainWindow::setupUi(QMainWindow *MainWindow)
     MainWindow->setStyleSheet(QString(""));
     centralWidget = new QWidget(MainWindow);
     centralWidget->setObjectName(QString("centralWidget"));
+
     digitalClock = new ::Zegar(centralWidget);
     digitalClock->setObjectName(QString("digitalClock"));
-    digitalClock->setGeometry(QRect(40, 30, 680, 210));
+    digitalClock->setGeometry(digitalClock->getRect());
+
     analogClock = new AnalogClock(centralWidget);
     analogClock->setObjectName(QString("analogClock"));
-    analogClock->setGeometry(QRect(580, 40, 500, 500));
-    sizePolicy.setHeightForWidth(analogClock->sizePolicy().hasHeightForWidth());
-    analogClock->setSizePolicy(sizePolicy);
+    analogClock->setGeometry(analogClock->getRect());
+
+    ipWidget = new ::IP(centralWidget);
+    ipWidget->setObjectName(QString("ip"));
+    ipWidget->setGeometry(ipWidget->getRect());
+
+
+
+
     MainWindow->setCentralWidget(centralWidget);
 
     retranslateUi(MainWindow);

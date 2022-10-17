@@ -12,7 +12,7 @@ public:
     void setWschod(int hour, int min);
     void setZachod(int hour, int min);
     virtual void update(int year, int month, int day, int dayweek, int hour, int min, int sec);
-
+    QRect getRect();
 protected:
     void paintEvent(QPaintEvent *event) override;
 private:

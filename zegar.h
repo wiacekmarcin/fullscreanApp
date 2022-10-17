@@ -19,6 +19,7 @@ public:
     ~Zegar();
 
     virtual void update(int year, int month, int day, int dayweek, int hour, int min, int sec);
+    QRect getRect();
 
 private:
     Ui::Zegar *ui;

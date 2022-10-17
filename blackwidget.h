@@ -11,8 +11,8 @@ class BlackWidget : public QWidget
 public:
     explicit BlackWidget(QWidget *parent = 0);
     ~BlackWidget();
-    virtual void update(int year, int month, int day, int dayweek, int hour, int min, int sec) { }
-
+    virtual void update(int , int , int , int , int , int , int ) { }
+    QRect getRect() { return QRect(0,0,0,0); }
 private:
 
 };

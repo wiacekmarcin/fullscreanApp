@@ -13,6 +13,11 @@ AnalogClock::AnalogClock(QWidget * parent): BlackWidget(parent), setWschodZachod
     resize(500, 500);
 }
 
+QRect AnalogClock::getRect()
+{
+    return QRect(580, 0, width(), height());
+}
+
 void AnalogClock::setWschod(int hour, int min)
 {
     startArcWschod = 16.0*360.0*(60.0*hour + min)/(12.0*60.0);
@@ -38,7 +43,6 @@ void AnalogClock::update(int, int, int, int, int hour, int min, int sec)
     m_s = sec;
     repaint();
 }
-
 
 void AnalogClock::paintEvent(QPaintEvent *event)
 {
@@ -87,6 +91,9 @@ void AnalogClock::paintEvent(QPaintEvent *event)
     painter.restore();
 
     painter.setPen(hourColor);
+    QPen p = painter.pen();
+    p.setWidth(5);
+    painter.setPen(p);
 
     for (int i = 0; i < 12; ++i) {
        painter.drawLine(176, 0, 192, 0);

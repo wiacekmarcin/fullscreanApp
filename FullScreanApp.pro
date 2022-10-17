@@ -6,6 +6,8 @@
 
 QT       += core gui network
 
+include($$PWD/qjson4/QJson4.pri)
+
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = FullScreanApp

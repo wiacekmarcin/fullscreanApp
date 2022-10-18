@@ -10,8 +10,6 @@ Zegar::Zegar(QWidget *parent) :
     ui->setupUi(this);
 }
 
-
-
 void Zegar::setWschod(int h, int m)
 {
     QString ms = QString::number(m);

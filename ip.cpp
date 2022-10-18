@@ -16,7 +16,8 @@ IP::IP(QWidget *parent) :
     ui->wifi->setText("");
     ui->eth->setText("");
     ui->ip->setText("No internet");
-    netMng = nullptr;
+    
+    connect(&netMng, SIGNAL(finished(QNetworkReply*)), this, SLOT(parseMessage(QNetworkReply*)));
 }
 
 IP::~IP()
@@ -29,15 +30,13 @@ QRect IP::getRect()
     return QRect(10, 1920-height(), width(), height());
 }
 
-void IP::setNetworkManager(QNetworkAccessManager *mnt)
-{
-    netMng = mnt;
-    connect(netMng, SIGNAL(finished(QNetworkReply*)), this, SLOT(parseMessage(QNetworkReply*)));
-}
-
 void IP::parseMessage(QNetworkReply* reply)
 {
-    QJsonDocument doc = QJsonDocument::fromJson(reply->readAll());
+    QByteArray bytes = reply->readAll();
+    qDebug() << reply->request().url().toDisplayString();
+    qDebug() << bytes;
+    QJsonDocument doc = QJsonDocument::fromJson(bytes);
+    
     if (doc.isNull() || doc.isEmpty())
         ui->ip->setText("No internet");
     else {
@@ -76,9 +75,7 @@ void IP::update(int, int, int, int, int, int min, int)
             }
         }
     }
-    if (netMng) {
-        netMng->get(request);
-    }
+    netMng.get(request);
 }
 /*
     QString localhostname =  QHostInfo::localHostName();

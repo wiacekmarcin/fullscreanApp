@@ -5,7 +5,8 @@
 #include "blackwidget.h"
 #include <QNetworkRequest>
 #include <QNetworkReply>
-class QNetworkAccessManager;
+#include <QNetworkAccessManager>
+
 
 //https://api.openweathermap.org/data/2.5/weather?appid=b176485875db690244cb8acf93637572&id=7532279&lang=pl&units-metric
 
@@ -23,13 +24,17 @@ public:
 
     QRect getRect();
     virtual void update(int, int, int, int, int, int, int);
-    void setNetworkManager(QNetworkAccessManager * mnt);
+
+signals:
+    void setSunrise(int h, int m);
+    void setSunset(int h, int m);
+    
 private slots:
     void parseMessage(QNetworkReply *reply);
 private:
     Ui::Pogoda *ui;
     int m_h;
-    QNetworkAccessManager * netMng;
+    QNetworkAccessManager netMng;
     QNetworkRequest request;
 };
 

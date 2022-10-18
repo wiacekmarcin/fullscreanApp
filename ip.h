@@ -5,7 +5,7 @@
 #include "blackwidget.h"
 #include <QNetworkRequest>
 #include <QNetworkReply>
-class QNetworkAccessManager;
+#include <QNetworkAccessManager>
 
 namespace Ui {
 class IP;
@@ -20,13 +20,13 @@ public:
     ~IP();
     virtual void update(int year, int month, int day, int dayweek, int hour, int min, int sec);
     QRect getRect();
-    void setNetworkManager(QNetworkAccessManager * mnt);
+    
 private slots:
     void parseMessage(QNetworkReply *reply);
 private:
     Ui::IP *ui;
     int m;
-    QNetworkAccessManager * netMng;
+    QNetworkAccessManager netMng;
     QNetworkRequest request;
 
 };

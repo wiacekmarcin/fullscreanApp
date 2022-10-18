@@ -14,12 +14,14 @@ class Zegar : public BlackWidget
 
 public:
     explicit Zegar(QWidget *parent = nullptr);
-    void setWschod(int h, int m);
-    void setZachod(int h, int m);
     ~Zegar();
 
     virtual void update(int year, int month, int day, int dayweek, int hour, int min, int sec);
     QRect getRect();
+
+public slots:
+    void setWschod(int h, int m);
+    void setZachod(int h, int m);
 
 private:
     Ui::Zegar *ui;

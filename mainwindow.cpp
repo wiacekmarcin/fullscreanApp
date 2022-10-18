@@ -29,8 +29,6 @@ MainWindow::MainWindow(QWidget *parent) :
     widgets.push_back(ui->infoWidget);
     widgets.push_back(ui->pogodaInfo);
 
-    ui->ipWidget->setNetworkManager(&m_manager);
-    ui->pogodaInfo->setNetworkManager(&m_manager);
     connect(&timer, SIGNAL(timeout()), this, SLOT(update()));
     timer.setInterval(1000);
     timer.start();
@@ -43,6 +41,10 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->digitalClock->setZachod(19,01);
 
     resize(1080, 1920);
+
+    connect(ui->pogodaInfo, SIGNAL(setSunrise(int,int)), ui->digitalClock, SLOT(setWschod(int,int)));
+    connect(ui->pogodaInfo, SIGNAL(setSunset(int,int)), ui->digitalClock, SLOT(setZachod(int,int)));
+    
 }
 
 MainWindow::~MainWindow()

@@ -57,7 +57,6 @@ private:
     Ui::MainWindow *ui;
     QTimer timer;
     QVector<BlackWidget*> widgets;
-    QNetworkAccessManager m_manager;
 };
 
 

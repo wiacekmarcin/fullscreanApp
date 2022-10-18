@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui network
+QT       += core gui network xml
 
 include($$PWD/qjson4/QJson4.pri)
 INCLUDEPATH += qjson4

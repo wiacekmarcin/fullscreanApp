@@ -3,11 +3,12 @@
 #include <QString>
 #include <QImage>
 #include <QDateTime>
-
+#include <QString>
 class RssItem
 {
 public:
     RssItem();
+    RssItem(const QString &guid, const QString & title, const QString & description, const QDateTime &pubData, const QString image = "");
 
     QString title() const;
     void setTitle(const QString &title);
@@ -25,13 +26,30 @@ public:
     void setUid(const QString &uid);
 
 private:
+    QString m_uid;
     QString m_title;
     QString m_description;
     QDateTime m_pubDate;
     QImage m_image;
-    QString m_uid;
+    
 };
 
+class RssList : public QList<RssItem> 
+{
+public:
+    RssList();
+    ~RssList();
+
+    void removeOldest();
+    bool isItem(const QString & guid);
+
+    void add(const QString &guid, const QString & title, const QString & description, const QDateTime &pubData);
+
+    void changeIndex();
+    const RssItem& getItem() const;
+private:
+    int actIndex;
+};
 
 
 #endif // RSSITEM_H

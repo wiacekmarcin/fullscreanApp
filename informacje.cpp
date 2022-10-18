@@ -7,7 +7,8 @@
 
 Informacje::Informacje(QWidget *parent) :
     BlackWidget(parent),
-    ui(new Ui::Informacje)
+    ui(new Ui::Informacje),
+    timer(this)
 {
     ui->setupUi(this);
     m_h1 = -1;
@@ -37,7 +38,9 @@ Informacje::Informacje(QWidget *parent) :
     ui->description->setStyleSheet("QLabel { color : #aaa; }");
     
     connect(&netMng, SIGNAL(finished(QNetworkReply*)), this, SLOT(parseMessage(QNetworkReply*)));
-
+    connect(&timer, SIGNAL(timeout()), this, SLOT(timeout()));
+    timer.setInterval(20000);
+    timer.start();
 
     addresses << "https://www.polsatnews.pl/rss/polska.xml" << "https://www.polsatnews.pl/rss/swiat.xml" << "https://tvn24.pl/najnowsze.xml" << "https://tvn24.pl/najwazniejsze.xml";
     addresses << "https://tvn24.pl/tvnwarszawa/najnowsze.xml";
@@ -117,99 +120,63 @@ void Informacje::parseMessage(QNetworkReply *reply)
     QDomDocument doc("mydocument");
     doc.setContent(bytes);
 
-    QDomNodeList channel = doc.elementsByTagName("channel");
-    if (channel.length() < 1)
+    QDomNodeList channels = doc.elementsByTagName("channel");
+    if (channels.length() < 1)
     {
         qDebug() << "No channel element found in feed!";
-        return "";
+        return;
     }
-
-    QString titleStr = getXMLValue(channel.at(0), templates[tIndex].feedTitle);
-    if (titleStr.isEmpty())
+    for (int c = 0; c < channels.length(); c++)
     {
-        qDebug() << tr("Title element is empty!") << path;
-        return "";
+        QDomNode chan = channels.at(c);
+        QDomElement it = chan.firstChildElement("item");
+        for (; !it.isNull(); it = it.nextSiblingElement("item")) {
+            auto t = it.elementsByTagName("title");
+            if (t.isEmpty() || t.length() < 1)
+                continue;
+            QString title = t.item(0).toElement().text();
+
+            auto d = it.elementsByTagName("description");
+            if (d.isEmpty() || d.length() < 1)
+                continue;
+            QString description = d.item(0).toElement().text();
+
+            auto g = it.elementsByTagName("guid");
+            if (g.isEmpty() || g.length() < 1)
+                continue;
+            QString guid = g.item(0).toElement().text();
+
+            auto p = it.elementsByTagName("pubDate");
+            if (p.isEmpty() || p.length() < 1)
+                continue;
+            QString psDate = p.item(0).toElement().text();
+            QDateTime pubDate = QDateTime::fromString(psDate, "ddd, dd MMM yyyy HH:mm:ss");
+            qDebug() << pubDate.toString();
+            newsy.add(guid, title, description, QDateTime::currentDateTime());
+         }
     }
-
-
-
-    QDomNodeList items = doc.elementsByTagName("channel").elementsByTagName("item");
-    QDomNode itemNode, imgNode, xmlNode, urlNode, tplNode, iurlNode;
-    QString imgStr, xmlStr, urlStr, tplStr, iurlStr;
-
-
-    for (int i = 0; i < items.length(); i++)
-    {
-        itemNode = items.at(i);
-        if (itemNode.isNull() || !itemNode.isElement())
-            continue;
-
-        // feed must contain url for updating. all other elements
-        // are optional. if no xml then we try to download the
-        // feed from the specified url. if no img then we try to
-        // download the image from the url specified in the feed.
-        urlNode = itemNode.namedItem("url");
-        if (urlNode.isNull() || !urlNode.isElement())
-            continue;
-
-        urlStr = urlNode.toElement().text();
-        if (urlStr.isEmpty())
-            continue;
-
-        xmlStr = "";
-        xmlNode = itemNode.namedItem("xml");
-        if (!xmlNode.isNull() && xmlNode.isElement())
-        {
-            xmlStr = xmlNode.toElement().text();
-            if (!xmlStr.isEmpty())
-            {
-                //finfo.setFile(tr("%1%2%3").arg(feedsPath).arg(sep).arg(xmlStr));
-                //if (!finfo.exists())
-                //    xmlStr = "";
-                qDebug() << "xmlStr" << xmlStr;
-            }
-        }
-
-        imgStr = "";
-        imgNode = itemNode.namedItem("img");
-        if (!imgNode.isNull() && imgNode.isElement())
-        {
-            imgStr = imgNode.toElement().text();
-            qDebug() << "imgStr" << imgStr;
-            //if (!imgStr.isEmpty())
-            //{
-            //    finfo.setFile(tr("%1%2%3").arg(imagesPath).arg(sep).arg(imgStr));
-            //    if (!finfo.exists())
-            //        imgStr = "";
-            //}
-        }
-
-        tplStr = "";
-        tplNode = itemNode.namedItem("tpl");
-        if (!tplNode.isNull() && tplNode.isElement())
-        {
-            tplStr = tplNode.toElement().text();
-            qDebug() << "tplStr" << tplStr;
-            //if (!tplStr.isEmpty())
-            //{
-            //    finfo.setFile(tr("%1%2%3").arg(templatesPath).arg(sep).arg(tplStr));
-            //    if (!finfo.exists())
-            //    {
-            //        tplStr = "";
-            //    }
-            //    else
-            //    {
-            //        loadTemplate(tplStr);
-            //    }
-            //}
-        }
-    }
-    
     
     --m_requestSize;
     if (m_requestSize == 0)
     {
         inprogress = false;
         done = true;
-    }    
+        if (newsy.size() == 0)
+            return;
+        ui->description->setText(newsy.at(0).description());
+        ui->title->setText(newsy.at(0).title());
+        ui->gazeta->setText("Polsat");
+    }
+}
+
+void Informacje::timeout()
+{
+    qDebug() << "update"<< newsy.size();
+    if (newsy.size() == 0)
+        return;
+
+    newsy.changeIndex();
+    auto n = newsy.getItem();
+    ui->title->setText(n.title());
+    ui->description->setText(n.description());
 }

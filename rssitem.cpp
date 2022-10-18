@@ -104,6 +104,7 @@ bool RssList::isItem(const QString & guid)
 void RssList::add(const QString &guid, const QString & title, const QString & description, const QDateTime &pubData)
 {
     RssItem item(guid, title, description, pubData);
+    push_back(item);
     
 }
 

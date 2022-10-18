@@ -9,7 +9,7 @@
 #include <QNetworkReply>
 #include <QNetworkAccessManager>
 #include <QMutex>
-
+#include <QTimer>
 namespace Ui {
 class Informacje;
 }
@@ -30,7 +30,7 @@ public:
     bool isInfo(const QString &guid);
 private slots:    
     void parseMessage(QNetworkReply *reply);
-
+    void timeout();
 private:
     Ui::Informacje *ui;
     RssList newsy;
@@ -42,6 +42,7 @@ private:
     bool done;
     int m_requestSize;
     QStringList addresses;
+    QTimer timer;
 };
 
 #endif // INFORMACJE_H

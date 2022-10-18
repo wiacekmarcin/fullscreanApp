@@ -26,7 +26,7 @@ IP::~IP()
 
 QRect IP::getRect()
 {
-    return QRect(10, 580, width(), height());
+    return QRect(10, 1920-height(), width(), height());
 }
 
 void IP::setNetworkManager(QNetworkAccessManager *mnt)

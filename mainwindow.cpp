@@ -27,6 +27,7 @@ MainWindow::MainWindow(QWidget *parent) :
     widgets.push_back(ui->digitalClock);
     widgets.push_back(ui->ipWidget);
     widgets.push_back(ui->infoWidget);
+    widgets.push_back(ui->pogodaInfo);
 
     ui->ipWidget->setNetworkManager(&m_manager);
     connect(&timer, SIGNAL(timeout()), this, SLOT(update()));
@@ -171,7 +172,9 @@ void Ui::Ui_MainWindow::setupUi(QMainWindow *MainWindow)
     infoWidget->setObjectName(QString("feds"));
     infoWidget->setGeometry(infoWidget->getRect());
 
-
+    pogodaInfo = new ::Pogoda(centralWidget);
+    pogodaInfo->setObjectName(QString("weather"));
+    pogodaInfo->setGeometry(pogodaInfo->getRect());
 
 
     MainWindow->setCentralWidget(centralWidget);

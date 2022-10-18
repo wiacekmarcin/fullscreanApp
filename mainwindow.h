@@ -13,6 +13,8 @@
 #include "zegar.h"
 #include "ip.h"
 #include "informacje.h"
+#include "pogoda.h"
+
 #include <QVector>
 #include <QNetworkAccessManager>
 namespace Ui {
@@ -25,6 +27,7 @@ public:
     ::AnalogClock *analogClock;
     ::IP *ipWidget;
     ::Informacje * infoWidget;
+    ::Pogoda * pogodaInfo;
 
     void setupUi(QMainWindow *MainWindow);
 

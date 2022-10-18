@@ -30,6 +30,7 @@ MainWindow::MainWindow(QWidget *parent) :
     widgets.push_back(ui->pogodaInfo);
 
     ui->ipWidget->setNetworkManager(&m_manager);
+    ui->pogodaInfo->setNetworkManager(&m_manager);
     connect(&timer, SIGNAL(timeout()), this, SLOT(update()));
     timer.setInterval(1000);
     timer.start();

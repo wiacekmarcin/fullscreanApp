@@ -46,7 +46,7 @@ void AnalogClock::update(int, int, int, int, int hour, int min, int sec)
 
 void AnalogClock::paintEvent(QPaintEvent *event)
 {
-    qDebug("paintEvent");
+    //qDebug("paintEvent");
 
 
     static const QPoint hourHand[3] = {

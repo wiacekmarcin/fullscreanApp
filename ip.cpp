@@ -32,7 +32,7 @@ QRect IP::getRect()
 void IP::setNetworkManager(QNetworkAccessManager *mnt)
 {
     netMng = mnt;
-    connect(netMng, SIGNAL(finished(QNetworkReply *)), this, SLOT(parseMessage(QNetworkReply*)));
+    connect(netMng, SIGNAL(finished(QNetworkReply*)), this, SLOT(parseMessage(QNetworkReply*)));
 }
 
 void IP::parseMessage(QNetworkReply* reply)
@@ -43,6 +43,7 @@ void IP::parseMessage(QNetworkReply* reply)
     else {
         ui->ip->setText(doc.toVariant().toMap()["origin"].toString());
     }
+    reply->deleteLater();
 }
 
 void IP::update(int, int, int, int, int, int min, int)

@@ -26,6 +26,7 @@ MainWindow::MainWindow(QWidget *parent) :
     widgets.push_back(ui->analogClock);
     widgets.push_back(ui->digitalClock);
     widgets.push_back(ui->ipWidget);
+    widgets.push_back(ui->infoWidget);
 
     ui->ipWidget->setNetworkManager(&m_manager);
     connect(&timer, SIGNAL(timeout()), this, SLOT(update()));
@@ -165,6 +166,10 @@ void Ui::Ui_MainWindow::setupUi(QMainWindow *MainWindow)
     ipWidget = new ::IP(centralWidget);
     ipWidget->setObjectName(QString("ip"));
     ipWidget->setGeometry(ipWidget->getRect());
+
+    infoWidget = new ::Informacje(centralWidget);
+    infoWidget->setObjectName(QString("feds"));
+    infoWidget->setGeometry(infoWidget->getRect());
 
 
 

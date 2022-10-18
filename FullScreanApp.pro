@@ -33,7 +33,9 @@ SOURCES += \
     rssitem.cpp \
     zegar.cpp \
     analogclock.cpp \
-    ip.cpp
+    ip.cpp \
+    pogoda.cpp \
+    informacje.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -41,11 +43,15 @@ HEADERS += \
     rssitem.h \
     zegar.h \
     analogclock.h \
-    ip.h
+    ip.h \
+    pogoda.h \
+    informacje.h
 
 FORMS += \
         zegar.ui \
-    ip.ui
+    ip.ui \
+    pogoda.ui \
+    informacje.ui
 
 RESOURCES += \
     ikony.qrc

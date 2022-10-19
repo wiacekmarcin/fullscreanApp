@@ -7,8 +7,8 @@ RssItem::RssItem()
 
 }
 
-RssItem::RssItem(const QString & guid, const QString & title, const QString & description, const QDateTime & pubData, const QString image)
- : m_uid(guid), m_title(title), m_description(description), m_pubDate(pubData), m_image(image)
+RssItem::RssItem(const QString & guid, const QString & publ, const QString & title, const QString & description, const QDateTime & pubData, const QString &image)
+ : m_uid(guid), m_title(title), m_description(description), m_pubDate(pubData), m_image(image), m_publisher(publ)
 {
 
 }
@@ -58,6 +58,16 @@ QString RssItem::uid() const
     return m_uid;
 }
 
+QString RssItem::publisher() const
+{
+    return m_publisher;
+}
+
+void RssItem::setPublisher(const QString & pub)
+{
+    m_publisher = pub;
+}
+
 void RssItem::setUid(const QString &uid)
 {
     m_uid = uid;
@@ -101,9 +111,9 @@ bool RssList::isItem(const QString & guid)
     return false;
 }
 
-void RssList::add(const QString &guid, const QString & title, const QString & description, const QDateTime &pubData)
+void RssList::add(const QString &guid, const QString & publisher, const QString & title, const QString & description, const QDateTime &pubData)
 {
-    RssItem item(guid, title, description, pubData);
+    RssItem item(guid, publisher, title, description, pubData);
     push_back(item);
     
 }

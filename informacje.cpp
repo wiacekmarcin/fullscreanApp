@@ -90,10 +90,12 @@ void Informacje::wyczysc()
     newsy.removeOldest();
 }
 
-void Informacje::dodajInfo(const QString &guid, const QString & title, const QString & description, const QDateTime &pubData)
+void Informacje::dodajInfo(const QString &guid, const QString & publisher, const QString & title,
+                           const QString & description, const QString &pubData)
 {
+    QDateTime dt = parseDate(pubData);
     QMutexLocker locker(&mutex);
-    newsy.add(guid, title, description, pubData);
+    newsy.add(guid, publisher, title, description, dt);
 }
 
 bool Informacje::isInfo(const QString &guid)
@@ -129,6 +131,9 @@ void Informacje::parseMessage(QNetworkReply *reply)
     for (int c = 0; c < channels.length(); c++)
     {
         QDomNode chan = channels.at(c);
+        QDomElement rsstitle = chan.firstChildElement("title");
+        QString newstitle = rsstitle.toElement().text();
+
         QDomElement it = chan.firstChildElement("item");
         for (; !it.isNull(); it = it.nextSiblingElement("item")) {
             auto t = it.elementsByTagName("title");
@@ -150,14 +155,12 @@ void Informacje::parseMessage(QNetworkReply *reply)
             if (p.isEmpty() || p.length() < 1)
                 continue;
             QString psDate = p.item(0).toElement().text();
-            QDateTime pubDate = QDateTime::fromString(psDate, "ddd, dd MMM yyyy HH:mm:ss");
-            qDebug() << pubDate.toString();
-            newsy.add(guid, title, description, QDateTime::currentDateTime());
+            dodajInfo(guid, newstitle, title, description, psDate);
          }
     }
     
     --m_requestSize;
-    if (m_requestSize == 0)
+    if (m_requestSize == 0 && !done)
     {
         inprogress = false;
         done = true;
@@ -165,7 +168,7 @@ void Informacje::parseMessage(QNetworkReply *reply)
             return;
         ui->description->setText(newsy.at(0).description());
         ui->title->setText(newsy.at(0).title());
-        ui->gazeta->setText("Polsat");
+        ui->gazeta->setText(newsy.at(0).publisher());
     }
 }
 
@@ -177,6 +180,37 @@ void Informacje::timeout()
 
     newsy.changeIndex();
     auto n = newsy.getItem();
+    ui->gazeta->setText(n.publisher());
     ui->title->setText(n.title());
     ui->description->setText(n.description());
+}
+
+QDateTime Informacje::parseDate(const QString &dt)
+{
+    //Tue, 18 Oct 2022 21:05:00 +0200
+    QStringList dtl = dt.split(" ");
+    static QMap<QString, int> mon;
+    mon["jan"] = 1;
+    mon["feb"] = 2;
+    mon["mar"] = 3;
+    mon["apr"] = 4;
+    mon["may"] = 5;
+    mon["jun"] = 6;
+    mon["jul"] = 7;
+    mon["aug"] = 8;
+    mon["sep"] = 9;
+    mon["oct"] = 10;
+    mon["nov"] = 11;
+    mon["dec"] = 12;
+    int m = mon[dtl[2].toLower()];
+    QDate d = QDate(dtl[3].toInt(), m, dtl[1].toInt());
+    QTime t = QTime::fromString(dtl[4]);
+    int secs = 0;
+    if (dtl[5] != "GMT") {
+         secs = dtl[5].toInt()*36;
+    }
+    QDateTime ddd(d, t);
+    ddd = ddd.addSecs(secs);
+    return ddd;
+
 }

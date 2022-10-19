@@ -10,6 +10,8 @@
 #include <QNetworkAccessManager>
 #include <QMutex>
 #include <QTimer>
+#include <QDateTime>
+
 namespace Ui {
 class Informacje;
 }
@@ -25,12 +27,13 @@ public:
     ~Informacje();
 
     void wyczysc();
-    void dodajInfo(const QString &guid, const QString & title, const QString & description, const QDateTime &pubData);
+    void dodajInfo(const QString &guid, const QString &publisher, const QString & title, const QString & description, const QString &pubData);
     void pobierz();
     bool isInfo(const QString &guid);
 private slots:    
     void parseMessage(QNetworkReply *reply);
     void timeout();
+    QDateTime parseDate(const QString &dt);
 private:
     Ui::Informacje *ui;
     RssList newsy;

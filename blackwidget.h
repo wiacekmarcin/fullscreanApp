@@ -2,7 +2,7 @@
 #define BLACKWIDGET_H
 
 #include <QWidget>
-
+#include <QDateTime>
 
 class BlackWidget : public QWidget
 {
@@ -11,7 +11,7 @@ class BlackWidget : public QWidget
 public:
     explicit BlackWidget(QWidget *parent = 0);
     ~BlackWidget();
-    virtual void update(int , int , int , int , int , int , int ) { }
+    virtual void timeout(const QDateTime &) { }
     QRect getRect() { return QRect(0,0,0,0); }
 private:
 

@@ -34,7 +34,7 @@ void IP::parseMessage(QNetworkReply* reply)
 {
     static int tryNum = 0;
     QByteArray bytes = reply->readAll();
-    qDebug() << reply->request().url().toDisplayString();
+    //qDebug() << reply->request().url().toDisplayString();
     qDebug() << bytes;
     QJsonDocument doc = QJsonDocument::fromJson(bytes);
     

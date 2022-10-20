@@ -4,7 +4,7 @@
 #include <QFontDatabase>
 #include <QMutexLocker>
 #include <QDomDocument>
-
+#include <QDebug>
 Informacje::Informacje(QWidget *parent) :
     BlackWidget(parent),
     ui(new Ui::Informacje),

@@ -42,7 +42,7 @@ void Pogoda::update(int , int , int , int , int h, int , int s)
 void Pogoda::parseMessage(QNetworkReply *reply)
 {
     QByteArray bytes = reply->readAll();
-    qDebug() << reply->request().url().toDisplayString();
+    //qDebug() << reply->request().url().toDisplayString();
     qDebug() << bytes;
     QJsonDocument doc = QJsonDocument::fromJson(bytes);
     if (doc.isNull() || doc.isEmpty()) {
@@ -53,12 +53,12 @@ void Pogoda::parseMessage(QNetworkReply *reply)
     citiname = doc.toVariant().toMap()["name"].toString();
     qDebug() << "citi" << citiname;
     qDebug() << "utc" << doc.toVariant().toMap()["dt"].toLongLong();
-    timeweather = QDateTime::fromSecsSinceEpoch(doc.toVariant().toMap()["dt"].toLongLong()).toString("HH:mm");
+    timeweather = QDateTime::fromMSecsSinceEpoch(doc.toVariant().toMap()["dt"].toLongLong()*1000).toString("HH:mm");
 
     ui->citydate->setText(QString::fromUtf8("<html><head/><body><p><span style=\"font-size:28pt; color:#aaaaaa;\">%1, </span><span style=\"font-size:28pt; color:#666666;\">%2</span><br/></p></body></html>").arg(citiname, timeweather));
 
-    QDateTime sunrise = QDateTime::fromSecsSinceEpoch(doc.toVariant().toMap()["sys"].toMap()["sunrise"].toLongLong());
-    QDateTime sunset = QDateTime::fromSecsSinceEpoch(doc.toVariant().toMap()["sys"].toMap()["sunset"].toLongLong());
+    QDateTime sunrise = QDateTime::fromMSecsSinceEpoch(doc.toVariant().toMap()["sys"].toMap()["sunrise"].toLongLong()*1000);
+    QDateTime sunset = QDateTime::fromMSecsSinceEpoch(doc.toVariant().toMap()["sys"].toMap()["sunset"].toLongLong()*1000);
     emit setSunrise(sunrise.time().hour(), sunrise.time().minute());
     emit setSunset(sunset.time().hour(), sunset.time().minute());
 

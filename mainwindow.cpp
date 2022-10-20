@@ -11,7 +11,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     QPalette pal = palette();
-    pal.setColor(QPalette::Background, Qt::black);
+    //pal.setColor(QPalette::Background, Qt::black);
     pal.setColor(QPalette::Window, Qt::black);
 
     pal.setColor(QPalette::WindowText, Qt::white);
@@ -52,33 +52,13 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::paintEvent(QPaintEvent * e)
-{
-    QPainter painter(this);
-    // draw foreground image over the background
-    // draws the foreground starting from the top left at point 0,0 of the label.
-    // You can supply a different offset or source/destination rects to achieve the
-    // blitting effect you want.
-    // painter.drawPixmap(QPoint(0,0),QPixmap(QString::fromUtf8(":/new/prefix1/tlo")));
-
-    QMainWindow::paintEvent(e);
-}
-
 void MainWindow::update()
 {
     QDateTime dt = QDateTime::currentDateTime();
     for(auto it = widgets.begin(); it != widgets.end(); ++it) {
-        (*it)->update(dt.date().year(), dt.date().month(), dt.date().day(), dt.date().dayOfWeek(),
-                   dt.time().hour(),dt.time().minute(),dt.time().second());
+        (*it)->timeout(dt);
 
     }
-}
-
-void MainWindow::getOutIp()
-{
-    // make request
-     QNetworkRequest request = QNetworkRequest(QUrl("http://httpbin.org/ip"));
-
 }
 
 void Ui::Ui_MainWindow::setupUi(QMainWindow *MainWindow)

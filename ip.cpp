@@ -32,21 +32,28 @@ QRect IP::getRect()
 
 void IP::parseMessage(QNetworkReply* reply)
 {
+    static int tryNum = 0;
     QByteArray bytes = reply->readAll();
-    qDebug() << reply->request().url().toDisplayString();
+    //qDebug() << reply->request().url().toDisplayString();
     qDebug() << bytes;
     QJsonDocument doc = QJsonDocument::fromJson(bytes);
     
-    if (doc.isNull() || doc.isEmpty())
+    if (doc.isNull() || doc.isEmpty()) {
         ui->ip->setText("No internet");
+        tryNum++;
+        if (tryNum == 3) {
+            system("reboot");
+        }
+    }
     else {
         ui->ip->setText(doc.toVariant().toMap()["origin"].toString());
     }
     reply->deleteLater();
 }
 
-void IP::update(int, int, int, int, int, int min, int)
+void IP::timeout(const QDateTime &dt)
 {
+    int min = dt.time().minute();
     min = min/5;
     if (min == m)
         return;

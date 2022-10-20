@@ -36,11 +36,11 @@ void AnalogClock::setZachod(int hour, int min)
     //qDebug() << startArcZachod;
 }
 
-void AnalogClock::update(int, int, int, int, int hour, int min, int sec)
+void AnalogClock::timeout(const QDateTime &dt)
 {
-    m_h = hour;
-    m_m = min;
-    m_s = sec;
+    m_h = dt.time().hour();
+    m_m = dt.time().minute();
+    m_s = dt.time().second();
     repaint();
 }
 

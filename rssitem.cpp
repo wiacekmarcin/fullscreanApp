@@ -95,9 +95,9 @@ void RssList::changeIndex()
 
 void RssList::removeOldest()
 {
-    long long secs1 = QDateTime::currentDateTime().toSecsSinceEpoch();
+    long long secs1 = QDateTime::currentDateTime().toMSecsSinceEpoch();
     for (int i=0; i < size(); ++i) {
-        if (secs1 - at(i).pubDate().toSecsSinceEpoch() > 48*3600)
+        if (secs1 - at(i).pubDate().toMSecsSinceEpoch() > 48*3600*1000)
             removeAt(i);
     }
 }

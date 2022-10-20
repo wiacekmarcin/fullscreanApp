@@ -61,12 +61,14 @@ color: rgb(255, 255, 255);</string>
     <font>
      <family>Sans Serif</family>
      <pointsize>72</pointsize>
-     <weight>75</weight>
      <bold>true</bold>
     </font>
    </property>
    <property name="text">
-    <string>88:88</string>
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;88:88&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
+   <property name="textFormat">
+    <enum>Qt::RichText</enum>
    </property>
    <property name="indent">
     <number>0</number>

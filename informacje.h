@@ -22,7 +22,7 @@ class Informacje : public BlackWidget
 
 public:
     explicit Informacje(QWidget *parent = 0);
-    virtual void update(int , int , int , int , int , int , int );
+    virtual void timeout(const QDateTime &);
     QRect getRect();
     ~Informacje();
 

@@ -16,6 +16,9 @@ constexpr char windBStyle[] = "font-size:45px;line-height:45px;color:#aaa;text-a
 constexpr char windDStyle[] = "font-size:25px;line-height:30px;color:#999;text-align:left;background:#000;font-weight:500;";
 constexpr char windSStyle[] = "font-size:16px;line-height:18px;color:#666;text-align:left;background:#000;font-weight:300;";
 constexpr char iconWiStyle[] = "font-size:65px;line-height:65px;color:#aaa;text-align:right;background:#000;font-weight:400;";
+constexpr char feelTempStyle[] = "font-size:30px;line-height:30px;color:#999;text-align:right;background:#000;font-weight:200;";
+constexpr char conditionalStyle[] = "font-size:22px;line-height:20px;color:#ccc;text-align:right;background:#000;font-weight:600;";
+
 class QLabel;
 
 
@@ -65,6 +68,10 @@ private:
     QLabel *wTempMin;
     QLabel *wTempMax;
     QLabel *citydate;
+    QLabel *feelTemp;
+    QLabel *maxTemp;
+    QLabel *minTemp;
+    QLabel *wCond;
 
     QString citiname;
     int pog_h;

@@ -222,9 +222,12 @@ void Pogoda::parseMessage(QNetworkReply *reply)
 
     double temp = doc.toVariant().toMap()["main"].toMap()["temp"].toDouble();
     double feels_like = doc.toVariant().toMap()["main"].toMap()["feels_like"].toDouble();
-    double temp_min = doc.toVariant().toMap()["main"].toMap()["temp_min"].toDouble();
-    double temp_max = doc.toVariant().toMap()["main"].toMap()["temp_max"].toDouble();
+    //double temp_min = doc.toVariant().toMap()["main"].toMap()["temp_min"].toDouble();
+    //double temp_max = doc.toVariant().toMap()["main"].toMap()["temp_max"].toDouble();
+
     wTemp->setText(QString::number(temp, 'f', 1)+QString("\u00B0"));
+    feelTemp->setText(QString::number(feels_like, 'f', 1)+QString("\u00B0"));
+
 
     int pressure = doc.toVariant().toMap()["main"].toMap()["pressure"].toInt();
     int huminidity = doc.toVariant().toMap()["main"].toMap()["humidity"].toDouble();
@@ -234,9 +237,9 @@ void Pogoda::parseMessage(QNetworkReply *reply)
     QString weather_descr = doc.toVariant().toMap()["weather"].toList()[0].toMap()["description"].toString();
     QString weather_icon = doc.toVariant().toMap()["weather"].toList()[0].toMap()["icon"].toString();
     wIcon->setText(iconMap[weather_icon]);
+    wCond->setText(weather_descr);
 
-
-    qDebug() << temp << feels_like << temp_min << temp_max << pressure << huminidity << wind_speed << wind_deg;
+    qDebug() << temp << feels_like << /*temp_min << temp_max <<*/ pressure << huminidity << wind_speed << wind_deg;
     qDebug() << weather_main << weather_descr << weather_icon;
     reply->deleteLater();
         //ui->ip->setText(doc.toVariant().toMap()["origin"].toString());
@@ -357,14 +360,33 @@ void Pogoda::setupUi(QWidget *Pogoda)
 
     wIcon = new QLabel(Pogoda);
     wIcon->setObjectName(QString::fromUtf8("wIcon"));
-    wIcon->setGeometry(QRect(0, 110, 60, 60));
+    wIcon->setGeometry(QRect(0, 110, 115, 60));
     wIcon->setStyleSheet(iconWiStyle);
     wIcon->setFont(weatherFont);
 
     wTemp = new QLabel(Pogoda);
     wTemp->setObjectName(QString::fromUtf8("wTemp"));
-    wTemp->setGeometry(QRect(65, 110, 165, 160));
+    wTemp->setGeometry(QRect(120, 110, 165, 60));
     wTemp->setStyleSheet(iconWiStyle);
     wTemp->setFont(tempFont);
+
+    wCond = new QLabel(Pogoda);
+    wCond->setObjectName(QString::fromUtf8("lwcond"));
+    wCond->setGeometry(QRect(0, 170, 300, 30));
+    wCond->setStyleSheet(conditionalStyle);
+    wCond->setFont(tempFont);
+
+    QLabel * label_1 = new QLabel(Pogoda);
+    label_1->setObjectName(QString::fromUtf8("lfeelTemp"));
+    label_1->setGeometry(QRect(0, 200, 165, 30));
+    label_1->setText(QString::fromUtf8("Odczuwalna"));
+    label_1->setStyleSheet(feelTempStyle);
+    label_1->setFont(tempFont);
+
+    feelTemp = new QLabel(Pogoda);
+    feelTemp->setObjectName(QString::fromUtf8("feelTemp"));
+    feelTemp->setGeometry(QRect(170, 200, 165, 30));
+    feelTemp->setStyleSheet(feelTempStyle);
+    feelTemp->setFont(tempFont);
 
 }

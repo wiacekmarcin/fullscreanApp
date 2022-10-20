@@ -111,22 +111,22 @@ void Zegar::setupUi(QWidget *Zegar)
     ltime->setStyleSheet(timeStyle);
     QLabel * label = new QLabel(Zegar);
     label->setObjectName(QString::fromUtf8("label"));
-    label->setGeometry(QRect(170, 60, 48, 48));
+    label->setGeometry(QRect(190, 60, 48, 48));
     label->setPixmap(QPixmap(QString::fromUtf8(":/new/prefix1/sun.png")));
     label->setScaledContents(true);
     QLabel * label_2 = new QLabel(Zegar);
     label_2->setObjectName(QString::fromUtf8("label_2"));
-    label_2->setGeometry(QRect(170, 100, 48, 48));
+    label_2->setGeometry(QRect(190, 100, 48, 48));
     label_2->setPixmap(QPixmap(QString::fromUtf8(":/new/prefix1/moon.png")));
     label_2->setScaledContents(true);
 
     wschod = new QLabel(Zegar);
     wschod->setObjectName(QString::fromUtf8("wschod"));
-    wschod->setGeometry(QRect(220, 60, 60, 32));
+    wschod->setGeometry(QRect(240, 60, 60, 32));
     wschod->setStyleSheet(minStyle);
     zachod = new QLabel(Zegar);
     zachod->setObjectName(QString::fromUtf8("zachod"));
-    zachod->setGeometry(QRect(220, 100, 80, 32));
+    zachod->setGeometry(QRect(240, 100, 80, 32));
     zachod->setStyleSheet(minStyle);
 }
 

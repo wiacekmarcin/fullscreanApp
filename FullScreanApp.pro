@@ -48,9 +48,7 @@ HEADERS += \
     informacje.h
 
 FORMS += \
-        zegar.ui \
     ip.ui \
-    pogoda.ui \
     informacje.ui
 
 RESOURCES += \

@@ -17,7 +17,7 @@ Informacje::Informacje(QWidget *parent) :
     inprogress = false;
     done = false;
 
-    int id = QFontDatabase::addApplicationFont(":/font/fonts/roboto-condensed/Roboto-Condensed-Light.ttf");
+    int id = QFontDatabase::addApplicationFont(":/font/fonts/robotic/Roboto-Medium.ttf");
     QString family = QFontDatabase::applicationFontFamilies(id).at(0);
     QFont font1(family);
     QFont font2(family);
@@ -46,13 +46,14 @@ Informacje::Informacje(QWidget *parent) :
     addresses << "https://tvn24.pl/tvnwarszawa/najnowsze.xml";
 }
 
-void Informacje::update(int, int, int, int, int h, int, int)
+void Informacje::timeout(const QDateTime &dt)
 {
     if (inprogress)
         return;
     
     if (!done)
         pobierz();
+    int h = dt.time().hour();
 
     if (h < 6)
         return;

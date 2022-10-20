@@ -49,10 +49,10 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
-    void paintEvent(QPaintEvent * e);
+
 private slots:
     void update();
-    void getOutIp();
+
 private:
     Ui::MainWindow *ui;
     QTimer timer;

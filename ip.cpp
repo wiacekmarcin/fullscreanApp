@@ -51,8 +51,9 @@ void IP::parseMessage(QNetworkReply* reply)
     reply->deleteLater();
 }
 
-void IP::update(int, int, int, int, int, int min, int)
+void IP::timeout(const QDateTime &dt)
 {
+    int min = dt.time().minute();
     min = min/5;
     if (min == m)
         return;

@@ -18,7 +18,7 @@ class IP : public BlackWidget
 public:
     explicit IP(QWidget *parent = 0);
     ~IP();
-    virtual void update(int year, int month, int day, int dayweek, int hour, int min, int sec);
+    virtual void timeout(const QDateTime &);
     QRect getRect();
     
 private slots:

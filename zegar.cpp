@@ -1,9 +1,9 @@
 #include "zegar.h"
 #include <QTimer>
 #include <QDateTime>
-#include <QtCore/QVariant>
-#include <QtWidgets/QLabel>
-#include <QtWidgets/QWidget>
+#include <QVariant>
+#include <QLabel>
+#include <QWidget>
 
 Zegar::Zegar(QWidget *parent) :
     BlackWidget(parent),

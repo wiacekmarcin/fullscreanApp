@@ -38,7 +38,7 @@ protected:
     int ms2Beaufort(const float &ms);
     QString deg2Cardinal(const float &deg);
     QString toBeaufortChar(int b);
-    QString toDescrSiłaWiatru(const float & ms);
+    QString toDescrSilaWiatru(const float & ms);
 private slots:
     void parseMessage(QNetworkReply *reply);
 private:

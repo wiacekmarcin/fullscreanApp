@@ -139,7 +139,7 @@ static QString B2Description(int b) {
     return "";
 }
 
-QString Pogoda::toDescrSiłaWiatru(const float &ms)
+QString Pogoda::toDescrSilaWiatru(const float &ms)
 {
     int b = ms2Beaufort(ms);
     QString ret = QString::number(ms, 'f', 1);
@@ -203,7 +203,7 @@ void Pogoda::parseMessage(QNetworkReply *reply)
     citiname = doc.toVariant().toMap()["name"].toString();
     qDebug() << "citi" << citiname;
     qDebug() << "utc" << doc.toVariant().toMap()["dt"].toLongLong();
-    timeweather = QDateTime::fromMSecsSinceEpoch(doc.toVariant().toMap()["dt"].toLongLong()*1000).toString("HH:mm");
+    QTime dtw = QDateTime::fromMSecsSinceEpoch(doc.toVariant().toMap()["dt"].toLongLong()*1000).time();
 
     pog_h = dtw.hour();
     pog_m = dtw.minute();
@@ -218,7 +218,7 @@ void Pogoda::parseMessage(QNetworkReply *reply)
     double wind_deg = doc.toVariant().toMap()["wind"].toMap()["deg"].toDouble();
     windB->setText(toBeaufortChar(ms2Beaufort(wind_speed)));
     windD->setText(deg2Cardinal(wind_deg));
-    windS->setText(toDescrSiłaWiatru(wind_speed));
+    windS->setText(toDescrSilaWiatru(wind_speed));
 
     double temp = doc.toVariant().toMap()["main"].toMap()["temp"].toDouble();
     double feels_like = doc.toVariant().toMap()["main"].toMap()["feels_like"].toDouble();

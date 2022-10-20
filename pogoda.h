@@ -6,7 +6,7 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QNetworkAccessManager>
-
+#include <QTime>
 
 //https://api.openweathermap.org/data/2.5/weather?appid=b176485875db690244cb8acf93637572&id=7532279&lang=pl&units-metric
 
@@ -31,11 +31,17 @@ signals:
     
 private slots:
     void parseMessage(QNetworkReply *reply);
+    QString getWindName(float windDirection);
+    int getBeafort(float speedms);
+    bool isDayTime();
+
 private:
     Ui::Pogoda *ui;
     int m_h;
     QNetworkAccessManager netMng;
     QNetworkRequest request;
+    QTime sunrise;
+    QTime sunset;
 };
 
 #endif // POGODA_H

@@ -28,6 +28,7 @@ MainWindow::MainWindow(QWidget *parent) :
     widgets.push_back(ui->ipWidget);
     widgets.push_back(ui->infoWidget);
     widgets.push_back(ui->pogodaInfo);
+    widgets.push_back(ui->pogodaPrognoza);
 
     connect(&timer, SIGNAL(timeout()), this, SLOT(update()));
     timer.setInterval(1000);
@@ -158,6 +159,10 @@ void Ui::Ui_MainWindow::setupUi(QMainWindow *MainWindow)
     pogodaInfo = new ::Pogoda(centralWidget);
     pogodaInfo->setObjectName(QString("weather"));
     pogodaInfo->setGeometry(pogodaInfo->getRect());
+
+    pogodaPrognoza = new ::Pogoda5Day(centralWidget);
+    pogodaPrognoza->setObjectName(QString("forecast"));
+    pogodaPrognoza->setGeometry(pogodaPrognoza->getRect());
 
 
     MainWindow->setCentralWidget(centralWidget);

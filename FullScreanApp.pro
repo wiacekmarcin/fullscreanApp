@@ -30,21 +30,25 @@ SOURCES += \
         main.cpp \
         mainwindow.cpp \
     blackwidget.cpp \
+    qrcodegen.cpp \
     rssitem.cpp \
     zegar.cpp \
     analogclock.cpp \
     ip.cpp \
     pogoda.cpp \
+    pogoda5day.cpp \
     informacje.cpp
 
 HEADERS += \
         mainwindow.h \
     blackwidget.h \
+    qrcodegen.h \
     rssitem.h \
     zegar.h \
     analogclock.h \
     ip.h \
     pogoda.h \
+    pogoda5day.h \
     informacje.h
 
 FORMS += \

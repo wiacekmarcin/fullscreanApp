@@ -14,7 +14,7 @@
 #include "ip.h"
 #include "informacje.h"
 #include "pogoda.h"
-
+#include "pogoda5day.h"
 #include <QVector>
 #include <QNetworkAccessManager>
 namespace Ui {
@@ -28,6 +28,7 @@ public:
     ::IP *ipWidget;
     ::Informacje * infoWidget;
     ::Pogoda * pogodaInfo;
+    ::Pogoda5Day * pogodaPrognoza;
 
     void setupUi(QMainWindow *MainWindow);
 

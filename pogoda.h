@@ -8,6 +8,7 @@
 #include <QNetworkAccessManager>
 #include <QTime>
 #include <QFont>
+#include <QLabel>
 
 //https://api.openweathermap.org/data/2.5/weather?appid=b176485875db690244cb8acf93637572&id=7532279&lang=pl&units-metric
 
@@ -19,7 +20,6 @@ constexpr char iconWiStyle[] = "font-size:65px;line-height:65px;color:#aaa;text-
 constexpr char feelTempStyle[] = "font-size:30px;line-height:35px;color:#999;text-align:right;background:#000;font-weight:400;";
 constexpr char conditionalStyle[] = "font-size:22px;line-height:20px;color:#ccc;text-align:right;background:#000;font-weight:600;";
 
-class QLabel;
 
 
 class Pogoda : public BlackWidget
@@ -44,11 +44,9 @@ protected:
     QString deg2Cardinal(const float &deg);
     QString toBeaufortChar(int b);
     QString toDescrSilaWiatru(const float & ms);
+    bool isDayTime();
 private slots:
     void parseMessage(QNetworkReply *reply);
-    QString getWindName(float windDirection);
-    int getBeafort(float speedms);
-    bool isDayTime();
 
 private:
     QString getTimeRemaing(int h, int m);
@@ -73,6 +71,8 @@ private:
     QLabel *maxTemp;
     QLabel *minTemp;
     QLabel *wCond;
+    QLabel *humiTemp;
+    QLabel *presTemp;
 
     QString citiname;
     int pog_h;

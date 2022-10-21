@@ -1,7 +1,7 @@
 #include "pogoda.h"
 #include <QFont>
 #include <QFontDatabase>
-#include "QJsonDocument.h"
+#include <QJsonDocument>
 #include <QAbstractSocket>
 #include <QDateTime>
 #include <QDebug>
@@ -234,7 +234,7 @@ void Pogoda::parseMessage(QNetworkReply *reply)
     int pressure = doc.toVariant().toMap()["main"].toMap()["pressure"].toInt();
     int huminidity = doc.toVariant().toMap()["main"].toMap()["humidity"].toDouble();
     humiTemp->setText(QString::number(huminidity, 'f', 0));
-    presTemp->setText(QString::number(pressure, 'f', 0)+QString("kPa"));
+    presTemp->setText(QString::number(pressure, 'f', 0));
 
     QString weather_main = doc.toVariant().toMap()["weather"].toList()[0].toMap()["main"].toString();
     QString weather_descr = doc.toVariant().toMap()["weather"].toList()[0].toMap()["description"].toString();
@@ -343,21 +343,36 @@ void Pogoda::setupUi(QWidget *Pogoda)
 
     QLabel * label_2 = new QLabel(Pogoda);
     label_2->setObjectName(QString::fromUtf8("lhumiTemp"));
-    label_2->setGeometry(QRect(250, 110, 35, 35));
+    label_2->setGeometry(QRect(250, 110, 65, 35));
     label_2->setText(QString::fromUtf8("\uf07a"));
     label_2->setStyleSheet(feelTempStyle);
     label_2->setFont(weatherFont);
 
     humiTemp = new QLabel(Pogoda);
     humiTemp->setObjectName(QString::fromUtf8("humiTemp"));
-    humiTemp->setGeometry(QRect(280, 110, 70, 30));
+    humiTemp->setGeometry(QRect(280, 110, 30, 30));
     humiTemp->setStyleSheet(feelTempStyle);
     humiTemp->setFont(tempFont);
 
+    QLabel *presLabel1 = new QLabel(Pogoda);
+    presLabel1->setObjectName(QString::fromUtf8("presL1"));
+    presLabel1->setGeometry(QRect(250, 150, 30, 30));
+    presLabel1->setStyleSheet(feelTempStyle);
+    presLabel1->setFont(weatherFont);
+    presLabel1->setText("\uf079");
+
     presTemp = new QLabel(Pogoda);
     presTemp->setObjectName(QString::fromUtf8("presTemp"));
-    presTemp->setGeometry(QRect(250, 150, 70, 30));
+    presTemp->setGeometry(QRect(250, 180, 70, 30));
     presTemp->setStyleSheet(feelTempStyle);
     presTemp->setFont(tempFont);
+
+    QLabel *presLabel2 = new QLabel(Pogoda);
+    presLabel2->setObjectName(QString::fromUtf8("presL2"));
+    presLabel2->setGeometry(QRect(250, 210, 70, 30));
+    presLabel2->setStyleSheet(windSStyle);
+    presLabel2->setFont(weatherFont);
+    presLabel2->setText("kPa");
+    presLabel2->setAlignment(Qt::AlignRight);
 
 }

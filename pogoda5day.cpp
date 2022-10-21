@@ -2,8 +2,8 @@
 
 #include <QFont>
 #include <QFontDatabase>
-#include "QJsonDocument.h"
-#include "QJsonObject.h"
+#include <QJsonDocument>
+#include <QJsonObject>
 #include <QAbstractSocket>
 #include <QDateTime>
 #include <QDebug>
@@ -162,7 +162,7 @@ void Pogoda5Day::parseMessage(QNetworkReply *reply)
 {
     QByteArray bytes = reply->readAll();
     //qDebug() << reply->request().url().toDisplayString();
-    qDebug() << bytes;
+    //qDebug() << bytes;
     QJsonDocument doc = QJsonDocument::fromJson(bytes);
     if (doc.isNull() || doc.isEmpty()) {
         //ui->citydate->setText(QString::fromUtf8("<html><head/><body><p><span style=\"font-size:28pt; color:#aaaaaa;\">%1, </span><span style=\"font-size:28pt; color:#666666;\">%2</span><br/></p></body></html>").arg(citiname, timeweather));

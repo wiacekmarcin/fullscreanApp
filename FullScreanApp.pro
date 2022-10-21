@@ -6,10 +6,10 @@
 
 QT       += core gui network xml
 
-include($$PWD/qjson4/QJson4.pri)
-INCLUDEPATH += qjson4
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+lessThan(5, QT_MAJOR_VERSION): include($$PWD/qjson4/QJson4.pri)
+lessThan(5, QT_MAJOR_VERSION): INCLUDEPATH += qjson4
 
 TARGET = FullScreanApp
 TEMPLATE = app

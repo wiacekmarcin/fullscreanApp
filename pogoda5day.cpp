@@ -14,7 +14,7 @@ Pogoda5Day::Pogoda5Day(QWidget *parent) :
     BlackWidget(parent),
     request(QUrl("https://api.openweathermap.org/data/2.5/forecast?appid=b176485875db690244cb8acf93637572&id=7532279&lang=pl&units=metric"))
 {
-    int idf = QFontDatabase::addApplicationFont(":/font/weathericons-regular-webfont.ttf");
+    int idf = QFontDatabase::addApplicationFont(":/font/fonts/weathericons-regular-webfont.ttf");
     QString family = QFontDatabase::applicationFontFamilies(idf).at(0);
     weatherFont = QFont(family);
     weatherFont.setPointSize(32);

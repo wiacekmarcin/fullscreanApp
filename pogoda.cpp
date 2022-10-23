@@ -1,5 +1,4 @@
 #include "pogoda.h"
-#include "ui_pogoda.h"
 #include <QFont>
 #include <QFontDatabase>
 #include "QJsonDocument.h"

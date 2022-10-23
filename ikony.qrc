@@ -6,7 +6,7 @@
         <file>moon.png</file>
     </qresource>
     <qresource prefix="/font">
-        <file>weathericons-regular-webfont.ttf</file>
+        <file>fonts/weathericons-regular-webfont.ttf</file>
         <file>fonts/robotic/Roboto-Black.ttf</file>
         <file>fonts/robotic/Roboto-BlackItalic.ttf</file>
         <file>fonts/robotic/Roboto-Bold.ttf</file>

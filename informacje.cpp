@@ -39,7 +39,7 @@ Informacje::Informacje(QWidget *parent) :
     
     connect(&netMng, SIGNAL(finished(QNetworkReply*)), this, SLOT(parseMessage(QNetworkReply*)));
     connect(&timer, SIGNAL(timeout()), this, SLOT(timeout()));
-    timer.setInterval(20000);
+    timer.setInterval(60000);
     timer.start();
 
     addresses << "https://www.polsatnews.pl/rss/polska.xml" << "https://www.polsatnews.pl/rss/swiat.xml" << "https://tvn24.pl/najnowsze.xml" << "https://tvn24.pl/najwazniejsze.xml";
@@ -109,7 +109,7 @@ void Informacje::pobierz()
 {
     inprogress = true;
     m_requestSize = addresses.size();
-    for(auto rss : addresses) {
+    for(auto & rss : addresses) {
         netMng.get(QNetworkRequest(QUrl(rss)));
     }
 }

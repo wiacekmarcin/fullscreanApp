@@ -6,10 +6,10 @@
 
 QT       += core gui network xml
 
-include($$PWD/qjson4/QJson4.pri)
-INCLUDEPATH += qjson4
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+lessThan(QT_MAJOR_VERSION, 5): include($$PWD/qjson4/QJson4.pri)
+lessThan(QT_MAJOR_VERSION, 5): INCLUDEPATH += qjson4
 
 TARGET = FullScreanApp
 TEMPLATE = app
@@ -30,21 +30,25 @@ SOURCES += \
         main.cpp \
         mainwindow.cpp \
     blackwidget.cpp \
+    qrcodegen.cpp \
     rssitem.cpp \
     zegar.cpp \
     analogclock.cpp \
     ip.cpp \
     pogoda.cpp \
+    pogoda5day.cpp \
     informacje.cpp
 
 HEADERS += \
         mainwindow.h \
     blackwidget.h \
+    qrcodegen.h \
     rssitem.h \
     zegar.h \
     analogclock.h \
     ip.h \
     pogoda.h \
+    pogoda5day.h \
     informacje.h
 
 FORMS += \

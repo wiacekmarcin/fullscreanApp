@@ -12,29 +12,27 @@ Pogoda::Pogoda(QWidget *parent) :
     BlackWidget(parent),
     request(QUrl("https://api.openweathermap.org/data/2.5/weather?appid=b176485875db690244cb8acf93637572&id=7532279&lang=pl&units=metric"))
 {
-    int idf = QFontDatabase::addApplicationFont(":/font/fonts/weathericons-regular-webfont.ttf");
-    QString family = QFontDatabase::applicationFontFamilies(idf).at(0);
-    qDebug() << "font:Pogoda 1" << idf << family;
-    weatherFont = QFont(family);
+    //int idf = QFontDatabase::addApplicationFont("weathericons-regular-webfont.ttf");
+    //QString family = QFontDatabase::applicationFontFamilies(idf).at(0);
+    //qDebug() << "font:Pogoda 1" << idf << family;
+    weatherFont = QFont("Weather Icons");
     weatherFont.setPointSize(32);
     QFontInfo f1(weatherFont);
-    qDebug() << QFontDatabase::applicationFontFamilies(idf);
     qDebug() << f1.styleName() << f1.family() << f1.exactMatch();
 
-    idf = QFontDatabase::addApplicationFont(":/font/fonts/roboto-condensed/Roboto-Condensed-Light.ttf");
-    family = QFontDatabase::applicationFontFamilies(idf).at(0);
-    qDebug() << "font:Pogoda 2" << idf << family;
-    windDescr = QFont(family);
+    //idf = QFontDatabase::addApplicationFont("Roboto-Condensed-Light.ttf");
+    //family = QFontDatabase::applicationFontFamilies(idf).at(0);
+    //qDebug() << "font:Pogoda 2" << idf << family;
+    windDescr = QFont("Roboto Condensed");
     QFontInfo f2(windDescr);
-    qDebug() << QFontDatabase::applicationFontFamilies(idf);
     qDebug() << f2.styleName() << f2.family() << f2.exactMatch();
 
-    idf = QFontDatabase::addApplicationFont(":/font/fonts/roboto-condensed/Roboto-Condensed-Regular.ttf");
-    family = QFontDatabase::applicationFontFamilies(idf).at(0);
-    qDebug() << "font:Pogoda 3" << idf << family;
-    tempFont = QFont(family);
+    //idf = QFontDatabase::addApplicationFont("Roboto-Condensed-Regular.ttf");
+    //family = QFontDatabase::applicationFontFamilies(idf).at(0);
+    //qDebug() << "font:Pogoda 3" << idf << family;
+    tempFont = QFont("Roboto Condensed");
+    //tempFont.setStyle()
     QFontInfo f3(tempFont);
-    qDebug() << QFontDatabase::applicationFontFamilies(idf);
     qDebug() << f3.styleName() << f3.family() << f3.exactMatch();
 
     m_h = m_m = pog_h = pog_m = -1;
@@ -256,7 +254,7 @@ void Pogoda::parseMessage(QNetworkReply *reply)
 
     qDebug() << temp << feels_like << /*temp_min << temp_max <<*/ pressure << huminidity << wind_speed << wind_deg;
     qDebug() << weather_main << weather_descr << weather_icon;
-    delete reply;
+    //delete reply;
         //ui->ip->setText(doc.toVariant().toMap()["origin"].toString());
 }
 

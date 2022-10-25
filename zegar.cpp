@@ -30,10 +30,10 @@ Zegar::Zegar(QWidget *parent) :
                    QString::fromUtf8("listopad"),
                    QString::fromUtf8("grudzień")}
 {
-    int idf = QFontDatabase::addApplicationFont(":/font/fonts/weathericons-regular-webfont.ttf");
-    QString family = QFontDatabase::applicationFontFamilies(idf).at(0);
-    qDebug() << "font:Zegar" << family;
-    weatherFont = QFont(family);
+    //int idf = QFontDatabase::addApplicationFont("weathericons-regular-webfont.ttf");
+    //QString family = QFontDatabase::applicationFontFamilies(idf).at(0);
+    //qDebug() << "font:Zegar" << family;
+    weatherFont = QFont("Weather Icons");
     //weatherFont.setPointSize(32);
     setupUi(this);
 

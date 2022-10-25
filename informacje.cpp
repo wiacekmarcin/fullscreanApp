@@ -19,6 +19,7 @@ Informacje::Informacje(QWidget *parent) :
 
     int id = QFontDatabase::addApplicationFont(":/font/fonts/robotic/Roboto-Medium.ttf");
     QString family = QFontDatabase::applicationFontFamilies(id).at(0);
+    qDebug() << "font:informacje" << family;
     QFont font1(family);
     QFont font2(family);
     font1.setPixelSize(20);

@@ -63,6 +63,12 @@
          <height>50</height>
         </size>
        </property>
+       <property name="maximumSize">
+        <size>
+         <width>150</width>
+         <height>150</height>
+        </size>
+       </property>
       </widget>
      </item>
     </layout>

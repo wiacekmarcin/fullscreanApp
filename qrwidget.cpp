@@ -7,7 +7,7 @@ QRWidget::QRWidget(QWidget *parent) :
     BlackWidget(parent),
     data("Hello QR")//Note: The encoding fails with empty string so I just default to something else. Use the setQRData() call to change this.
 {
-    resize(200,200);
+    resize(150,150);
 }
 
 void QRWidget::setQRData(const QString &data)

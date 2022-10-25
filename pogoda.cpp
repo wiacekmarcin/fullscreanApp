@@ -256,7 +256,7 @@ void Pogoda::parseMessage(QNetworkReply *reply)
 
     qDebug() << temp << feels_like << /*temp_min << temp_max <<*/ pressure << huminidity << wind_speed << wind_deg;
     qDebug() << weather_main << weather_descr << weather_icon;
-    reply->deleteLater();
+    delete reply;
         //ui->ip->setText(doc.toVariant().toMap()["origin"].toString());
 }
 
@@ -330,7 +330,7 @@ void Pogoda::setupUi(QWidget *Pogoda)
 
     wTemp = new QLabel(Pogoda);
     wTemp->setObjectName(QString::fromUtf8("wTemp"));
-    wTemp->setGeometry(QRect(120, 110, 165, 60));
+    wTemp->setGeometry(QRect(120, 110, 195, 60));
     wTemp->setStyleSheet(iconWiStyle);
     wTemp->setFont(tempFont);
 
@@ -342,14 +342,14 @@ void Pogoda::setupUi(QWidget *Pogoda)
 
     QLabel * label_1 = new QLabel(Pogoda);
     label_1->setObjectName(QString::fromUtf8("lfeelTemp"));
-    label_1->setGeometry(QRect(0, 200, 165, 30));
+    label_1->setGeometry(QRect(0, 200, 195, 30));
     label_1->setText(QString::fromUtf8("Odczuwalna"));
     label_1->setStyleSheet(feelTempStyle);
     label_1->setFont(tempFont);
 
     feelTemp = new QLabel(Pogoda);
     feelTemp->setObjectName(QString::fromUtf8("feelTemp"));
-    feelTemp->setGeometry(QRect(170, 200, 80, 30));
+    feelTemp->setGeometry(QRect(200, 200, 140, 30));
     feelTemp->setStyleSheet(feelTempStyle);
     feelTemp->setFont(tempFont);
 
@@ -362,13 +362,13 @@ void Pogoda::setupUi(QWidget *Pogoda)
 
     humiTemp = new QLabel(Pogoda);
     humiTemp->setObjectName(QString::fromUtf8("humiTemp"));
-    humiTemp->setGeometry(QRect(35, 240, 30, 30));
+    humiTemp->setGeometry(QRect(35, 240, 50, 30));
     humiTemp->setStyleSheet(feelTempStyle);
     humiTemp->setFont(tempFont);
 
     QLabel * humiTemp1 = new QLabel(Pogoda);
     humiTemp1->setObjectName(QString::fromUtf8("humiTemp1"));
-    humiTemp1->setGeometry(QRect(65, 240, 15, 15));
+    humiTemp1->setGeometry(QRect(85, 240, 15, 15));
     humiTemp1->setStyleSheet(windSStyle);
     humiTemp1->setText("%");
     humiTemp1->setAlignment(Qt::AlignLeft);
@@ -382,13 +382,13 @@ void Pogoda::setupUi(QWidget *Pogoda)
 
     presTemp = new QLabel(Pogoda);
     presTemp->setObjectName(QString::fromUtf8("presTemp"));
-    presTemp->setGeometry(QRect(150, 240, 70, 30));
+    presTemp->setGeometry(QRect(150, 240, 90, 30));
     presTemp->setStyleSheet(feelTempStyle);
     presTemp->setFont(tempFont);
 
     QLabel *presLabel2 = new QLabel(Pogoda);
     presLabel2->setObjectName(QString::fromUtf8("presL2"));
-    presLabel2->setGeometry(QRect(220, 240, 30, 30));
+    presLabel2->setGeometry(QRect(240, 240, 30, 30));
     presLabel2->setStyleSheet(windSStyle);
     presLabel2->setText("kPa");
     presLabel2->setAlignment(Qt::AlignLeft);

@@ -23,9 +23,9 @@ Informacje::Informacje(QWidget *parent) :
     QFont font1("RobotoMedium");
     QFont font2("RobotoMedium");
     font1.setPixelSize(20);
-    font1.setWeight(300);
+    font1.setWeight(QFont::Light);
     font2.setPixelSize(30);
-    font2.setWeight(300);
+    font2.setWeight(QFont::Light);
 
     ui->gazeta->setFont(font1);
     ui->gazeta->setStyleSheet("QLabel { color : #666; }");

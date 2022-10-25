@@ -31,7 +31,6 @@ SOURCES += \
         main.cpp \
         mainwindow.cpp \
     blackwidget.cpp \
-    qrcodegen.cpp \
     qrwidget.cpp \
     rssitem.cpp \
     zegar.cpp \
@@ -44,7 +43,6 @@ SOURCES += \
 HEADERS += \
         mainwindow.h \
     blackwidget.h \
-    qrcodegen.h \
     qrwidget.h \
     rssitem.h \
     zegar.h \

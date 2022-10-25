@@ -35,6 +35,8 @@ Pogoda::Pogoda(QWidget *parent) :
     QFontInfo f3(tempFont);
     qDebug() << f3.styleName() << f3.family() << f3.exactMatch();
 
+    warunkiFont = QFont("RobotoMedium");
+
     m_h = m_m = pog_h = pog_m = -1;
     citiname = "Nieznane";
     connect(&netMng, SIGNAL(finished(QNetworkReply*)), this, SLOT(parseMessage(QNetworkReply*)));
@@ -336,7 +338,7 @@ void Pogoda::setupUi(QWidget *Pogoda)
     wCond->setObjectName(QString::fromUtf8("lwcond"));
     wCond->setGeometry(QRect(0, 170, 300, 30));
     wCond->setStyleSheet(conditionalStyle);
-    wCond->setFont(tempFont);
+    wCond->setFont(warunkiFont);
 
     QLabel * label_1 = new QLabel(Pogoda);
     label_1->setObjectName(QString::fromUtf8("lfeelTemp"));

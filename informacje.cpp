@@ -43,7 +43,11 @@ Informacje::Informacje(QWidget *parent) :
     timer.start();
 
     addresses << "https://www.polsatnews.pl/rss/polska.xml" << "https://www.polsatnews.pl/rss/swiat.xml" << "https://tvn24.pl/najnowsze.xml" << "https://tvn24.pl/najwazniejsze.xml";
-    addresses << "https://tvn24.pl/tvnwarszawa/najnowsze.xml";
+    addresses << "https://tvn24.pl/tvnwarszawa/najnowsze.xml" << "https://www.rmf24.pl/feed";
+    addresses << "http://kanaly.rss.interia.pl/fakty.xml";
+    addresses << "http://www.tokfm.pl/pub/rss/tokfmpl_polska.xml";
+
+    ui->qrcode->setBaseSize(100,100);
 }
 
 void Informacje::timeout(const QDateTime &dt)
@@ -92,11 +96,12 @@ void Informacje::wyczysc()
 }
 
 void Informacje::dodajInfo(const QString &guid, const QString & publisher, const QString & title,
-                           const QString & description, const QString &pubData)
+                           const QString & description, const QString &pubData,
+                           const QString & img, const QString &url)
 {
     QDateTime dt = parseDate(pubData);
     QMutexLocker locker(&mutex);
-    newsy.add(guid, publisher, title, description, dt);
+    newsy.add(guid, publisher, title, description, dt, "", url);
 }
 
 bool Informacje::isInfo(const QString &guid)
@@ -156,7 +161,15 @@ void Informacje::parseMessage(QNetworkReply *reply)
             if (p.isEmpty() || p.length() < 1)
                 continue;
             QString psDate = p.item(0).toElement().text();
-            dodajInfo(guid, newstitle, title, description, psDate);
+
+            QString url = "";
+            auto u = it.elementsByTagName("link");
+            if (p.isEmpty() || p.length() < 1)
+                url = "";
+            else
+                url = u.item(0).toElement().text();
+
+            dodajInfo(guid, newstitle, title, description, psDate, "", url);
          }
     }
     
@@ -184,6 +197,7 @@ void Informacje::timeout()
     ui->gazeta->setText(n.publisher());
     ui->title->setText(n.title());
     ui->description->setText(n.description());
+    ui->qrcode->setQRData(n.www());
 }
 
 QDateTime Informacje::parseDate(const QString &dt)

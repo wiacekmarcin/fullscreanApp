@@ -6,6 +6,7 @@
 
 QT       += core gui network xml
 
+LIBS += -lqrencode
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 lessThan(QT_MAJOR_VERSION, 5): include($$PWD/qjson4/QJson4.pri)
@@ -31,6 +32,7 @@ SOURCES += \
         mainwindow.cpp \
     blackwidget.cpp \
     qrcodegen.cpp \
+    qrwidget.cpp \
     rssitem.cpp \
     zegar.cpp \
     analogclock.cpp \
@@ -43,6 +45,7 @@ HEADERS += \
         mainwindow.h \
     blackwidget.h \
     qrcodegen.h \
+    qrwidget.h \
     rssitem.h \
     zegar.h \
     analogclock.h \

@@ -337,42 +337,48 @@ void Pogoda::setupUi(QWidget *Pogoda)
 
     feelTemp = new QLabel(Pogoda);
     feelTemp->setObjectName(QString::fromUtf8("feelTemp"));
-    feelTemp->setGeometry(QRect(170, 200, 165, 30));
+    feelTemp->setGeometry(QRect(170, 200, 80, 30));
     feelTemp->setStyleSheet(feelTempStyle);
     feelTemp->setFont(tempFont);
 
     QLabel * label_2 = new QLabel(Pogoda);
     label_2->setObjectName(QString::fromUtf8("lhumiTemp"));
-    label_2->setGeometry(QRect(250, 110, 65, 35));
+    label_2->setGeometry(QRect(0, 240, 35, 35));
     label_2->setText(QString::fromUtf8("\uf07a"));
     label_2->setStyleSheet(feelTempStyle);
     label_2->setFont(weatherFont);
 
     humiTemp = new QLabel(Pogoda);
     humiTemp->setObjectName(QString::fromUtf8("humiTemp"));
-    humiTemp->setGeometry(QRect(280, 110, 30, 30));
+    humiTemp->setGeometry(QRect(35, 240, 30, 30));
     humiTemp->setStyleSheet(feelTempStyle);
     humiTemp->setFont(tempFont);
 
+    QLabel * humiTemp1 = new QLabel(Pogoda);
+    humiTemp1->setObjectName(QString::fromUtf8("humiTemp1"));
+    humiTemp1->setGeometry(QRect(65, 240, 15, 15));
+    humiTemp1->setStyleSheet(windSStyle);
+    humiTemp1->setText("%");
+    humiTemp1->setAlignment(Qt::AlignLeft);
+
     QLabel *presLabel1 = new QLabel(Pogoda);
     presLabel1->setObjectName(QString::fromUtf8("presL1"));
-    presLabel1->setGeometry(QRect(250, 150, 30, 30));
+    presLabel1->setGeometry(QRect(120, 240, 30, 30));
     presLabel1->setStyleSheet(feelTempStyle);
     presLabel1->setFont(weatherFont);
     presLabel1->setText("\uf079");
 
     presTemp = new QLabel(Pogoda);
     presTemp->setObjectName(QString::fromUtf8("presTemp"));
-    presTemp->setGeometry(QRect(250, 180, 70, 30));
+    presTemp->setGeometry(QRect(150, 240, 70, 30));
     presTemp->setStyleSheet(feelTempStyle);
     presTemp->setFont(tempFont);
 
     QLabel *presLabel2 = new QLabel(Pogoda);
     presLabel2->setObjectName(QString::fromUtf8("presL2"));
-    presLabel2->setGeometry(QRect(250, 210, 70, 30));
+    presLabel2->setGeometry(QRect(220, 240, 30, 30));
     presLabel2->setStyleSheet(windSStyle);
-    presLabel2->setFont(weatherFont);
     presLabel2->setText("kPa");
-    presLabel2->setAlignment(Qt::AlignRight);
+    presLabel2->setAlignment(Qt::AlignLeft);
 
 }

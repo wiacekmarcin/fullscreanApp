@@ -4,6 +4,8 @@
 #include <QVariant>
 #include <QLabel>
 #include <QWidget>
+#include <QFontDatabase>>
+#include <QFont>
 
 Zegar::Zegar(QWidget *parent) :
     BlackWidget(parent),
@@ -27,6 +29,10 @@ Zegar::Zegar(QWidget *parent) :
                    QString::fromUtf8("listopad"),
                    QString::fromUtf8("grudzień")}
 {
+    int idf = QFontDatabase::addApplicationFont(":/font/fonts/weathericons-regular-webfont.ttf");
+    QString family = QFontDatabase::applicationFontFamilies(idf).at(0);
+    weatherFont = QFont(family);
+    //weatherFont.setPointSize(32);
     setupUi(this);
 
 
@@ -80,7 +86,7 @@ void Zegar::timeout(const QDateTime &dt)
     QString ss = QString::number(sec);
     if (sec < 10)
         ss = "0" + ss;
-    ltime->setText(QString("<span>%1:%2<sup style=\"%3\">%4</sup><span>").arg(hs, ms, QString(secsStyle), ss));
+    ltime->setText(QString("<span>%1:%2 <sup style=\"%3\">%4</sup><span>").arg(hs, ms, QString(secsStyle), ss));
 }
 
 QRect Zegar::getRect()
@@ -111,15 +117,22 @@ void Zegar::setupUi(QWidget *Zegar)
     ltime->setStyleSheet(timeStyle);
     QLabel * label = new QLabel(Zegar);
     label->setObjectName(QString::fromUtf8("label"));
-    label->setGeometry(QRect(190, 60, 48, 48));
-    label->setPixmap(QPixmap(QString::fromUtf8(":/new/prefix1/sun.png")));
-    label->setScaledContents(true);
+    label->setGeometry(QRect(210, 60, 48, 48));
+    //label->setText(QString("\uf051"));
+    label->setText(QString("\uf06e"));
+    label->setStyleSheet(iconStyle);
+    label->setFont(weatherFont);
+    //label->setPixmap(QPixmap(QString::fromUtf8(":/new/prefix1/sun.png")));
+    //label->setScaledContents(true);
     QLabel * label_2 = new QLabel(Zegar);
     label_2->setObjectName(QString::fromUtf8("label_2"));
-    label_2->setGeometry(QRect(190, 100, 48, 48));
-    label_2->setPixmap(QPixmap(QString::fromUtf8(":/new/prefix1/moon.png")));
-    label_2->setScaledContents(true);
-
+    label_2->setGeometry(QRect(210, 100, 48, 48));
+    //label_2->setPixmap(QPixmap(QString::fromUtf8(":/new/prefix1/moon.png")));
+    //label_2->setScaledContents(true);
+    //label_2->setText(QString("\uf052"));
+    label_2->setText(QString("\uf070"));
+    label_2->setStyleSheet(iconStyle);
+    label_2->setFont(weatherFont);
     wschod = new QLabel(Zegar);
     wschod->setObjectName(QString::fromUtf8("wschod"));
     wschod->setGeometry(QRect(240, 60, 60, 32));

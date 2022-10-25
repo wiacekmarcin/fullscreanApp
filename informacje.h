@@ -27,7 +27,7 @@ public:
     ~Informacje();
 
     void wyczysc();
-    void dodajInfo(const QString &guid, const QString &publisher, const QString & title, const QString & description, const QString &pubData);
+    void dodajInfo(const QString &guid, const QString &publisher, const QString & title, const QString & description, const QString &pubData, const QString &img, const QString &url);
     void pobierz();
     bool isInfo(const QString &guid);
 private slots:    

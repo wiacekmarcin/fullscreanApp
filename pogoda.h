@@ -9,10 +9,7 @@
 #include <QTime>
 #include <QFont>
 #include <QLabel>
-<<<<<<< HEAD
-=======
 
->>>>>>> 40cc958237c84d0abfb1a275a1b846feeef9704a
 //https://api.openweathermap.org/data/2.5/weather?appid=b176485875db690244cb8acf93637572&id=7532279&lang=pl&units-metric
 
 constexpr char citiStyle[] = "font-size:30px;line-height:35px;color:#999;text-align:left;background:#000;font-family:\"Ariel\",sans-serif;font-weight:400;";
@@ -23,10 +20,6 @@ constexpr char iconWiStyle[] = "font-size:65px;line-height:65px;color:#aaa;text-
 constexpr char feelTempStyle[] = "font-size:30px;line-height:35px;color:#999;text-align:right;background:#000;font-weight:400;";
 constexpr char conditionalStyle[] = "font-size:22px;line-height:20px;color:#ccc;text-align:right;background:#000;font-weight:600;";
 
-<<<<<<< HEAD
-=======
-
->>>>>>> 40cc958237c84d0abfb1a275a1b846feeef9704a
 
 class Pogoda : public BlackWidget
 {

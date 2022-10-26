@@ -45,7 +45,6 @@ Informacje::Informacje(QWidget *parent) :
 
     addresses << "https://www.polsatnews.pl/rss/polska.xml" << "https://www.polsatnews.pl/rss/swiat.xml" << "https://tvn24.pl/najnowsze.xml" << "https://tvn24.pl/najwazniejsze.xml";
     addresses << "https://tvn24.pl/tvnwarszawa/najnowsze.xml" << "https://www.rmf24.pl/feed";
-    addresses << "http://kanaly.rss.interia.pl/fakty.xml";
     addresses << "http://www.tokfm.pl/pub/rss/tokfmpl_polska.xml";
 
     ui->qrcode->setBaseSize(150,150);
@@ -56,8 +55,11 @@ void Informacje::timeout(const QDateTime &dt)
     if (inprogress)
         return;
     
-    if (!done)
+    if (!done) {
         pobierz();
+        return;
+    }
+
     int h = dt.time().hour();
 
     if (h < 6)
@@ -115,55 +117,74 @@ void Informacje::pobierz()
 {
     inprogress = true;
     m_requestSize = addresses.size();
+    qDebug() << m_requestSize;
     for(auto & rss : addresses) {
+        qDebug() << "REQUEST" << rss;
         netMng.get(QNetworkRequest(QUrl(rss)));
     }
 }
 
 void Informacje::parseMessage(QNetworkReply *reply)
 {
+
+    
     QByteArray bytes = reply->readAll();
     //qDebug() << reply->request().url().toDisplayString();
     //qDebug() << bytes;
 
+    
     QDomDocument doc;
+    
     doc.setContent(bytes);
+    
 
     QDomNodeList channels = doc.elementsByTagName("channel");
+    
     if (channels.length() < 1)
     {
-        qDebug() << "No channel element found in feed!";
+        qDebug() << "No channel element found in feed! : " << reply->request().url().toDisplayString();
         return;
     }
+    
     for (int c = 0; c < channels.length(); c++)
     {
+        
         QDomNode chan = channels.at(c);
+        
         QDomElement rsstitle = chan.firstChildElement("title");
+        
         QString newstitle = rsstitle.toElement().text();
-
+        
         QDomElement it = chan.firstChildElement("item");
         for (; !it.isNull(); it = it.nextSiblingElement("item")) {
+            
             auto t = it.elementsByTagName("title");
             if (t.isEmpty() || t.length() < 1)
                 continue;
+            
             QString title = t.item(0).toElement().text();
-
+                
             auto d = it.elementsByTagName("description");
             if (d.isEmpty() || d.length() < 1)
                 continue;
+            
             QString description = d.item(0).toElement().text();
-
+            
             auto g = it.elementsByTagName("guid");
             if (g.isEmpty() || g.length() < 1)
                 continue;
+            
             QString guid = g.item(0).toElement().text();
-
+            
             auto p = it.elementsByTagName("pubDate");
+            
             if (p.isEmpty() || p.length() < 1)
                 continue;
+            
             QString psDate = p.item(0).toElement().text();
 
             QString url = "";
+            
             auto u = it.elementsByTagName("link");
             if (p.isEmpty() || p.length() < 1)
                 url = "";

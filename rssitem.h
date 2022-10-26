@@ -20,8 +20,8 @@ public:
     QDateTime pubDate() const;
     void setPubDate(const QDateTime &pubDate);
 
-    QImage image() const;
-    void setImage(const QImage &image);
+    QString image() const;
+    void setImage(const QString &image);
 
     QString uid() const;
     void setUid(const QString &uid);
@@ -37,7 +37,7 @@ private:
     QString m_title;
     QString m_description;
     QDateTime m_pubDate;
-    QImage m_image;
+    QString m_image;
     QString m_publisher;
     QString m_www;
 };

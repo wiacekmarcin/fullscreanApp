@@ -12,7 +12,14 @@
 
 Pogoda5Day::Pogoda5Day(QWidget *parent) :
     BlackWidget(parent),
-    request(QUrl("https://api.openweathermap.org/data/2.5/forecast?appid=b176485875db690244cb8acf93637572&id=7532279&lang=pl&units=metric"))
+    request(QUrl("https://api.openweathermap.org/data/2.5/forecast?appid=b176485875db690244cb8acf93637572&id=7532279&lang=pl&units=metric")),
+    days{"", QString::fromUtf8("Pon"),
+                    QString::fromUtf8("Wto"),
+                    QString::fromUtf8("Śro"),
+                    QString::fromUtf8("Czw"),
+                    QString::fromUtf8("Pią"),
+                    QString::fromUtf8("Sob"),
+                    QString::fromUtf8("Nie")}
 {
     int idf = QFontDatabase::addApplicationFont(":/font/fonts/weathericons-regular-webfont.ttf");
     QString family = QFontDatabase::applicationFontFamilies(idf).at(0);
@@ -160,38 +167,74 @@ QString Pogoda5Day::deg2Cardinal(const float &deg)
 
 void Pogoda5Day::parseMessage(QNetworkReply *reply)
 {
-    return;
+
     QByteArray bytes = reply->readAll();
-    //qDebug() << reply->request().url().toDisplayString();
-    //qDebug() << bytes;
+    qDebug() << "REPLY:" << reply->request().url().toDisplayString();
+    qDebug() << bytes;
     QJsonDocument doc = QJsonDocument::fromJson(bytes);
     if (doc.isNull() || doc.isEmpty()) {
         return;
     }
 
+    m_weatherData.clear();
 
     int cnt = doc.toVariant().toMap()["cnt"].toInt();
+    qDebug() << "CNT" << cnt;
     //QJsonObject jsonObject = doc.toObject();
-    //QJsonObject jsonList = jsonObject["list"].toObject();
+    QVariantList jsonList = doc["list"].toVariant().toList();
+    //
 
-    for (int i = 0; i < cnt; ++i) 
+    long long lsecs = -1;
+    float minTemp = 100;
+    float maxTemp = -100;
+    for (auto & item : jsonList) 
     {
-        //QJsonObject obj = jsonList[QString::number(i)].toObject();
-        //auto mapa = obj.toVariant().toMap();
-        //qDebug() << mapa["dt"];
-    
-    }
-    
-    //QString weather_main = doc.toVariant().toMap()["weather"].toList()[0].toMap()["main"].toString();
-    //QString weather_descr = doc.toVariant().toMap()["weather"].toList()[0].toMap()["description"].toString();
-    //QString weather_icon = doc.toVariant().toMap()["weather"].toList()[0].toMap()["icon"].toString();
-    //wIcon->setText(iconMap[weather_icon]);
-    //wCond->setText(weather_descr);
+        neededData nd;
+        auto mapItem = item.toMap();
+        QString dt_txt = mapItem["dt_txt"].toString();
+        auto date_time = dt_txt.split(" ");
+        auto dateItems = date_time[0].split("-");
+        auto timeItems = date_time[1].split(":");
+        QDate dt(dateItems[0].toInt(), dateItems[1].toInt(), dateItems[2].toInt());
 
-    //qDebug() << temp << feels_like << /*temp_min << temp_max <<*/ pressure << huminidity << wind_speed << wind_deg;
-    //qDebug() << weather_main << weather_descr << weather_icon;
-    //reply->deleteLater();
-        //ui->ip->setText(doc.toVariant().toMap()["origin"].toString());
+        auto secsItem = mapItem["dt"].toLongLong();
+
+        nd.day_month = dt.day();
+        nd.nameDay = days[dt.dayOfWeek()];
+        nd.time = timeItems[0] + ":" + timeItems[1];
+        if (lsecs < 0) {
+            lsecs = secsItem;
+            nd.secs = 0;
+        } else {
+            nd.secs = secsItem - lsecs;
+        }
+
+
+        auto mapWeather = mapItem["weather"].toList()[0].toMap();
+        nd.descWeather = mapWeather["description"].toString();
+        nd.iconWeather = mapWeather["icon"].toString();
+
+        nd.descWeather = mapWeather["description"].toString();
+        nd.iconWeather = mapWeather["icon"].toString();
+
+        auto mapMain = mapItem["main"].toMap();
+        nd.temp = mapMain["temp"].toFloat();
+        if (nd.temp > maxTemp)
+            maxTemp = nd.temp;
+
+        if (nd.temp > maxTemp)
+            maxTemp = nd.temp;
+            
+        nd.pressure = mapMain["pressure"].toInt();
+        nd.humidity = mapMain["humidity"].toInt();
+
+        m_weatherData.append(nd);
+    }
+
+    for (auto & i : m_weatherData) {
+        qDebug() << i.day_month << " " << i.nameDay << " " << i.time << " => " << i.temp << " " << i.secs;
+    }
+   
 }
 
 

@@ -160,12 +160,12 @@ QString Pogoda5Day::deg2Cardinal(const float &deg)
 
 void Pogoda5Day::parseMessage(QNetworkReply *reply)
 {
+    return;
     QByteArray bytes = reply->readAll();
     //qDebug() << reply->request().url().toDisplayString();
     //qDebug() << bytes;
     QJsonDocument doc = QJsonDocument::fromJson(bytes);
     if (doc.isNull() || doc.isEmpty()) {
-        //ui->citydate->setText(QString::fromUtf8("<html><head/><body><p><span style=\"font-size:28pt; color:#aaaaaa;\">%1, </span><span style=\"font-size:28pt; color:#666666;\">%2</span><br/></p></body></html>").arg(citiname, timeweather));
         return;
     }
 

@@ -185,7 +185,7 @@ void Pogoda5Day::parseMessage(QNetworkReply *reply)
     int cnt = doc.toVariant().toMap()["cnt"].toInt();
     qDebug() << "CNT" << cnt;
     //QJsonObject jsonObject = doc.toObject();
-    QVariantList jsonList = doc["list"].toVariant().toList();
+    QVariantList jsonList = doc.toVariant().toMap()["list"].toList();
     //
 
     long long lsecs = -1;

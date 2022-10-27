@@ -234,6 +234,24 @@ void Pogoda5Day::parseMessage(QNetworkReply *reply)
         nd.pressure = mapMain["pressure"].toInt();
         nd.humidity = mapMain["humidity"].toInt();
 
+        auto rain = mapItem["rain"];
+        float rainMM = 0.0;
+
+        if (rain.isNull()) {
+            auto rainM = rain.toMap();
+            rainMM = rainM["1h"].toFloat();
+        }
+        nd.rain = rainMM;
+
+        auto snow = mapItem["rain"];
+        float snowMM = 0.0;
+
+        if (snow.isNull()) {
+            auto snowM = snow.toMap();
+            snowMM = snowM["1h"].toFloat();
+        }
+        nd.snow = snowMM;
+
         m_weatherData.append(nd);
     }
 
@@ -263,12 +281,14 @@ void Pogoda5Day::createDay(PogodaDay * day, neededData & data)
     QLabel * temp;
     QLabel * press;
     QLabel * cond;
+    QLabel * rain;
     switch(data.hour) {
     case 0:
     {
         temp = day->ui->temp_00;
         press = day->ui->pres_00;
         cond = day->ui->wet_00;
+        rain = day->ui->rain_00;
         break;
     }
     case 3:
@@ -276,6 +296,7 @@ void Pogoda5Day::createDay(PogodaDay * day, neededData & data)
         temp = day->ui->temp_03;
         press = day->ui->pres_03;
         cond = day->ui->wet_03;
+        rain = day->ui->rain_03;
         break;
     }
     case 6:
@@ -283,6 +304,7 @@ void Pogoda5Day::createDay(PogodaDay * day, neededData & data)
         temp = day->ui->temp_06;
         press = day->ui->pres_06;
         cond = day->ui->wet_06;
+        rain = day->ui->rain_06;
         break;
     }
     case 9:
@@ -290,6 +312,7 @@ void Pogoda5Day::createDay(PogodaDay * day, neededData & data)
         temp = day->ui->temp_09;
         press = day->ui->pres_09;
         cond = day->ui->wet_09;
+        rain = day->ui->rain_09;
         break;
     }
     case 12:
@@ -297,6 +320,7 @@ void Pogoda5Day::createDay(PogodaDay * day, neededData & data)
         temp = day->ui->temp_12;
         press = day->ui->pres_12;
         cond = day->ui->wet_12;
+        rain = day->ui->rain_12;
         break;
     }
     case 15:
@@ -304,6 +328,7 @@ void Pogoda5Day::createDay(PogodaDay * day, neededData & data)
         temp = day->ui->temp_15;
         press = day->ui->pres_15;
         cond = day->ui->wet_15;
+        rain = day->ui->rain_15;
         break;
     }
     case 18:
@@ -311,6 +336,7 @@ void Pogoda5Day::createDay(PogodaDay * day, neededData & data)
         temp = day->ui->temp_18;
         press = day->ui->pres_18;
         cond = day->ui->wet_18;
+        rain = day->ui->rain_18;
         break;
     }
     case 21:
@@ -318,6 +344,7 @@ void Pogoda5Day::createDay(PogodaDay * day, neededData & data)
         temp = day->ui->temp_21;
         press = day->ui->pres_21;
         cond = day->ui->wet_21;
+        rain = day->ui->rain_21;
         break;
     }
     default:
@@ -327,6 +354,7 @@ void Pogoda5Day::createDay(PogodaDay * day, neededData & data)
     temp->setText(QString::fromUtf8("%1\u00B0 (%2\u00B0)").arg(data.temp, 0, 'f', 1).arg(data.feels_like, 0, 'f', 1));
     press->setText(QString("%1 hPa").arg(data.pressure));
     cond->setText(QString("%1 %").arg(data.humidity));
+    rain->setText(QString("%1/%2 mm").arg(data.rain, 0, 'f', 1).arg(data.snow, 0, 'f', 1));
 }
 
 

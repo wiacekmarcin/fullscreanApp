@@ -36,6 +36,8 @@ struct neededData {
     int pressure;
     int humidity;
     int secs;
+    float rain;
+    float snow;
 };
 
 namespace Ui {

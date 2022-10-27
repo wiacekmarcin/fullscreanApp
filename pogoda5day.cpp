@@ -1,5 +1,6 @@
 #include "pogoda5day.h"
-
+#include "ui_pogoda5day.h"
+#include "ui_pogodaday.h"
 #include <QFont>
 #include <QFontDatabase>
 #include <QJsonDocument>
@@ -20,7 +21,10 @@ Pogoda5Day::Pogoda5Day(QWidget *parent) :
                     QString::fromUtf8("Pią"),
                     QString::fromUtf8("Sob"),
                     QString::fromUtf8("Nie")}
+  , ui(new Ui::Pogoda5Day)
 {
+    ui->setupUi(this);
+
     int idf = QFontDatabase::addApplicationFont(":/font/fonts/weathericons-regular-webfont.ttf");
     QString family = QFontDatabase::applicationFontFamilies(idf).at(0);
     weatherFont = QFont(family);
@@ -38,7 +42,7 @@ Pogoda5Day::Pogoda5Day(QWidget *parent) :
 
     connect(&netMng, SIGNAL(finished(QNetworkReply*)), this, SLOT(parseMessage(QNetworkReply*)));
 
-    setupUi(this);
+    //setupUi(this);
     //wind->setFont(weather);
     //wind->setStyleSheet("QLabel { color : #666; }");
     //wind->setText("\uf050");
@@ -73,7 +77,7 @@ Pogoda5Day::~Pogoda5Day()
 
 QRect Pogoda5Day::getRect()
 {
-    return QRect(0,480,1080,300);
+    return QRect(0,450,600,200);
 }
 
 void Pogoda5Day::timeout(const QDateTime &dt)
@@ -202,6 +206,7 @@ void Pogoda5Day::parseMessage(QNetworkReply *reply)
         nd.day_month = dt.day();
         nd.nameDay = days[dt.dayOfWeek()];
         nd.time = timeItems[0] + ":" + timeItems[1];
+        nd.hour = timeItems[0].toInt();
         if (lsecs < 0) {
             lsecs = secsItem;
             nd.secs = 0;
@@ -219,11 +224,12 @@ void Pogoda5Day::parseMessage(QNetworkReply *reply)
 
         auto mapMain = mapItem["main"].toMap();
         nd.temp = mapMain["temp"].toFloat();
+        nd.feels_like = mapMain["feels_like"].toFloat();
         if (nd.temp > maxTemp)
             maxTemp = nd.temp;
 
-        if (nd.temp > maxTemp)
-            maxTemp = nd.temp;
+        if (nd.temp < minTemp)
+            minTemp = nd.temp;
             
         nd.pressure = mapMain["pressure"].toInt();
         nd.humidity = mapMain["humidity"].toInt();
@@ -231,98 +237,96 @@ void Pogoda5Day::parseMessage(QNetworkReply *reply)
         m_weatherData.append(nd);
     }
 
+    int day_nr = 0;
+    QString day_name = "";
+    PogodaDay * days[] = { ui->day1, ui->day2/*, ui->day3, ui->day4, ui->day5, ui->day6*/ };
+    PogodaDay * day = ui->day1;
+
     for (auto & i : m_weatherData) {
-        qDebug() << i.day_month << " " << i.nameDay << " " << i.time << " => " << i.temp << " " << i.secs;
+        if (day_name != i.nameDay) {
+            if (day_name=="")
+                ui->day1->ui->day->setText(QString("%1, %2").arg(i.nameDay).arg(i.day_month));
+            day_name = i.nameDay;
+            ++day_nr;
+            if (day_nr == 3)
+                return;
+            day = days[day_nr-1];
+            day->ui->day->setText(QString("%1, %2").arg(i.nameDay).arg(i.day_month));
+        }
+        createDay(day, i);
     }
    
 }
 
-
-void Pogoda5Day::setupUi(QWidget *Pogoda)
+void Pogoda5Day::createDay(PogodaDay * day, neededData & data)
 {
-    if (Pogoda->objectName().isEmpty())
-        Pogoda->setObjectName(QString::fromUtf8("Pogoda"));
-    Pogoda->resize(getRect().width(), getRect().height());
-    /*
-    citydate = new QLabel(Pogoda);
-    citydate->setObjectName(QString::fromUtf8("citydate"));
-    citydate->setGeometry(QRect(0, 0, 300, 40));
-    citydate->setStyleSheet(citiStyle);
-    citydate->setTextFormat(Qt::RichText);
+    QLabel * temp;
+    QLabel * press;
+    QLabel * cond;
+    switch(data.hour) {
+    case 0:
+    {
+        temp = day->ui->temp_00;
+        press = day->ui->pres_00;
+        cond = day->ui->wet_00;
+        break;
+    }
+    case 3:
+    {
+        temp = day->ui->temp_03;
+        press = day->ui->pres_03;
+        cond = day->ui->wet_03;
+        break;
+    }
+    case 6:
+    {
+        temp = day->ui->temp_06;
+        press = day->ui->pres_06;
+        cond = day->ui->wet_06;
+        break;
+    }
+    case 9:
+    {
+        temp = day->ui->temp_09;
+        press = day->ui->pres_09;
+        cond = day->ui->wet_09;
+        break;
+    }
+    case 12:
+    {
+        temp = day->ui->temp_12;
+        press = day->ui->pres_12;
+        cond = day->ui->wet_12;
+        break;
+    }
+    case 15:
+    {
+        temp = day->ui->temp_15;
+        press = day->ui->pres_15;
+        cond = day->ui->wet_15;
+        break;
+    }
+    case 18:
+    {
+        temp = day->ui->temp_18;
+        press = day->ui->pres_18;
+        cond = day->ui->wet_18;
+        break;
+    }
+    case 21:
+    {
+        temp = day->ui->temp_21;
+        press = day->ui->pres_21;
+        cond = day->ui->wet_21;
+        break;
+    }
+    default:
+        return;
+    }
 
-    QFrame * line = new QFrame(Pogoda);
-    line->setObjectName(QString::fromUtf8("line"));
-    line->setGeometry(QRect(0, 42, 300, 15));
-    line->setStyleSheet("color:rgb(145, 148, 148); size:5pt;");
-    line->setFrameShape(QFrame::HLine);
-    line->setFrameShadow(QFrame::Sunken);
-
-    windB = new QLabel(Pogoda);
-    windB->setObjectName(QString::fromUtf8("windB"));
-    windB->setGeometry(QRect(0, 60, 60, 48));
-    windB->setStyleSheet(windBStyle);
-    windB->setFont(weatherFont);
-
-    windD = new QLabel(Pogoda);
-    windD->setObjectName(QString::fromUtf8("windD"));
-    windD->setGeometry(QRect(60, 60, 75, 48));
-    windD->setStyleSheet(windDStyle);
-
-    windS = new QLabel(Pogoda);
-    windS->setObjectName(QString::fromUtf8("windS"));
-    windS->setGeometry(QRect(135, 50, 165, 60));
-    windS->setWordWrap(true);
-    windS->setStyleSheet(windSStyle);
-    windS->setFont(windDescr);
-
-    wIcon = new QLabel(Pogoda);
-    wIcon->setObjectName(QString::fromUtf8("wIcon"));
-    wIcon->setGeometry(QRect(0, 110, 115, 60));
-    wIcon->setStyleSheet(iconWiStyle);
-    wIcon->setFont(weatherFont);
-
-    wTemp = new QLabel(Pogoda);
-    wTemp->setObjectName(QString::fromUtf8("wTemp"));
-    wTemp->setGeometry(QRect(120, 110, 165, 60));
-    wTemp->setStyleSheet(iconWiStyle);
-    wTemp->setFont(tempFont);
-
-    wCond = new QLabel(Pogoda);
-    wCond->setObjectName(QString::fromUtf8("lwcond"));
-    wCond->setGeometry(QRect(0, 170, 300, 30));
-    wCond->setStyleSheet(conditionalStyle);
-    wCond->setFont(tempFont);
-
-    QLabel * label_1 = new QLabel(Pogoda);
-    label_1->setObjectName(QString::fromUtf8("lfeelTemp"));
-    label_1->setGeometry(QRect(0, 200, 165, 30));
-    label_1->setText(QString::fromUtf8("Odczuwalna"));
-    label_1->setStyleSheet(feelTempStyle);
-    label_1->setFont(tempFont);
-
-    feelTemp = new QLabel(Pogoda);
-    feelTemp->setObjectName(QString::fromUtf8("feelTemp"));
-    feelTemp->setGeometry(QRect(170, 200, 165, 30));
-    feelTemp->setStyleSheet(feelTempStyle);
-    feelTemp->setFont(tempFont);
-
-    QLabel * label_2 = new QLabel(Pogoda);
-    label_2->setObjectName(QString::fromUtf8("lhumiTemp"));
-    label_2->setGeometry(QRect(250, 110, 35, 35));
-    label_2->setText(QString::fromUtf8("\uf07a"));
-    label_2->setStyleSheet(feelTempStyle);
-    label_2->setFont(weatherFont);
-
-    humiTemp = new QLabel(Pogoda);
-    humiTemp->setObjectName(QString::fromUtf8("humiTemp"));
-    humiTemp->setGeometry(QRect(280, 110, 70, 30));
-    humiTemp->setStyleSheet(feelTempStyle);
-    humiTemp->setFont(tempFont);
-
-    presTemp = new QLabel(Pogoda);
-    presTemp->setObjectName(QString::fromUtf8("presTemp"));
-    presTemp->setGeometry(QRect(250, 150, 70, 30));
-    presTemp->setStyleSheet(feelTempStyle);
-    presTemp->setFont(tempFont);
-    */
+    temp->setText(QString::fromUtf8("%1\u00B0 (%2\u00B0)").arg(data.temp, 0, 'f', 1).arg(data.feels_like, 0, 'f', 1));
+    press->setText(QString("%1 hPa").arg(data.pressure));
+    cond->setText(QString("%1 %").arg(data.humidity));
 }
+
+

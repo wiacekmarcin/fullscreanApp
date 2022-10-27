@@ -27,6 +27,7 @@
 struct neededData {
     int day_month;
     QString time;
+    int hour;
     QString nameDay;
     QString descWeather;
     QString iconWeather;
@@ -36,6 +37,13 @@ struct neededData {
     int humidity;
     int secs;
 };
+
+namespace Ui {
+class Pogoda5Day;
+}
+
+class PogodaDay;
+
 class Pogoda5Day : public BlackWidget
 {
     Q_OBJECT
@@ -55,6 +63,7 @@ protected:
     QString deg2Cardinal(const float &deg);
     QString toBeaufortChar(int b);
     
+    void createDay(PogodaDay *day, neededData &data);
 private slots:
     void parseMessage(QNetworkReply *reply);
 
@@ -77,6 +86,8 @@ private:
     QMap<QString, QString> iconMap;
     QString days[8];
     QVector<neededData> m_weatherData;
+private:
+    Ui::Pogoda5Day *ui;
 };
 
 #endif // POGODA5DAY_H

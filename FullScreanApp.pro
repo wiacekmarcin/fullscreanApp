@@ -31,6 +31,7 @@ SOURCES += \
         main.cpp \
         mainwindow.cpp \
     blackwidget.cpp \
+    pogodaday.cpp \
     qrwidget.cpp \
     rssitem.cpp \
     zegar.cpp \
@@ -43,6 +44,7 @@ SOURCES += \
 HEADERS += \
         mainwindow.h \
     blackwidget.h \
+    pogodaday.h \
     qrwidget.h \
     rssitem.h \
     zegar.h \
@@ -54,7 +56,9 @@ HEADERS += \
 
 FORMS += \
     ip.ui \
-    informacje.ui
+    informacje.ui \
+    pogoda5day.ui \
+    pogodaday.ui
 
 RESOURCES += \
     ikony.qrc

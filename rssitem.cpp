@@ -46,12 +46,12 @@ void RssItem::setPubDate(const QDateTime &pubDate)
     m_pubDate = pubDate;
 }
 
-QImage RssItem::image() const
+QString RssItem::image() const
 {
     return m_image;
 }
 
-void RssItem::setImage(const QImage &image)
+void RssItem::setImage(const QString &image)
 {
     m_image = image;
 }

@@ -205,6 +205,7 @@ QString Pogoda::deg2Cardinal(const float &deg)
 
 void Pogoda::parseMessage(QNetworkReply *reply)
 {
+
     QByteArray bytes = reply->readAll();
     //qDebug() << reply->request().url().toDisplayString();
     qDebug() << bytes;

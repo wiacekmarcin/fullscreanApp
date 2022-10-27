@@ -84,7 +84,7 @@ void Informacje::timeout(const QDateTime &dt)
 
 QRect Informacje::getRect()
 {
-    return QRect(0, 600, width(), height());
+    return QRect(0, 650, width(), height());
 }
 
 Informacje::~Informacje()

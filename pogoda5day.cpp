@@ -77,7 +77,7 @@ Pogoda5Day::~Pogoda5Day()
 
 QRect Pogoda5Day::getRect()
 {
-    return QRect(0,450,600,200);
+    return QRect(0,450,1080,200);
 }
 
 void Pogoda5Day::timeout(const QDateTime &dt)
@@ -239,7 +239,7 @@ void Pogoda5Day::parseMessage(QNetworkReply *reply)
 
     int day_nr = 0;
     QString day_name = "";
-    PogodaDay * days[] = { ui->day1, ui->day2/*, ui->day3, ui->day4, ui->day5, ui->day6*/ };
+    PogodaDay * days[] = { ui->day1, ui->day2, ui->day3 /*, ui->day4, ui->day5, ui->day6*/ };
     PogodaDay * day = ui->day1;
 
     for (auto & i : m_weatherData) {
@@ -248,7 +248,7 @@ void Pogoda5Day::parseMessage(QNetworkReply *reply)
                 ui->day1->ui->day->setText(QString("%1, %2").arg(i.nameDay).arg(i.day_month));
             day_name = i.nameDay;
             ++day_nr;
-            if (day_nr == 3)
+            if (day_nr == 4)
                 return;
             day = days[day_nr-1];
             day->ui->day->setText(QString("%1, %2").arg(i.nameDay).arg(i.day_month));

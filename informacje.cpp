@@ -102,7 +102,7 @@ void Informacje::dodajInfo(const QString &guid, const QString & publisher, const
                            const QString & description, const QString &pubData,
                            const QString & img, const QString &url)
 {
-    QDateTime dt = parseDate(pubData);
+    QDateTime dt /*= parseDate(pubData)*/;
     QMutexLocker locker(&mutex);
     newsy.add(guid, publisher, title, description, dt, "", url);
 }

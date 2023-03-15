@@ -12,18 +12,30 @@ Pogoda::Pogoda(QWidget *parent) :
     BlackWidget(parent),
     request(QUrl("https://api.openweathermap.org/data/2.5/weather?appid=b176485875db690244cb8acf93637572&id=7532279&lang=pl&units=metric"))
 {
-    int idf = QFontDatabase::addApplicationFont(":/font/fonts/weathericons-regular-webfont.ttf");
-    QString family = QFontDatabase::applicationFontFamilies(idf).at(0);
-    weatherFont = QFont(family);
+    //int idf = QFontDatabase::addApplicationFont("weathericons-regular-webfont.ttf");
+    //QString family = QFontDatabase::applicationFontFamilies(idf).at(0);
+    //qDebug() << "font:Pogoda 1" << idf << family;
+    weatherFont = QFont("Weather Icons");
     weatherFont.setPointSize(32);
+    QFontInfo f1(weatherFont);
+    qDebug() << f1.styleName() << f1.family() << f1.exactMatch();
 
-    idf = QFontDatabase::addApplicationFont(":/font/fonts/roboto-condensed/Roboto-Condensed-Light.ttf");
-    family = QFontDatabase::applicationFontFamilies(idf).at(0);
-    windDescr = QFont(family);
+    //idf = QFontDatabase::addApplicationFont("Roboto-Condensed-Light.ttf");
+    //family = QFontDatabase::applicationFontFamilies(idf).at(0);
+    //qDebug() << "font:Pogoda 2" << idf << family;
+    windDescr = QFont("Roboto Condensed");
+    QFontInfo f2(windDescr);
+    qDebug() << f2.styleName() << f2.family() << f2.exactMatch();
 
-    idf = QFontDatabase::addApplicationFont(":/font/fonts/roboto-condensed/Roboto-Condensed-Regular.ttf");
-    family = QFontDatabase::applicationFontFamilies(idf).at(0);
-    tempFont = QFont(family);
+    //idf = QFontDatabase::addApplicationFont("Roboto-Condensed-Regular.ttf");
+    //family = QFontDatabase::applicationFontFamilies(idf).at(0);
+    //qDebug() << "font:Pogoda 3" << idf << family;
+    tempFont = QFont("Roboto Condensed");
+    //tempFont.setStyle()
+    QFontInfo f3(tempFont);
+    qDebug() << f3.styleName() << f3.family() << f3.exactMatch();
+
+    warunkiFont = QFont("RobotoMedium");
 
     m_h = m_m = pog_h = pog_m = -1;
     citiname = "Nieznane";
@@ -193,6 +205,7 @@ QString Pogoda::deg2Cardinal(const float &deg)
 
 void Pogoda::parseMessage(QNetworkReply *reply)
 {
+
     QByteArray bytes = reply->readAll();
     //qDebug() << reply->request().url().toDisplayString();
     qDebug() << bytes;
@@ -244,7 +257,7 @@ void Pogoda::parseMessage(QNetworkReply *reply)
 
     qDebug() << temp << feels_like << /*temp_min << temp_max <<*/ pressure << huminidity << wind_speed << wind_deg;
     qDebug() << weather_main << weather_descr << weather_icon;
-    reply->deleteLater();
+    //delete reply;
         //ui->ip->setText(doc.toVariant().toMap()["origin"].toString());
 }
 
@@ -318,7 +331,7 @@ void Pogoda::setupUi(QWidget *Pogoda)
 
     wTemp = new QLabel(Pogoda);
     wTemp->setObjectName(QString::fromUtf8("wTemp"));
-    wTemp->setGeometry(QRect(120, 110, 165, 60));
+    wTemp->setGeometry(QRect(120, 110, 195, 60));
     wTemp->setStyleSheet(iconWiStyle);
     wTemp->setFont(tempFont);
 
@@ -326,53 +339,59 @@ void Pogoda::setupUi(QWidget *Pogoda)
     wCond->setObjectName(QString::fromUtf8("lwcond"));
     wCond->setGeometry(QRect(0, 170, 300, 30));
     wCond->setStyleSheet(conditionalStyle);
-    wCond->setFont(tempFont);
+    wCond->setFont(warunkiFont);
 
     QLabel * label_1 = new QLabel(Pogoda);
     label_1->setObjectName(QString::fromUtf8("lfeelTemp"));
-    label_1->setGeometry(QRect(0, 200, 165, 30));
+    label_1->setGeometry(QRect(0, 200, 195, 30));
     label_1->setText(QString::fromUtf8("Odczuwalna"));
     label_1->setStyleSheet(feelTempStyle);
     label_1->setFont(tempFont);
 
     feelTemp = new QLabel(Pogoda);
     feelTemp->setObjectName(QString::fromUtf8("feelTemp"));
-    feelTemp->setGeometry(QRect(170, 200, 165, 30));
+    feelTemp->setGeometry(QRect(200, 200, 140, 30));
     feelTemp->setStyleSheet(feelTempStyle);
     feelTemp->setFont(tempFont);
 
     QLabel * label_2 = new QLabel(Pogoda);
     label_2->setObjectName(QString::fromUtf8("lhumiTemp"));
-    label_2->setGeometry(QRect(250, 110, 65, 35));
+    label_2->setGeometry(QRect(0, 240, 35, 35));
     label_2->setText(QString::fromUtf8("\uf07a"));
     label_2->setStyleSheet(feelTempStyle);
     label_2->setFont(weatherFont);
 
     humiTemp = new QLabel(Pogoda);
     humiTemp->setObjectName(QString::fromUtf8("humiTemp"));
-    humiTemp->setGeometry(QRect(280, 110, 30, 30));
+    humiTemp->setGeometry(QRect(35, 240, 50, 30));
     humiTemp->setStyleSheet(feelTempStyle);
     humiTemp->setFont(tempFont);
 
+    QLabel * humiTemp1 = new QLabel(Pogoda);
+    humiTemp1->setObjectName(QString::fromUtf8("humiTemp1"));
+    humiTemp1->setGeometry(QRect(85, 240, 15, 15));
+    humiTemp1->setStyleSheet(windSStyle);
+    humiTemp1->setText("%");
+    humiTemp1->setAlignment(Qt::AlignLeft);
+
     QLabel *presLabel1 = new QLabel(Pogoda);
     presLabel1->setObjectName(QString::fromUtf8("presL1"));
-    presLabel1->setGeometry(QRect(250, 150, 30, 30));
+    presLabel1->setGeometry(QRect(120, 240, 30, 30));
     presLabel1->setStyleSheet(feelTempStyle);
     presLabel1->setFont(weatherFont);
     presLabel1->setText("\uf079");
 
     presTemp = new QLabel(Pogoda);
     presTemp->setObjectName(QString::fromUtf8("presTemp"));
-    presTemp->setGeometry(QRect(250, 180, 70, 30));
+    presTemp->setGeometry(QRect(150, 240, 90, 30));
     presTemp->setStyleSheet(feelTempStyle);
     presTemp->setFont(tempFont);
 
     QLabel *presLabel2 = new QLabel(Pogoda);
     presLabel2->setObjectName(QString::fromUtf8("presL2"));
-    presLabel2->setGeometry(QRect(250, 210, 70, 30));
+    presLabel2->setGeometry(QRect(240, 240, 30, 30));
     presLabel2->setStyleSheet(windSStyle);
-    presLabel2->setFont(weatherFont);
     presLabel2->setText("kPa");
-    presLabel2->setAlignment(Qt::AlignRight);
+    presLabel2->setAlignment(Qt::AlignLeft);
 
 }

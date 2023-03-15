@@ -6,6 +6,7 @@
 
 QT       += core gui network xml
 
+LIBS += -lqrencode
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 lessThan(QT_MAJOR_VERSION, 5): include($$PWD/qjson4/QJson4.pri)
@@ -30,7 +31,8 @@ SOURCES += \
         main.cpp \
         mainwindow.cpp \
     blackwidget.cpp \
-    qrcodegen.cpp \
+    pogodaday.cpp \
+    qrwidget.cpp \
     rssitem.cpp \
     zegar.cpp \
     analogclock.cpp \
@@ -42,7 +44,8 @@ SOURCES += \
 HEADERS += \
         mainwindow.h \
     blackwidget.h \
-    qrcodegen.h \
+    pogodaday.h \
+    qrwidget.h \
     rssitem.h \
     zegar.h \
     analogclock.h \
@@ -53,7 +56,9 @@ HEADERS += \
 
 FORMS += \
     ip.ui \
-    informacje.ui
+    informacje.ui \
+    pogoda5day.ui \
+    pogodaday.ui
 
 RESOURCES += \
     ikony.qrc

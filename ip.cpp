@@ -4,7 +4,8 @@
 #include <QHostInfo>
 #include <QNetworkInterface>
 #include <QNetworkAddressEntry>
-#include "QJsonDocument.h"
+//#include "QJsonDocument.h"
+#include <QJsonDocument>
 
 IP::IP(QWidget *parent) :
     BlackWidget(parent),
@@ -48,7 +49,7 @@ void IP::parseMessage(QNetworkReply* reply)
     else {
         ui->ip->setText(doc.toVariant().toMap()["origin"].toString());
     }
-    reply->deleteLater();
+    //reply->deleteLater();
 }
 
 void IP::timeout(const QDateTime &dt)

@@ -17,14 +17,15 @@ Informacje::Informacje(QWidget *parent) :
     inprogress = false;
     done = false;
 
-    int id = QFontDatabase::addApplicationFont(":/font/fonts/robotic/Roboto-Medium.ttf");
-    QString family = QFontDatabase::applicationFontFamilies(id).at(0);
-    QFont font1(family);
-    QFont font2(family);
+    //int id = QFontDatabase::addApplicationFont(":/font/fonts/robotic/Roboto-Medium.ttf");
+    //QString family = QFontDatabase::applicationFontFamilies(id).at(0);
+    //qDebug() << "font:informacje" << family;
+    QFont font1("RobotoMedium");
+    QFont font2("RobotoMedium");
     font1.setPixelSize(20);
-    font1.setWeight(300);
+    font1.setWeight(QFont::Light);
     font2.setPixelSize(30);
-    font2.setWeight(300);
+    font2.setWeight(QFont::Light);
 
     ui->gazeta->setFont(font1);
     ui->gazeta->setStyleSheet("QLabel { color : #666; }");
@@ -43,7 +44,10 @@ Informacje::Informacje(QWidget *parent) :
     timer.start();
 
     addresses << "https://www.polsatnews.pl/rss/polska.xml" << "https://www.polsatnews.pl/rss/swiat.xml" << "https://tvn24.pl/najnowsze.xml" << "https://tvn24.pl/najwazniejsze.xml";
-    addresses << "https://tvn24.pl/tvnwarszawa/najnowsze.xml";
+    addresses << "https://tvn24.pl/tvnwarszawa/najnowsze.xml" << "https://www.rmf24.pl/feed";
+    addresses << "http://www.tokfm.pl/pub/rss/tokfmpl_polska.xml";
+
+    ui->qrcode->setBaseSize(150,150);
 }
 
 void Informacje::timeout(const QDateTime &dt)
@@ -51,8 +55,11 @@ void Informacje::timeout(const QDateTime &dt)
     if (inprogress)
         return;
     
-    if (!done)
+    if (!done) {
         pobierz();
+        return;
+    }
+
     int h = dt.time().hour();
 
     if (h < 6)
@@ -77,7 +84,7 @@ void Informacje::timeout(const QDateTime &dt)
 
 QRect Informacje::getRect()
 {
-    return QRect(0, 600, width(), height());
+    return QRect(0, 650, width(), height());
 }
 
 Informacje::~Informacje()
@@ -92,11 +99,12 @@ void Informacje::wyczysc()
 }
 
 void Informacje::dodajInfo(const QString &guid, const QString & publisher, const QString & title,
-                           const QString & description, const QString &pubData)
+                           const QString & description, const QString &pubData,
+                           const QString & img, const QString &url)
 {
     QDateTime dt = parseDate(pubData);
     QMutexLocker locker(&mutex);
-    newsy.add(guid, publisher, title, description, dt);
+    newsy.add(guid, publisher, title, description, dt, "", url);
 }
 
 bool Informacje::isInfo(const QString &guid)
@@ -109,54 +117,81 @@ void Informacje::pobierz()
 {
     inprogress = true;
     m_requestSize = addresses.size();
+    qDebug() << m_requestSize;
     for(auto & rss : addresses) {
+        qDebug() << "REQUEST" << rss;
         netMng.get(QNetworkRequest(QUrl(rss)));
     }
 }
 
 void Informacje::parseMessage(QNetworkReply *reply)
 {
+
+    
     QByteArray bytes = reply->readAll();
     //qDebug() << reply->request().url().toDisplayString();
     //qDebug() << bytes;
 
-    QDomDocument doc("mydocument");
+    
+    QDomDocument doc;
+    
     doc.setContent(bytes);
+    
 
     QDomNodeList channels = doc.elementsByTagName("channel");
+    
     if (channels.length() < 1)
     {
-        qDebug() << "No channel element found in feed!";
+        qDebug() << "No channel element found in feed! : " << reply->request().url().toDisplayString();
         return;
     }
+    
     for (int c = 0; c < channels.length(); c++)
     {
+        
         QDomNode chan = channels.at(c);
+        
         QDomElement rsstitle = chan.firstChildElement("title");
+        
         QString newstitle = rsstitle.toElement().text();
-
+        
         QDomElement it = chan.firstChildElement("item");
         for (; !it.isNull(); it = it.nextSiblingElement("item")) {
+            
             auto t = it.elementsByTagName("title");
             if (t.isEmpty() || t.length() < 1)
                 continue;
+            
             QString title = t.item(0).toElement().text();
-
+                
             auto d = it.elementsByTagName("description");
             if (d.isEmpty() || d.length() < 1)
                 continue;
+            
             QString description = d.item(0).toElement().text();
-
+            
             auto g = it.elementsByTagName("guid");
             if (g.isEmpty() || g.length() < 1)
                 continue;
+            
             QString guid = g.item(0).toElement().text();
-
+            
             auto p = it.elementsByTagName("pubDate");
+            
             if (p.isEmpty() || p.length() < 1)
                 continue;
+            
             QString psDate = p.item(0).toElement().text();
-            dodajInfo(guid, newstitle, title, description, psDate);
+
+            QString url = "";
+            
+            auto u = it.elementsByTagName("link");
+            if (p.isEmpty() || p.length() < 1)
+                url = "";
+            else
+                url = u.item(0).toElement().text();
+
+            dodajInfo(guid, newstitle, title, description, psDate, "", url);
          }
     }
     
@@ -184,6 +219,7 @@ void Informacje::timeout()
     ui->gazeta->setText(n.publisher());
     ui->title->setText(n.title());
     ui->description->setText(n.description());
+    ui->qrcode->setQRData(n.www());
 }
 
 QDateTime Informacje::parseDate(const QString &dt)

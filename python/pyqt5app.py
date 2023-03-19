@@ -6,7 +6,8 @@ from PyQt5.QtGui import *
 import analogclock 
 import zegar
 import pogoda
-
+import calendar_day
+import pogoda5
 class MainWindow(QMainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
@@ -26,7 +27,7 @@ class MainWindow(QMainWindow):
         self.verticalLayout.addWidget(self.widget)
         self.setCentralWidget(self.centralWidget)
         
-        if 1:
+        if 0:
             pal = self.palette()
             pal.setColor(pal.Window, Qt.black)
             pal.setColor(pal.WindowText, Qt.white)
@@ -118,15 +119,30 @@ class MainWindow(QMainWindow):
             print(r)
             p.setGeometry(r)
             p.update()
-            
+        self.update()    
 
     def update1Sec(self):
         for p in self.plgs:
             p.timeout(QDateTime.currentDateTime())
+        self.update()
 
     def sendNotification(self, valueDict):
         for p in self.plgs:
             p.receiveNotfication(valueDict)
+
+    #def paintEvent(self, ev):
+        #QMainWindow.repaint()
+    #    m_GridDistance = 10
+    #    p = QPainter(self)
+    #    p.setPen(QPen(Qt.green,1))
+    #    i = 0
+    #    while i < self.width(): 
+    #        p.drawLine(i,0,i,self.height())
+    #        i += m_GridDistance
+    #    i = 0
+    #    while i < self.height(): 
+    #        p.drawLine(0,i,self.width(),i);
+    #        i += m_GridDistance
 
 
 if __name__ == '__main__':
@@ -135,11 +151,15 @@ if __name__ == '__main__':
     mainWin = MainWindow()
     pluggins = [analogclock.AnalogClock(mainWin.widget),
                 zegar.Zegar(mainWin.widget),
-                pogoda.Pogoda(mainWin.widget)
-                ]
+                pogoda.Pogoda(mainWin.widget),
+                calendar_day.CalendarDay(mainWin.widget),
+                pogoda5.Pogoda5(mainWin.widget),]
     #mainWin.setWindowState(mainWin.WindowFullScreen)
     mainWin.setGeometry(0,0,1080,1920)
     mainWin.setPlugins(pluggins)
+    #mainWin.showFullScreen()
     mainWin.show()
     
     sys.exit(app.exec_())
+
+    #pip3 install BeautifulSoup4

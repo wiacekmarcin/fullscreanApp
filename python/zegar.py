@@ -3,7 +3,7 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 
-
+import zegar_ui
 import blackwidget
 dateStyle = "font-size:30px;line-height:35px;color:#999;text-align:left;background:#000;font-family:\"Ariel\",sans-serif;font-weight:400;";
 timeStyle = "font-size:65px;line-height:65px;color:#fff;text-align:left;background:#000;font-family:\"Roboto Condensed\",sans-serif;font-weight:300;";
@@ -13,10 +13,13 @@ minStyle  = "font-size:24px;line-height:25px;color:#999;text-align:left;backgrou
 class Zegar(blackwidget.BlackWidget):
     def __init__(self, parent=None):
         super(Zegar, self).__init__(parent)
-        self.ldate = None
-        self.ltime = None
-        self.wschod = None
-        self.zachod = None
+        self.ZegarUi = zegar_ui.Ui_Zegar()
+        self.setupUi(self)
+        #self.ldate = 
+        self.ltime = self.ZegarUi.ltime
+        #self.wschod = None
+        #self.zachod = None
+        #self.lsec = self.ZegarUi.lsec
         self.days = [];
         self.monts = [];
 
@@ -39,13 +42,13 @@ class Zegar(blackwidget.BlackWidget):
                    ("październik"),
                    ("listopad"),
                    ("grudzień")]
-        self.setupUi(self)
+        #self.setupUi(self)
     
     def timeout(self, dt):
-        monthname = self.monts[dt.date().month()];
-        dayname = self.days[dt.date().dayOfWeek()];
+        #monthname = self.monts[dt.date().month()];
+        #dayname = self.days[dt.date().dayOfWeek()];
 
-        self.ldate.setText("%s, %d %s %d" % (dayname, dt.date().day(), monthname, dt.date().year()))
+        #self.ZegarUi.ldate.setText("%s, %d %s %d" % (dayname, dt.date().day(), monthname, dt.date().year()))
 
         hour = dt.time().hour();
         min = dt.time().minute();
@@ -65,7 +68,7 @@ class Zegar(blackwidget.BlackWidget):
 
 
     def getRect(self):
-        return QRect(0, 0, 580, 180)
+        return QRect(0, 0, 400, 115)
 
     #def setWschod(self, h, m):
     #    ms = '%d' % m
@@ -83,25 +86,5 @@ class Zegar(blackwidget.BlackWidget):
 
 
     def setupUi(self, Zegar):
-        if Zegar.objectName() == '':
-            Zegar.setObjectName("Zegar")
-        Zegar.resize(self.getRect().width(), self.getRect().height())
-        sizePolicy = QSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        Zegar.setSizePolicy(sizePolicy)
-        Zegar.setAutoFillBackground(False)
-        Zegar.setStyleSheet("background-color:rgb(0,0,0);color:rgb(255,255,255);")
-        self.ldate = QLabel(Zegar)
-        self.ldate.setObjectName("ldate")
-        self.ldate.setGeometry(QRect(0, 0, 680, 50))
-        self.ldate.setStyleSheet(dateStyle)
-        self.ltime = QLabel(Zegar)
-        self.ltime.setObjectName("ltime")
-        self.ltime.setGeometry(QRect(0, 60, 311, 81))
-        self.ltime.setTextFormat(Qt.RichText)
-        self.ltime.setStyleSheet(timeStyle)
-        font = self.ltime.font()
-        font.setPixelSize(65);
-        self.ltime.setFont(font)
+        self.ZegarUi.setupUi(Zegar)
         

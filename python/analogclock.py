@@ -17,10 +17,12 @@ class AnalogClock(blackwidget.BlackWidget):
         self.m_s = 0
         self.wschod = "0:01"
         self.zachod = "23:59"
-        self.resize(500, 500)
+        self.minTemp = "\uf07b"
+        self.maxTemp = "\uf07b"
+        self.resize(400, 500)
 
     def getRect(self):
-        return QRect(580, 0, self.width(), self.height())
+        return QRect(680, 0, self.width(), self.height())
     
     def receiveNotfication(self, dictValue):
         if "sunrise" in dictValue:
@@ -28,6 +30,12 @@ class AnalogClock(blackwidget.BlackWidget):
         
         if "sunset" in dictValue:
             self.setZachod(dictValue["sunset"].hour(), dictValue["sunset"].minute())
+
+        if "minimum-temperature" in dictValue:
+            self.minTemp = dictValue["minimum-temperature"]
+        
+        if "maximum-temperature" in dictValue:
+            self.maxTemp = dictValue["maximum-temperature"]
 
     def setWschod(self, hour, min):
         print (hour, min)
@@ -50,11 +58,6 @@ class AnalogClock(blackwidget.BlackWidget):
         self.m_s = dt.time().second()
         self.update()
         
-    def setNotfication(self, skey, value):
-        if skey == "wschod-slonca":
-            self.setWchod(value['hour'], value['min'])
-        if skey == "zaschod-slonca":
-            self.setWchod(value['hour'], value['min'])
 
     def paintEvent(self, a0):
         
@@ -78,8 +81,10 @@ class AnalogClock(blackwidget.BlackWidget):
         painter.fillPath(path, Qt.black)
         painter.drawPath(path)
 
-        soonPx = QPixmap(":/new/prefix1/sun.png")
-        moonPx = QPixmap(":/new/prefix1/moon.png")
+        #soonPx = QPixmap(":/new/prefix1/sun.png")
+        #moonPx = QPixmap(":/new/prefix1/moon.png")
+        soonPx = QPixmap("sun.png")
+        moonPx = QPixmap("moon.png")
         painter.drawPixmap(1,1, soonPx)
         
         font = painter.font()
@@ -90,12 +95,21 @@ class AnalogClock(blackwidget.BlackWidget):
         fm = QFontMetrics (font);
         pixelsWide = fm.width(self.zachod);
         #pixelsHigh = fm.height();
-        painter.drawPixmap(500-pixelsWide-moonPx.width()-5,1, moonPx)
-        painter.drawText(500-pixelsWide,50, self.zachod)
+        painter.drawPixmap(self.width()-pixelsWide-moonPx.width()-5,1, moonPx)
+        painter.drawText(self.width()-pixelsWide,50, self.zachod)
+        
+        font = self._weatherFont
+        font.setPixelSize(40)
+        painter.setFont(font)
+        painter.drawText(0, self.height()-5, "\uf053%s\uf03c" % self.minTemp)
+
+        fm2 = QFontMetrics (font);
+        pixelsWide = fm2.width("\uf055%s\uf03c1" % self.maxTemp);
+        painter.drawText(self.width()-pixelsWide, self.height()-5, "\uf055%s\uf03c" % self.maxTemp)
 
         painter.setRenderHint(painter.Antialiasing)
         painter.translate(self.width() / 2, self.height() / 2)
-        painter.scale(side / 500.0, side / 500.0)
+        painter.scale(side / self.width(), side / self.width())
 
         painter.setPen(Qt.NoPen)
         painter.setBrush(hourColor)
@@ -134,6 +148,9 @@ class AnalogClock(blackwidget.BlackWidget):
         painter.save()
         painter.rotate(360.0 * (1.0 * self.m_s / 60.0))
         painter.drawConvexPolygon(secondHand)
+
+
+
         painter.restore()
 
 

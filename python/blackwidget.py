@@ -13,24 +13,35 @@ class BlackWidget(QFrame):
         self.mainWindow = None
         self.setLineWidth(2)
         self.setFrameStyle(QFrame.Box | QFrame.Plain)
-        #self.setStyleSheet("QFrame {background-color: white); border-color: blue;}")
-        self.c = Communicate(self)
-        if 0:
-            self.setWindowFlags(Qt.FramelessWindowHint)
-            self.setAttribute(Qt.WA_NoSystemBackground)
-            self.setAttribute(Qt.WA_TranslucentBackground)
-            self.setAttribute(Qt.WA_TransparentForMouseEvents)
+        
+        idf = QFontDatabase.addApplicationFont(":/font/fonts/weathericons-regular-webfont.ttf")
+        family = QFontDatabase.applicationFontFamilies(idf)[0]
+        self._weatherFont = QFont(family)
 
-            pal = self.palette()
-            pal.setColor(QPalette.Background, Qt.black)
-            pal.setColor(QPalette.Window, Qt.black)
+        idf = QFontDatabase.addApplicationFont(":/font/fonts/roboto-condensed/Roboto-Condensed-Light.ttf")
+        family = QFontDatabase.applicationFontFamilies(idf)[0]
+        self._robotoCondensedFont = QFont(family)
 
-            pal.setColor(QPalette.WindowText, Qt.white)
-            pal.setColor(QPalette.Text, Qt.white)
-            pal.setColor(QPalette.BrightText, Qt.white)
+        idf = QFontDatabase.addApplicationFont(":/font/fonts/roboto-condensed/Roboto-Condensed-Regular.ttf")
+        family = QFontDatabase.applicationFontFamilies(idf)[0]
+        self._robotoRegularFont = QFont(family)
+        
+        self.setWindowFlags(Qt.FramelessWindowHint)
+        self.setAttribute(Qt.WA_NoSystemBackground)
+        self.setAttribute(Qt.WA_TranslucentBackground)
+        self.setAttribute(Qt.WA_TransparentForMouseEvents)
 
-            self.setAutoFillBackground(True)
-            self.setPalette(pal)
+        pal = self.palette()
+        pal.setColor(QPalette.Background, Qt.black)
+        pal.setColor(QPalette.Window, Qt.black)
+
+        pal.setColor(QPalette.WindowText, Qt.white)
+        pal.setColor(QPalette.Text, Qt.white)
+        pal.setColor(QPalette.BrightText, Qt.white)
+
+        #self.setAutoFillBackground(True)
+        self.setPalette(pal)
+    
     def setMainWindow(self, mw):
         self.mainWindow = mw
 
@@ -42,17 +53,7 @@ class BlackWidget(QFrame):
         if self.mainWindow:
             self.mainWindow.sendNotification(dictValue)
 
-    def paintEvent(self, ev):
-        QFrame.paintEvent(event)
-
-        p = QPainter(self)
-        p.setPen(QPen(Qt.white,3))
         
-        for i in range (int i(0); i < width(); i += m_GridDistance){
-        p.drawLine(i,0,i,height());
-    }
 
-    for(int i(0); i < height(); i += m_GridDistance){
-        p.drawLine(0,i,width(),i);
-    }
+    
   

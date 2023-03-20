@@ -34,6 +34,7 @@ class Pogoda5(blackwidget.BlackWidget):
         return QRect(0,0,0,0)
     
     def timeout(self, dt):
+        
         if self.firstTime:
             return
         self.firstTime = True
@@ -47,9 +48,20 @@ class Pogoda5(blackwidget.BlackWidget):
         
         self.minTemp = 100
         self.maxTemp = -100
+
+        self.tempDays = {}
+        self.tempFeelsDays = {}
+        self.pressure = {}
+        self.humidity = {}
         for i in items:
             if i["dt_txt"] is None:
                 continue
+
+            self.tempDays[i["dt_txt"]] = (i["main"]['temp_min'] + i["main"]['temp_max'])/2
+            self.tempFeelsDays[i["dt_txt"]] = i["main"]['feels_like']
+            self.pressure[i["dt_txt"]] = i["main"]['pressure']
+            self.humidity[i["dt_txt"]] = i["main"]['humidity']
+
             ddate, dtime = i["dt_txt"].split(" ")
             if (ddate == self.today):
                 print(i["main"])
@@ -59,6 +71,7 @@ class Pogoda5(blackwidget.BlackWidget):
                     self.minTemp = i["main"]['temp_min']
                 if i["main"]['temp_max'] > self.maxTemp:
                     self.maxTemp = i["main"]['temp_max']
+            
 
         value = { "minimum-temperature" : self.minTemp, "maximum-temperature" : self.maxTemp }
         self.sendNotification(value)

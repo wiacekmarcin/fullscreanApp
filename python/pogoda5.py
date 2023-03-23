@@ -35,8 +35,14 @@ class Pogoda5(blackwidget.BlackWidget):
     
     def timeout(self, dt):
         
+        print(self.firstTime)
+        if dt.time().hour() == 0 and dt.time().minute() == 0 and dt.time().second() == 0:
+           self.firstTime = False
+
         if self.firstTime:
             return
+        self.today = "%d-%02d-%02d" % (dt.date().year(), dt.date().month(), dt.date().day())
+        print(self.today)
         self.firstTime = True
 
         response = urlopen(self.url)
@@ -46,8 +52,8 @@ class Pogoda5(blackwidget.BlackWidget):
         if items is None:
             return
         
-        self.minTemp = 100
-        self.maxTemp = -100
+        self.minTemp = None
+        self.maxTemp = None
 
         self.tempDays = {}
         self.tempFeelsDays = {}
@@ -63,18 +69,25 @@ class Pogoda5(blackwidget.BlackWidget):
             self.humidity[i["dt_txt"]] = i["main"]['humidity']
 
             ddate, dtime = i["dt_txt"].split(" ")
+            print(ddate)
             if (ddate == self.today):
                 print(i["main"])
                 print(self.minTemp)
                 print(self.maxTemp)
-                if i["main"]['temp_min'] < self.minTemp:
+                if self.minTemp is None:
+                   self.minTemp = i["main"]['temp_min'] 
+                elif i["main"]['temp_min'] < self.minTemp:
                     self.minTemp = i["main"]['temp_min']
-                if i["main"]['temp_max'] > self.maxTemp:
+                
+                if self.maxTemp is None:
+                    self.maxTemp = i["main"]['temp_max']
+                elif i["main"]['temp_max'] > self.maxTemp:
                     self.maxTemp = i["main"]['temp_max']
             
 
-        value = { "minimum-temperature" : self.minTemp, "maximum-temperature" : self.maxTemp }
-        self.sendNotification(value)
+        if self.minTemp and self.maxTemp:
+            value = { "minimum-temperature" : self.minTemp, "maximum-temperature" : self.maxTemp }
+            self.sendNotification(value)
 
         #print(data_json)
 

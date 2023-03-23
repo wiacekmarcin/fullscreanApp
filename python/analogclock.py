@@ -74,12 +74,12 @@ class AnalogClock(blackwidget.BlackWidget):
 
         painter = QPainter(self)
         painter.setRenderHint(QPainter.Antialiasing);
-        path = QPainterPath()
-        path.addRoundedRect(QRectF(0, 0, self.width(), self.height()), 5, 5)
-        pen = QPen(Qt.white, 2)
-        painter.setPen(pen)
-        painter.fillPath(path, Qt.black)
-        painter.drawPath(path)
+        #path = QPainterPath()
+        #path.addRoundedRect(QRectF(0, 0, self.width(), self.height()), 5, 5)
+        #pen = QPen(Qt.white, 2)
+        #painter.setPen(pen)
+        #painter.fillPath(path, Qt.black)
+        #painter.drawPath(path)
 
         #soonPx = QPixmap(":/new/prefix1/sun.png")
         #moonPx = QPixmap(":/new/prefix1/moon.png")

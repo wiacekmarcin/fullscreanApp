@@ -15,7 +15,18 @@ class CalendarDay(blackwidget.BlackWidget):
         self.CalendarDayUi = calendar_day_ui.Ui_CalendarDay()
         self.setupUi(self)
         self.parse = False
-        
+
+        font = self._robotoCondensedFont
+        font.setPointSize(14)
+        self.CalendarDayUi.imieniny.setFont(font)
+        self.CalendarDayUi.imieniny.setStyleSheet("color: rgb(200, 200, 200);")
+        self.CalendarDayUi.dzien.setStyleSheet("color: rgb(100, 100, 100);")
+        self.CalendarDayUi.month.setStyleSheet("color: rgb(180, 180, 180);")
+        self.CalendarDayUi.rok.setStyleSheet("color: rgb(180, 180, 180);")
+        self.CalendarDayUi.dzienRoku.setStyleSheet("color: rgb(220, 220, 220);")
+        self.CalendarDayUi.tydzienRoku.setStyleSheet("color: rgb(220, 220, 220);")
+
+
     
     def timeout(self, dt):
         #monthname = self.monts[dt.date().month()];
@@ -62,5 +73,5 @@ class CalendarDay(blackwidget.BlackWidget):
     
     def setupUi(self, CalendarDay):
         self.CalendarDayUi.setupUi(CalendarDay)
-        pass
+        
         

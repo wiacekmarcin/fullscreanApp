@@ -15,13 +15,11 @@ class Zegar(blackwidget.BlackWidget):
         super(Zegar, self).__init__(parent)
         self.ZegarUi = zegar_ui.Ui_Zegar()
         self.setupUi(self)
-        #self.ldate = 
         self.ltime = self.ZegarUi.ltime
-        #self.wschod = None
-        #self.zachod = None
-        #self.lsec = self.ZegarUi.lsec
-        self.days = [];
-        self.monts = [];
+        self.days = []
+        self.monts = []
+
+        self.ZegarUi.ltime.setFont(self.getFont("Roboto-Slab", 96, "Bold"))
 
         self.days = ["", ("Poniedziałek"),
                       ("Wtorek"),
@@ -42,13 +40,9 @@ class Zegar(blackwidget.BlackWidget):
                    ("październik"),
                    ("listopad"),
                    ("grudzień")]
-        #self.setupUi(self)
     
     def timeout(self, dt):
-        #monthname = self.monts[dt.date().month()];
-        #dayname = self.days[dt.date().dayOfWeek()];
 
-        #self.ZegarUi.ldate.setText("%s, %d %s %d" % (dayname, dt.date().day(), monthname, dt.date().year()))
 
         hour = dt.time().hour();
         min = dt.time().minute();

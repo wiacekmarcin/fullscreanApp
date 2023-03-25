@@ -86,21 +86,21 @@ class AnalogClock(blackwidget.BlackWidget):
         soonPx = QPixmap("sun.png")
         moonPx = QPixmap("moon.png")
         painter.drawPixmap(1,1, soonPx)
-        
+
+        painter.setPen(QPen(self.getColor(50)))
         font = painter.font()
         font.setPixelSize(32)
         painter.setFont(font)
         painter.drawText(70,50, self.wschod)
 
-        fm = QFontMetrics (font);
+        fm = QFontMetrics (font)
         pixelsWide = fm.width(self.zachod);
-        #pixelsHigh = fm.height();
         painter.drawPixmap(self.width()-pixelsWide-moonPx.width()-5,1, moonPx)
         painter.drawText(self.width()-pixelsWide,50, self.zachod)
         
-        font = self._weatherFont
-        font.setPixelSize(40)
+        font = self.getFont("Weathericons", 40)
         painter.setFont(font)
+        painter.setPen(QPen(self.getColor(50)))
         painter.drawText(0, self.height()-5, "\uf053%s\uf03c" % self.minTemp)
 
         fm2 = QFontMetrics (font);

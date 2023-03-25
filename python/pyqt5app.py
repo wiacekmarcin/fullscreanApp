@@ -171,9 +171,10 @@ if __name__ == '__main__':
     mainWin = MainWindow()
     pluggins = [analogclock.AnalogClock(mainWin.widget),
                 zegar.Zegar(mainWin.widget),
-                pogoda.Pogoda(mainWin.widget),
-                calendar_day.CalendarDay(mainWin.widget),
-                pogoda5.Pogoda5(mainWin.widget),]
+                #pogoda.Pogoda(mainWin.widget),
+                #calendar_day.CalendarDay(mainWin.widget),
+                #pogoda5.Pogoda5(mainWin.widget),
+                ]
     #mainWin.setWindowState(mainWin.WindowFullScreen)
     mainWin.setGeometry(0,0,1080,1920)
     mainWin.setPlugins(pluggins)

@@ -6,6 +6,7 @@ from PyQt5.QtGui import *
 import analogclock 
 import zegar
 import pogoda
+import pogodav2
 import calendar_day
 import pogoda5
 class MainWindow(QMainWindow):
@@ -45,7 +46,7 @@ class MainWindow(QMainWindow):
             print(r)
             p.setGeometry(r)
             p.update()
-        self.update()    
+        self.repaint()    
 
     def update1Sec(self):
         for p in self.plgs:
@@ -79,7 +80,6 @@ class MainWindow(QMainWindow):
         pal.setColor(pal.WindowText, Qt.white)
         pal.setColor(pal.Text, Qt.white)
         pal.setColor(pal.BrightText, Qt.white)
-        #self.setAutoFillBackground(True)
         self.setPalette(pal)
 
         #sizePolicy = QSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
@@ -150,28 +150,62 @@ class MainWindow(QMainWindow):
         #palette.setBrush(palette.Disabled, palette.PlaceholderText, brush5)
         self.setPalette(palette)
 
-    #def paintEvent(self, ev):
+    def paintEvent(self, ev):
+        print("paintEvent")
         #QMainWindow.repaint()
-    #    m_GridDistance = 10
-    #    p = QPainter(self)
-    #    p.setPen(QPen(Qt.green,1))
-    #    i = 0
-    #    while i < self.width(): 
-    #        p.drawLine(i,0,i,self.height())
-    #        i += m_GridDistance
-    #    i = 0
-    #    while i < self.height(): 
-    #        p.drawLine(0,i,self.width(),i);
-    #        i += m_GridDistance
+        m_GridDistance = 10
+        p = QPainter(self)
+        p.setPen(QPen(Qt.green,1))
+        i = 0
+        while i < self.width(): 
+            p.drawLine(i,0,i,self.height())
+            i += m_GridDistance
+        i = 0
+        while i < self.height(): 
+            p.drawLine(0,i,self.width(),i);
+            i += m_GridDistance
 
 
 if __name__ == '__main__':
     import sys
     app = QApplication(sys.argv)
+    fonts = {}
+
+    database = QFontDatabase ()
+    fontFamilies = database.families()
+    for family in fontFamilies:
+        print ("---\n%s : " % family)
+        fontStyles = database.styles(family)
+        for style in fontStyles:
+            print ("\t"+style),
+            smoothSizes = database.smoothSizes(family, style)
+            sizes = ''
+            for points in smoothSizes:
+                sizes += str(points) + ' '
+
+            print("\t"+sizes)
+    
+    idf = QFontDatabase.addApplicationFont(":/font/fonts/weathericons-regular-webfont.ttf")
+    for f in ["Black", "BlackItalic", "Bold", "BoldItalic", 
+            "Light", "LightItalic", "Medium", "MediumItalic",
+            "Regular", "RegularItalic", "Thin", "ThinItalic"]:
+        idf = QFontDatabase.addApplicationFont("/usr/share/fonts/truetype/robotic/Roboto-%s.ttf" % f)
+
+    for f in ["Bold", "BoldItalic", "Light", "LightItalic", "Regular"
+              #, "RegularItalic"
+              ]:
+        idf = QFontDatabase.addApplicationFont("/usr/share/fonts/truetype/roboto-condensed/RobotoCondensed-%s.ttf" % f)
+        
+    for f in ["Black", "Bold", "ExtraBold", "ExtraLight","Light", "Regular", "Thin", "Medium", "SemiBold"]:
+        idf = QFontDatabase.addApplicationFont("/usr/share/fonts/truetype/roboto-slab/RobotoSlab-%s.ttf" % f)
+    
+            
+    
     mainWin = MainWindow()
     pluggins = [analogclock.AnalogClock(mainWin.widget),
                 zegar.Zegar(mainWin.widget),
                 #pogoda.Pogoda(mainWin.widget),
+                pogodav2.Pogodav2(mainWin.widget),
                 #calendar_day.CalendarDay(mainWin.widget),
                 #pogoda5.Pogoda5(mainWin.widget),
                 ]

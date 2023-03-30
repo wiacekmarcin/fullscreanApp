@@ -5,21 +5,18 @@ from PyQt5.QtGui import *
 
 import zegar_ui
 import blackwidget
-dateStyle = "font-size:30px;line-height:35px;color:#999;text-align:left;background:#000;font-family:\"Ariel\",sans-serif;font-weight:400;";
-timeStyle = "font-size:65px;line-height:65px;color:#fff;text-align:left;background:#000;font-family:\"Roboto Condensed\",sans-serif;font-weight:300;";
-secsStyle = "font-size:50%;line-height:50%;color:#666;vertical-align:super;text-align:left;background:#000;font-family:\"Roboto Condensed\",sans-serif;font-weight:300;";
-minStyle  = "font-size:24px;line-height:25px;color:#999;text-align:left;background:#000;font-family:\"Ariel\",sans-serif;font-weight:400;";
+secsStyle = "font-size:40%;color:#666;vertical-align:super;text-align:left;";
+
+
 
 class Zegar(blackwidget.BlackWidget):
     def __init__(self, parent=None):
         super(Zegar, self).__init__(parent)
         self.ZegarUi = zegar_ui.Ui_Zegar()
         self.setupUi(self)
-        self.ltime = self.ZegarUi.ltime
         self.days = []
         self.monts = []
-
-        self.ZegarUi.ltime.setFont(self.getFont("Roboto-Slab", 96, "Bold"))
+        self.firstRun = True
 
         self.days = ["", ("Poniedziałek"),
                       ("Wtorek"),
@@ -43,10 +40,31 @@ class Zegar(blackwidget.BlackWidget):
     
     def timeout(self, dt):
 
+        hour = dt.time().hour()
+        min = dt.time().minute()
+        sec = dt.time().second()
 
-        hour = dt.time().hour();
-        min = dt.time().minute();
-        sec = dt.time().second();
+        if self.firstRun:
+            self.updateDayLabels(dt.date())
+            self.updateTimeLabels(hour, min, sec)
+            self.firstRun = False
+            return
+
+        if hour == 0 and min == 0 and sec == 0:
+            self.updateDayLabels(dt.date())
+
+        self.updateTimeLabels(hour, min, sec)
+        
+
+    def updateDayLabels(self, date):
+        year = date.year()
+        month = date.month()
+        dayofYear = date.dayOfYear()
+        week = date.weekNumber()
+        self.ZegarUi.miesiac_rok.setText("%s %d" % (self.monts[month], year))
+        self.ZegarUi.info.setText("%d dzień, %d tydzień, %d miesiąc" % (dayofYear, week[0], month))
+
+    def updateTimeLabels(self, hour, min, sec):
         hs = '%d' % hour
         if hour < 10:
             hs = " " + hs
@@ -57,28 +75,19 @@ class Zegar(blackwidget.BlackWidget):
         ss = '%d' % sec
         if sec < 10:
             ss = "0" + ss
-        self.ltime.setText("<span>%s:%s<sup style=\"%s\">%s</sup><span>" % 
-                      (hs, ms, secsStyle, ss))
 
+        if sec % 2 == 0:    
+            self.ZegarUi.czas_h_m.setText("<span>%s<span style=\"color:rgb(100,100,100)\">:</span>%s</span>" % 
+                      (hs, ms))
+        else:
+            self.ZegarUi.czas_h_m.setText("<span>%s:%s</span>" % 
+                      (hs, ms, ))
+        self.ZegarUi.czas_sec.setText(ss)
 
     def getRect(self):
-        return QRect(0, 0, 400, 115)
+        return QRect(0, 0, 680, 115)
 
-    #def setWschod(self, h, m):
-    #    ms = '%d' % m
-    #    if m < 10:
-    #        ms = "0"+ms
-    #    hs = '%d' % h
-    #    self.wschod.setText("%1:%2" % (hs,ms))
-
-    #def setZachod(self, h, m):
-    #    ms = '%d' % m
-    #    if m < 10:
-    #        ms = "0"+ms
-    #    hs = '%d' % h
-    #    self.zachod.setText("%1:%2" % (hs,ms))
-
-
+    
     def setupUi(self, Zegar):
         self.ZegarUi.setupUi(Zegar)
         

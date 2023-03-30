@@ -13,17 +13,20 @@ import json
 
 
 
-citiStyle = "font-size:30px;line-height:35px;color:#999;text-align:left;background:#000;font-family:\"Ariel\",sans-serif;font-weight:400;"
-windBStyle = "font-size:45px;line-height:45px;color:#aaa;text-align:left;background:#000;font-weight:400;"
-windDStyle = "font-size:25px;line-height:30px;color:#999;text-align:left;background:#000;font-weight:500;"
-windSStyle = "font-size:16px;line-height:18px;color:#666;text-align:left;background:#000;font-weight:300;"
-iconWiStyle = "font-size:65px;line-height:65px;color:#aaa;text-align:right;background:#000;font-weight:400;"
-feelTempStyle = "font-size:30px;line-height:35px;color:#999;text-align:right;background:#000;font-weight:400;"
-conditionalStyle = "font-size:22px;line-height:20px;color:#ccc;text-align:right;background:#000;font-weight:600;"
+citiStyle = "font-size:30px;color:#999;text-align:left;background:#000"
+windBStyle = "font-size:45px;color:#aaa;text-align:left;background:#000"
+windDStyle = "font-size:25px;color:#999;text-align:left;background:#000"
+windSStyle = "font-size:18px;color:#999;text-align:left;background:#000"
+iconWiStyle = "font-size:65px;color:#aaa;text-align:right;background:#000"
+humiTempStyle = "font-size:36px;color:#ccc;text-align:right;background:#000"
+feelTempStyle = "font-size:32px;color:#aaa;text-align:right;background:#000"
+conditionalStyle = "font-size:22px;color:#ccc;text-align:right;background:#000"
+otherCondStyle = "font-size:22px;color:#666;text-align:right;background:#000"
 
 class Pogoda(blackwidget.BlackWidget):
     def __init__(self, parent=None):
         super(Pogoda, self).__init__(parent)
+        self.resize(self.getRect().width(), self.getRect().height())
         self.m_h = 0
         self.m_m = 0
         #QNetworkAccessManager netMng
@@ -44,7 +47,9 @@ class Pogoda(blackwidget.BlackWidget):
         self.minTemp = None
         self.wCond = None
         self.humiTemp = None
-        self.presTemp = None
+        self.pressure = None
+        self.visibility = None
+        self.clouds = None
 
         self.citiname = ""
         self.pog_h = 0
@@ -57,18 +62,9 @@ class Pogoda(blackwidget.BlackWidget):
         self.iconMap = None
         self.firstTime = True
 
-        idf = QFontDatabase.addApplicationFont(":/font/fonts/weathericons-regular-webfont.ttf")
-        family = QFontDatabase.applicationFontFamilies(idf)[0]
-        self.weatherFont = QFont(family)
-        self.weatherFont.setPointSize(32)
-
-        idf = QFontDatabase.addApplicationFont(":/font/fonts/roboto-condensed/Roboto-Condensed-Light.ttf")
-        family = QFontDatabase.applicationFontFamilies(idf)[0]
-        self.windDescr = QFont(family)
-
-        idf = QFontDatabase.addApplicationFont(":/font/fonts/roboto-condensed/Roboto-Condensed-Regular.ttf")
-        family = QFontDatabase.applicationFontFamilies(idf)[0]
-        self.tempFont = QFont(family)
+        self.weatherFont = self.getFont("Weathericons", 32)
+        self.windDescr = self.getFont("Roboto-Condensed", 32, "Light")
+        self.tempFont = self.getFont("Roboto-Condensed", 32, "Regular")
 
         self.m_h = self.m_m = self.pog_h = self.pog_m = -1
         self.citiname = "Nieznane"
@@ -96,103 +92,148 @@ class Pogoda(blackwidget.BlackWidget):
 
         self.citydate = QLabel(self)
         self.citydate.setObjectName("citydate")
-        self.citydate.setGeometry(QRect(0, 0, 300, 40))
+        self.citydate.setGeometry(QRect(0, 0, self.width(), 40))
         self.citydate.setStyleSheet(citiStyle)
         self.citydate.setTextFormat(Qt.RichText)
 
+        actHLevel = 40
         line = QFrame(self)
         line.setObjectName("line")
-        line.setGeometry(QRect(0, 42, 300, 15))
-        line.setStyleSheet("color:rgb(145, 148, 148); size:5pt;")
+        line.setGeometry(QRect(0, actHLevel, self.width(), 15))
         line.setFrameShape(QFrame.HLine)
-        line.setFrameShadow(QFrame.Sunken)
+        line.setFrameShadow(QFrame.Plain)
+        line.setLineWidth(2)
+        line.setStyleSheet("%s;background-color:rgb(0,0,0);" % self.getStyleColor(50))
+        actHLevel += 15 
 
         self.windB = QLabel(self)
         self.windB.setObjectName("windB")
-        self.windB.setGeometry(QRect(0, 60, 60, 48))
+        self.windB.setGeometry(QRect(0, actHLevel, 60, 48))
         self.windB.setStyleSheet(windBStyle)
         self.windB.setFont(self.weatherFont)
 
         self.windD = QLabel(self)
         self.windD.setObjectName("windD")
-        self.windD.setGeometry(QRect(60, 60, 75, 48))
+        self.windD.setGeometry(QRect(self.windB.size().width(), actHLevel, 75, 48))
         self.windD.setStyleSheet(windDStyle)
 
         self.windS = QLabel(self)
         self.windS.setObjectName("windS")
-        self.windS.setGeometry(QRect(135, 50, 165, 60))
+        self.windS.setGeometry(QRect(self.windB.size().width()+self.windD.size().width(),
+                                     actHLevel, 
+                                     self.width()-self.windD.size().width()-self.windB.size().width(), 60))
         self.windS.setWordWrap(True)
         self.windS.setStyleSheet(windSStyle)
         self.windS.setFont(self.windDescr)
+        actHLevel += 60
 
         self.wIcon = QLabel(self)
         self.wIcon.setObjectName("wIcon")
-        self.wIcon.setGeometry(QRect(0, 110, 115, 60))
         self.wIcon.setStyleSheet(iconWiStyle)
         self.wIcon.setFont(self.weatherFont)
+        self.wIcon.setGeometry(QRect(0, actHLevel, 100, 100))
+        self.wIcon.setText(" ")
 
         self.wTemp = QLabel(self)
         self.wTemp.setObjectName("wTemp")
-        self.wTemp.setGeometry(QRect(120, 110, 165, 60))
+        self.wTemp.setGeometry(QRect(self.wIcon.geometry().right(), actHLevel, 320-self.wIcon.geometry().right(), 60))
         self.wTemp.setStyleSheet(iconWiStyle)
         self.wTemp.setFont(self.tempFont)
 
+        tempActHLevel = self.wTemp.geometry().bottom()
+
+        label_H = QLabel(self)
+        label_H.setObjectName("lhumiTemp")
+        label_H.setGeometry(QRect(self.wIcon.geometry().right(), tempActHLevel+5, 35, 35))
+        label_H.setText("\uf07a")
+        label_H.setStyleSheet(feelTempStyle)
+        label_H.setFont(self.weatherFont)
+
+        self.humiTemp = QLabel(self)
+        self.humiTemp.setObjectName("humiTemp")
+        self.humiTemp.setGeometry(QRect(label_H.geometry().right(), tempActHLevel+5, 60, 35))
+        self.humiTemp.setStyleSheet(humiTempStyle)
+        self.humiTemp.setFont(self.tempFont)
+        actHLevel += self.wIcon.geometry().height()
+
         self.wCond = QLabel(self)
         self.wCond.setObjectName("lwcond")
-        self.wCond.setGeometry(QRect(0, 170, 300, 30))
+        self.wCond.setGeometry(QRect(0, actHLevel, self.width(), 30))
         self.wCond.setStyleSheet(conditionalStyle)
         self.wCond.setFont(self.tempFont)
+        actHLevel += self.wCond.geometry().height()
+                
+        #self.pressure = QLabel(self)
+        #self.pressure.setObjectName("pressure")
+        #self.pressure.setGeometry(QRect(200, tempActHLevel, 100, 50))
+        #self.pressure.setStyleSheet(feelTempStyle)
+        #self.pressure.setFont(self.tempFont)
+        
+
 
         label_1 = QLabel(self)
         label_1.setObjectName("lfeelTemp")
-        label_1.setGeometry(QRect(0, 200, 165, 30))
+        label_1.setGeometry(QRect(0, actHLevel, 165, 30))
         label_1.setText("Odczuwalna")
         label_1.setStyleSheet(feelTempStyle)
         label_1.setFont(self.tempFont)
 
         self.feelTemp = QLabel(self)
         self.feelTemp.setObjectName("feelTemp")
-        self.feelTemp.setGeometry(QRect(170, 200, 165, 30))
+        self.feelTemp.setGeometry(QRect(label_1.geometry().right(), actHLevel, 165, 30))
         self.feelTemp.setStyleSheet(feelTempStyle)
         self.feelTemp.setFont(self.tempFont)
+        actHLevel = self.feelTemp.geometry().bottom()
 
-        label_2 = QLabel(self)
-        label_2.setObjectName("lhumiTemp")
-        label_2.setGeometry(QRect(250, 110, 65, 35))
-        label_2.setText("\uf07a")
-        label_2.setStyleSheet(feelTempStyle)
-        label_2.setFont(self.weatherFont)
+        label_P = QLabel(self)
+        label_P.setObjectName("lpressure")
+        label_P.setGeometry(QRect(0, actHLevel, 165, 30))
+        label_P.setText("Ciśnienie")
+        label_P.setStyleSheet(otherCondStyle)
+        label_P.setFont(self.tempFont)
 
-        self.humiTemp = QLabel(self)
-        self.humiTemp.setObjectName("humiTemp")
-        self.humiTemp.setGeometry(QRect(280, 110, 30, 30))
-        self.humiTemp.setStyleSheet(feelTempStyle)
-        self.humiTemp.setFont(self.tempFont)
+        self.pressure = QLabel(self)
+        self.pressure.setObjectName("pressure")
+        self.pressure.setGeometry(QRect(label_P.geometry().right(), actHLevel, 155, 30))
+        self.pressure.setStyleSheet(otherCondStyle)
+        self.pressure.setFont(self.tempFont)
+        self.pressure.setTextFormat(Qt.RichText)
+        actHLevel = self.pressure.geometry().bottom()
 
-        presLabel1 = QLabel(self)
-        presLabel1.setObjectName("presL1")
-        presLabel1.setGeometry(QRect(250, 150, 30, 30))
-        presLabel1.setStyleSheet(feelTempStyle)
-        presLabel1.setFont(self.weatherFont)
-        presLabel1.setText("\uf079")
+        label_V = QLabel(self)
+        label_V.setObjectName("lvisibility")
+        label_V.setGeometry(QRect(0, actHLevel, 165, 30))
+        label_V.setText("Widoczność")
+        label_V.setStyleSheet(otherCondStyle)
+        label_V.setFont(self.tempFont)
 
-        self.presTemp = QLabel(self)
-        self.presTemp.setObjectName("presTemp")
-        self.presTemp.setGeometry(QRect(250, 180, 70, 30))
-        self.presTemp.setStyleSheet(feelTempStyle)
-        self.presTemp.setFont(self.tempFont)
+        self.visibility = QLabel(self)
+        self.visibility.setObjectName("visibility")
+        self.visibility.setGeometry(QRect(label_V.geometry().right(), actHLevel, 155, 30))
+        self.visibility.setStyleSheet(otherCondStyle)
+        self.visibility.setFont(self.tempFont)
+        actHLevel = self.visibility.geometry().bottom()
 
-        presLabel2 = QLabel(self)
-        presLabel2.setObjectName("presL2")
-        presLabel2.setGeometry(QRect(250, 210, 70, 30))
-        presLabel2.setStyleSheet(windSStyle)
-        presLabel2.setFont(self.weatherFont)
-        presLabel2.setText("kPa")
-        presLabel2.setAlignment(Qt.AlignRight)
+        label_C = QLabel(self)
+        label_C.setObjectName("lzachmurzenie")
+        label_C.setGeometry(QRect(0, actHLevel, 165, 30))
+        label_C.setText("Zachmurzenie")
+        label_C.setStyleSheet(otherCondStyle)
+        label_C.setFont(self.tempFont)
+
+        self.clouds = QLabel(self)
+        self.clouds.setObjectName("clouds")
+        self.clouds.setGeometry(QRect(label_C.geometry().right(), actHLevel, 155, 30))
+        self.clouds.setStyleSheet(otherCondStyle)
+        self.clouds.setFont(self.tempFont)
+
+
+
+
         
 
     def getRect(self):
-        return QRect(0,180,400,300)
+        return QRect(0,115,300,400)
     
     def timeout(self, dt):
         if not self.firstTime and dt.time().second() == 0:
@@ -205,50 +246,68 @@ class Pogoda(blackwidget.BlackWidget):
 
         self.m_h = dt.time().hour()
         self.m_m = dt.time().minute()
-        response = urlopen(self.url)
-        data_json = json.loads(response.read().decode('utf-8'))
+        #try :
+        if 1:
+            response = urlopen(self.url)
+            data_json = json.loads(response.read().decode('utf-8'))
 
-        self.citiname = data_json["name"]
-        utc = data_json["dt"]
-        dtw = QDateTime.fromMSecsSinceEpoch(utc*1000).time()
+            self.citiname = data_json["name"]
+            utc = data_json["dt"]
+            dtw = QDateTime.fromMSecsSinceEpoch(utc*1000).time()
+            
+            self.pog_h = dtw.hour()
+            self.pog_m = dtw.minute()
+            self.citydate.setText("%s <span style=\"font-size:15px;color:#666\">Dane aktualne</span>" % (self.citiname))
+
+
+            self.sunrise = QDateTime.fromMSecsSinceEpoch(data_json["sys"]["sunrise"]*1000)
+            self.sunset = QDateTime.fromMSecsSinceEpoch(data_json["sys"]["sunset"]*1000)
         
-        self.pog_h = dtw.hour()
-        self.pog_m = dtw.minute()
-        self.citydate.setText("%s <span style=\"font-size:15px;color:#666\">Dane aktualne</span>" % (self.citiname))
+            value = { "sunrise" : self.sunrise.time(), "sunset" : self.sunset.time() }
+            self.sendNotification(value)
+
+            #emit setSunrise(sunrise.time().hour(), sunrise.time().minute());
+            #emit setSunset(sunset.time().hour(), sunset.time().minute());
+
+            wind_speed = data_json["wind"]["speed"]
+            wind_deg = data_json["wind"]["deg"]
+            self.windB.setText(self._toBeaufortChar(self._ms2Beaufort(wind_speed)))
+            self.windD.setText(self._deg2Cardinal(wind_deg))
+            self.windS.setText(self._toDescrSilaWiatru(wind_speed))
 
 
-        self.sunrise = QDateTime.fromMSecsSinceEpoch(data_json["sys"]["sunrise"]*1000)
-        self.sunset = QDateTime.fromMSecsSinceEpoch(data_json["sys"]["sunset"]*1000)
-    
-        value = { "sunrise" : self.sunrise.time(), "sunset" : self.sunset.time() }
-        self.sendNotification(value)
+            temp = data_json["main"]["temp"]
+            feels_like = data_json["main"]["feels_like"]
+            self.wTemp.setText("%.1f\u00B0C" % temp)
+            self.feelTemp.setText("%.1f\u00B0C" % feels_like)
 
-        #emit setSunrise(sunrise.time().hour(), sunrise.time().minute());
-        #emit setSunset(sunset.time().hour(), sunset.time().minute());
+            pressure = data_json["main"]["pressure"]
+            huminidity = data_json["main"]["humidity"]
+            self.humiTemp.setText("%.0f%%" % huminidity)
+            self.pressure.setText("%.0f hPa" % pressure)
 
-        wind_speed = data_json["wind"]["speed"]
-        wind_deg = data_json["wind"]["deg"]
-        self.windB.setText(self._toBeaufortChar(self._ms2Beaufort(wind_speed)))
-        self.windD.setText(self._deg2Cardinal(wind_deg))
-        self.windS.setText(self._toDescrSilaWiatru(wind_speed))
-
-
-        temp = data_json["main"]["temp"]
-        feels_like = data_json["main"]["feels_like"]
-        self.wTemp.setText("%.1f\u00B0" % temp)
-        self.feelTemp.setText("%.1f\u00B0" % feels_like)
-
-        pressure = data_json["main"]["pressure"]
-        huminidity = data_json["main"]["humidity"]
-        self.humiTemp.setText("%.0f" % huminidity)
-        self.presTemp.setText("%.0f" % pressure)
-
-        weather_main = data_json["weather"][0]["main"]
-        weather_descr = data_json["weather"][0]["description"]
-        weather_icon = data_json["weather"][0]["icon"]
-        self.wIcon.setText(self.iconMap[weather_icon])
-        self.wCond.setText(weather_descr);
-
+            weather_main = data_json["weather"][0]["main"]
+            weather_descr = data_json["weather"][0]["description"]
+            weather_icon = data_json["weather"][0]["icon"]
+            self.wIcon.setText(self.iconMap[weather_icon])
+            self.wCond.setText(weather_descr)
+            self.clouds.setText("%d%%" % data_json["clouds"]["all"])
+            self.visibility.setText("%d m" % data_json["visibility"])
+        #except:
+        else:
+            self.wIcon.setText(" ")
+            self.citiname = "Piastów"
+            self.citydate.setText("%s <span style=\"font-size:15px;color:#666\">Brak danych</span>" % (self.citiname))
+            self.windB.setText("--")
+            self.windD.setText("--")
+            self.windS.setText("--")
+            self.wCond.setText("--")
+            self.wTemp.setText("--")
+            self.feelTemp.setText("--")
+            self.visibility.setText("--")
+            self.clouds.setText("--")
+            self.humiTemp.setText("--")
+            self.pressure.setText("--")
 
 
     def _ms2Beaufort(self, ms):

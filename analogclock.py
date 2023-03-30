@@ -38,7 +38,6 @@ class AnalogClock(blackwidget.BlackWidget):
             self.maxTemp = dictValue["maximum-temperature"]
 
     def setWschod(self, hour, min):
-        print (hour, min)
         self.wschod = "%d:" % hour
         if min < 10:
             self.wschod += "0"
@@ -46,7 +45,6 @@ class AnalogClock(blackwidget.BlackWidget):
 
    
     def setZachod(self, hour, min):
-        print (hour, min)
         self.zachod = "%d:" % hour
         if min < 10:
             self.zachod += "0"
@@ -68,15 +66,15 @@ class AnalogClock(blackwidget.BlackWidget):
         hourColor = QColor(225, 225, 225)
         minuteColor = QColor(255, 255, 255, 191)
         secondColor = QColor(200, 200, 200, 90)
-        color = QColor(120, 255, 100)
 
         side = min(self.width(), self.height())
 
         painter = QPainter(self)
+
         painter.setRenderHint(QPainter.Antialiasing);
         #path = QPainterPath()
-        #path.addRoundedRect(QRectF(0, 0, self.width(), self.height()), 5, 5)
-        #pen = QPen(Qt.white, 2)
+        #path.addRect(QRectF(0, 0, self.width(), self.height()))
+        #pen = QPen(Qt.white, 1)
         #painter.setPen(pen)
         #painter.fillPath(path, Qt.black)
         #painter.drawPath(path)
@@ -88,24 +86,28 @@ class AnalogClock(blackwidget.BlackWidget):
         painter.drawPixmap(1,1, soonPx)
 
         painter.setPen(QPen(self.getColor(50)))
-        font = painter.font()
+        font = QFont()
+        font.setFamily("Weather Icons")
+        font.setBold(False)
+        font.setItalic(False)
+        #font.setWeight(75)
         font.setPixelSize(32)
         painter.setFont(font)
         painter.drawText(70,50, self.wschod)
 
         fm = QFontMetrics (font)
-        pixelsWide = fm.width(self.zachod);
+        pixelsWide = fm.width(self.zachod)
         painter.drawPixmap(self.width()-pixelsWide-moonPx.width()-5,1, moonPx)
         painter.drawText(self.width()-pixelsWide,50, self.zachod)
         
-        font = self.getFont("Weathericons", 40)
-        painter.setFont(font)
+        
+        #painter.setFont(font)
         painter.setPen(QPen(self.getColor(50)))
-        painter.drawText(0, self.height()-5, "\uf053%s\uf03c" % self.minTemp)
+        painter.drawText(0, self.height()-5, "\uf053 %s\uf03c" % self.minTemp)
 
         fm2 = QFontMetrics (font);
-        pixelsWide = fm2.width("\uf055%s\uf03c1" % self.maxTemp);
-        painter.drawText(self.width()-pixelsWide, self.height()-5, "\uf055%s\uf03c" % self.maxTemp)
+        pixelsWide = fm2.width("\uf055 %s\uf03c" % self.maxTemp);
+        painter.drawText(self.width()-pixelsWide, self.height()-5, "\uf055 %s\uf03c" % self.maxTemp)
 
         painter.setRenderHint(painter.Antialiasing)
         painter.translate(self.width() / 2, self.height() / 2)

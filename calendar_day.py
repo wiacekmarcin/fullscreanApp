@@ -14,10 +14,12 @@ class CalendarDay(blackwidget.BlackWidget):
         super(CalendarDay, self).__init__(parent)
         self.CalendarDayUi = calendar_day_ui.Ui_CalendarDay()
         self.setupUi(self)
+        self.setStyleSheet("background-color: rgb(0,0,0);")
         self.parse = False
 
-        font = self._robotoCondensedFont
-        font.setPointSize(14)
+        #font = self._robotoCondensedFont
+        #font.setPointSize(14)
+        font = self.getFont("Roboto-Condensed", 14)
         self.CalendarDayUi.imieniny.setFont(font)
         self.CalendarDayUi.imieniny.setStyleSheet("color: rgb(200, 200, 200);")
         self.CalendarDayUi.dzien.setStyleSheet("color: rgb(100, 100, 100);")
@@ -68,7 +70,7 @@ class CalendarDay(blackwidget.BlackWidget):
         #self.CalendarDayUi.inne_swieta.setText(parsed_html.body.find('section', attrs={'class':'calCard-ententa'}).text.strip())
 
     def getRect(self):
-        return QRect(400, 0, 280, 500)
+        return QRect(300, 0, 380, 500)
 
     
     def setupUi(self, CalendarDay):

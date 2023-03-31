@@ -16,7 +16,11 @@ class Worker(QObject):
         super().__init__(parent)
         self.regexp = re.compile(r'^DHT=(?P<lhum>\d+\.{0,1}\d*);(?P<ltemp>\d+\.{0,1}\d*):(?P<key1>[0-9a-f]{16})=(?P<value1>\d+\.{0,1}\d*):(?P<key2>[0-9a-f]{16})=(?P<value2>\d+\.{0,1}\d*)$')
         #DHT=62.5;24.3:286cf90f0b0000ae=34.9:28fff708640400a3=30.7
-        
+    
+    def setWidget(self, blackwidget):
+        self.blackwidget = blackwidget
+
+
     def run(self):
         """Long-running task."""
         self.isRun = True
@@ -41,7 +45,7 @@ class Worker(QObject):
                 vals['lazienka_humi'] = valg['lhum']
                 vals[valg['key1']] = valg['value1']
                 vals[valg['key2']] = valg['value2']
-                self.sendNotification(vals)
+                self.blackwidget.sendNotification(vals)
         self.ser.close()
 
 
@@ -50,6 +54,7 @@ class SerialReader(blackwidget.BlackWidget):
         super().__init__(parent)
         self.thread = QThread()
         self.worker = Worker()
+        self.worker.setWidget(self)
         # Step 4: Move worker to the thread
         self.worker.moveToThread(self.thread)
         # Step 5: Connect signals and slots

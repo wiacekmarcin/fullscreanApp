@@ -1,5 +1,18 @@
+#*-* coding:utf-8 *-*
+from PyQt5.QtWidgets import *
+from PyQt5.QtCore import *
+from PyQt5.QtGui import *
+
+import urllib3
+from bs4  import BeautifulSoup
+
+import blackwidget
+import stats_ui
 import os
 import socket
+from urllib.request import urlopen
+import json
+
 options = {
     "measure_temp": ["temp", "'C"],
     "get_mem gpu": ["gpu", "M"],
@@ -164,6 +177,11 @@ def getIP():
         return None
     return s.getsockname()[0]
 
+def getIPOut():
+    response = urlopen("http://httpbin.org/ip")
+    data_json = json.loads(response.read().decode('utf-8'))
+    return data_json["origin"]
+    
 
 def getIP6():
     s = socket.socket(socket.AF_INET6, socket.SOCK_DGRAM)
@@ -263,39 +281,81 @@ def getVoltage(p):
 
 
 
-for p in [
-    "arm",
-    "core",
-    "dpi",
-    "emmc",
-    "h264",
-    "hdmi",
-    "isp",
-    "pixel",
-    "pwm",
-    "uart",
-    "v3d",
-    "vec",
-    ]:
-    print(p, getClock(p))
-print("cpucount", getCPUcount())
-print("current speed", getCPUcurrentSpeed())
-print("cpuTemp",getCPUtemperature())
-print("cpuTime", getCPUuptime())
+class StatsWidget(blackwidget.BlackWidget):
+    def __init__(self, parent=None):
+        super(StatsWidget, self).__init__(parent)
+        self.statsUi = stats_ui.Ui_Stats()
+        self.setupUi(self)
+        self.firstTime = True
+        self.raspTemp = "--"
+        self.monitorTemp = "--"
 
-print("cpuUse", getCPUuse())
-print("appMem", getAppMemory())
-print("gateway", getGatewayLatency())
-print("gpuTemp", getGPUtemperature())
-print("hostname", getHostname())
-print("ip",getIP())
-print("ip6",getIP6())    
-print("memory arm",getMemory("arm"))
-print("memory gpu",getMemory("gpu"))
-print("piRev", getPiRevision())
-print("RamInfo",getRAMinfo())
-print("throttled",getThrottled())
-print("stats",getUpStats())
 
-for p in ["core", "sdram_c", "sdram_i", "sdram_p"]:
-    print(p, getVoltage(p))
+    def getRect(self):
+        return QRect(1080-250, 1920-270, 250, 270)
+    
+    def setupUi(self, StatsWidget):
+        self.statsUi.setupUi(StatsWidget)
+
+    def receiveNotfication(self, dictValue):
+        if "28fff708640400a3" in dictValue:
+            self.monitorTemp = dictValue["28fff708640400a3"]
+        if "286cf90f0b0000ae" in dictValue:
+            self.raspTemp = dictValue["286cf90f0b0000ae"]
+
+    def timeout(self, dt):
+        hour = dt.time().hour()
+        min = dt.time().minute()
+        sec = dt.time().second()
+        self.statsUi.cpuSpeed.setText("%d MHz" % getCPUcurrentSpeed())
+        self.statsUi.cpuUsage.setText("%d %%" % getCPUuse())
+        
+        if not self.firstTime and min % 5 != 0 or sec != 0:
+            return
+
+        if self.firstTime or (min == 0 and sec == 0):
+            self.statsUi.localIp.setText("%s" % getIP())
+            self.statsUi.zewnetrzneIp.setText("%s" % getIPOut())
+        self.firstTime = False
+        self.statsUi.tempGPU.setText("%2.1f\u00B0C" % getCPUtemperature())
+        self.statsUi.tempMonitor.setText("%s\u00B0C" % self.monitorTemp)
+        self.statsUi.tempRasp.setText("%s\u00B0C" % self.raspTemp)
+
+
+
+#for p in [
+#    "arm",
+#    "core",
+#    "dpi",
+#    "emmc",
+#    "h264",
+#    "hdmi",
+#    "isp",
+#    "pixel",
+#    "pwm",
+#    "uart",
+#    "v3d",
+#    "vec",
+#    ]:
+#    print(p, getClock(p))
+#print("cpucount", getCPUcount())
+#print("current speed", getCPUcurrentSpeed())
+#print("cpuTemp",getCPUtemperature())
+#print("cpuTime", getCPUuptime())
+
+#print("cpuUse", getCPUuse())
+#print("appMem", getAppMemory())
+#print("gateway", getGatewayLatency())
+#print("gpuTemp", getGPUtemperature())
+#print("hostname", getHostname())
+#print("ip",getIP())
+#print("ip6",getIP6())    
+#print("memory arm",getMemory("arm"))
+#print("memory gpu",getMemory("gpu"))
+#print("piRev", getPiRevision())
+#print("RamInfo",getRAMinfo())
+#print("throttled",getThrottled())
+#print("stats",getUpStats())
+
+#for p in ["core", "sdram_c", "sdram_i", "sdram_p"]:
+#    print(p, getVoltage(p))

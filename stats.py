@@ -1,4 +1,5 @@
-
+import os
+import socket
 options = {
     "measure_temp": ["temp", "'C"],
     "get_mem gpu": ["gpu", "M"],
@@ -21,18 +22,15 @@ def vcgencmd(option):
     """
     if option in options:
         cmd = "/opt/vc/bin/vcgencmd {}".format(option)
-        Domoticz.Debug("cmd: {}".format(cmd))
         try:
             res = os.popen(cmd).readline()
-            Domoticz.Debug("res: {}".format(res))
             res = res.replace("{}=".format(options[option][0]), "")
             res = res.replace("{}\n".format(options[option][1]), "")
-            Domoticz.Debug("res (replaced): {}".format(res))
         except:
             res = "0"
     else:
         res = "0"
-    return float(res)
+    return res
 
 
 # --------------------------------------------------------------------------------
@@ -46,7 +44,6 @@ def getBits(value, start, length):
 
 
 def getClock(p):
-    Domoticz.Debug("getClock p: {}".format(p))
     if p in [
         "arm",
         "core",
@@ -62,11 +59,9 @@ def getClock(p):
         "vec",
     ]:
         res = vcgencmd("measure_clock {}".format(p))
-        Domoticz.Debug("getClock measure_clock: {}".format(res))
     else:
-        Domoticz.Debug("getClock: Invalid parameter")
         res = "0"
-    return int(res)
+    return res
 
 
 def getCPUcount():
@@ -121,11 +116,11 @@ def getCPUuse():
     return res
 
 
-def getDomoticzMemory():
+def getAppMemory():
     # ps aux | grep domoticz | awk '{sum=sum+$6}; END {print sum}'
     try:
         res = (
-            os.popen("ps aux | grep domoticz | awk '{sum=sum+$6}; END {print sum}'")
+            os.popen("ps aux | grep pyqt5app.py | awk '{sum=sum+$6}; END {print sum}'")
             .readline()
             .replace("\n", "")
         )
@@ -265,3 +260,42 @@ def getVoltage(p):
     else:
         res = "0"
     return float(res)
+
+
+
+for p in [
+    "arm",
+    "core",
+    "dpi",
+    "emmc",
+    "h264",
+    "hdmi",
+    "isp",
+    "pixel",
+    "pwm",
+    "uart",
+    "v3d",
+    "vec",
+    ]:
+    print(p, getClock(p))
+print("cpucount", getCPUcount())
+print("current speed", getCPUcurrentSpeed())
+print("cpuTemp",getCPUtemperature())
+print("cpuTime", getCPUuptime())
+
+print("cpuUse", getCPUuse())
+print("appMem", getAppMemory())
+print("gateway", getGatewayLatency())
+print("gpuTemp", getGPUtemperature())
+print("hostname", getHostname())
+print("ip",getIP())
+print("ip6",getIP6())    
+print("memory arm",getMemory("arm"))
+print("memory gpu",getMemory("gpu"))
+print("piRev", getPiRevision())
+print("RamInfo",getRAMinfo())
+print("throttled",getThrottled())
+print("stats",getUpStats())
+
+for p in ["core", "sdram_c", "sdram_i", "sdram_p"]:
+    print(p, getVoltage(p))

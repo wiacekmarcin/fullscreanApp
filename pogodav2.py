@@ -130,7 +130,27 @@ class Pogodav2(blackwidget.BlackWidget):
             
             self.PogodaUi.widocznosc.setText("%d m" % data_json["visibility"])
             #self.clouds.setText("%d%%" % data_json["clouds"]["all"])
-            
+
+            if "snow" in data_json:
+                if "1h" in data_json["snow"]:
+                    self.PogodaUi.deszczsnieg.setText("%s" % data_json["snow"]["1h"])
+                    self.PogodaUi.etdeszczsnieg.setText("mm/h")
+                elif "3h" in data_json["snow"]:
+                    self.PogodaUi.deszczsnieg.setText("%s" % data_json["snow"]["3h"])
+                    self.PogodaUi.etdeszczsnieg.setText("mm/3h")
+            elif "rain" in data_json:
+                if "1h" in data_json["rain"]:
+                    self.PogodaUi.deszczsnieg.setText("%s" % data_json["rain"]["1h"])
+                    self.PogodaUi.etdeszczsnieg.setText("mm/h")
+                elif "3h" in data_json["rain"]:
+                    self.PogodaUi.deszczsnieg.setText("%s" % data_json["rain"]["3h"])
+                    self.PogodaUi.etdeszczsnieg.setText("mm/3h")
+            elif "clouds" in data_json:
+                self.PogodaUi.deszczsnieg.setText("%s%%" % data_json["clouds"]["all"])
+                self.PogodaUi.etdeszczsnieg.setText("")
+            else:
+                self.PogodaUi.deszczsnieg.setText("")
+                self.PogodaUi.etdeszczsnieg.setText("")
         #except:
         else:
             pass

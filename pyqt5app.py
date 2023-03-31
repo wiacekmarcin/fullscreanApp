@@ -5,10 +5,12 @@ from PyQt5.QtGui import *
 
 import analogclock 
 import zegar
-import pogoda
+#import pogoda
 import pogodav2
 import calendar_day
 import pogoda5
+import read_serial
+
 class MainWindow(QMainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
@@ -174,30 +176,30 @@ if __name__ == '__main__':
     database = QFontDatabase ()
     fontFamilies = database.families()
     for family in fontFamilies:
-        print ("---\n%s : " % family)
+        #print ("---\n%s : " % family)
         fontStyles = database.styles(family)
         for style in fontStyles:
-            print ("\t"+style),
+            #print ("\t"+style),
             smoothSizes = database.smoothSizes(family, style)
             sizes = ''
             for points in smoothSizes:
                 sizes += str(points) + ' '
 
-            print("\t"+sizes)
+            #print("\t"+sizes)
     
-    idf = QFontDatabase.addApplicationFont(":/font/fonts/weathericons-regular-webfont.ttf")
-    for f in ["Black", "BlackItalic", "Bold", "BoldItalic", 
-            "Light", "LightItalic", "Medium", "MediumItalic",
-            "Regular", "RegularItalic", "Thin", "ThinItalic"]:
-        idf = QFontDatabase.addApplicationFont("/usr/share/fonts/truetype/robotic/Roboto-%s.ttf" % f)
+    #idf = QFontDatabase.addApplicationFont(":/font/fonts/weathericons-regular-webfont.ttf")
+    #for f in ["Black", "BlackItalic", "Bold", "BoldItalic", 
+    #        "Light", "LightItalic", "Medium", "MediumItalic",
+    #        "Regular", "RegularItalic", "Thin", "ThinItalic"]:
+    #    idf = QFontDatabase.addApplicationFont("/usr/share/fonts/truetype/robotic/Roboto-%s.ttf" % f)
 
-    for f in ["Bold", "BoldItalic", "Light", "LightItalic", "Regular"
+    #for f in ["Bold", "BoldItalic", "Light", "LightItalic", "Regular"
               #, "RegularItalic"
-              ]:
-        idf = QFontDatabase.addApplicationFont("/usr/share/fonts/truetype/roboto-condensed/RobotoCondensed-%s.ttf" % f)
+    #          ]:
+    #    idf = QFontDatabase.addApplicationFont("/usr/share/fonts/truetype/roboto-condensed/RobotoCondensed-%s.ttf" % f)
         
-    for f in ["Black", "Bold", "ExtraBold", "ExtraLight","Light", "Regular", "Thin", "Medium", "SemiBold"]:
-        idf = QFontDatabase.addApplicationFont("/usr/share/fonts/truetype/roboto-slab/RobotoSlab-%s.ttf" % f)
+    #for f in ["Black", "Bold", "ExtraBold", "ExtraLight","Light", "Regular", "Thin", "Medium", "SemiBold"]:
+    #    idf = QFontDatabase.addApplicationFont("/usr/share/fonts/truetype/roboto-slab/RobotoSlab-%s.ttf" % f)
     
             
     
@@ -206,8 +208,9 @@ if __name__ == '__main__':
                 zegar.Zegar(mainWin.widget),
                 #pogoda.Pogoda(mainWin.widget),
                 pogodav2.Pogodav2(mainWin.widget),
-                #calendar_day.CalendarDay(mainWin.widget),
+                calendar_day.CalendarDay(mainWin.widget),
                 #pogoda5.Pogoda5(mainWin.widget),
+                read_serial.SerialReader(mainWin.widget)
                 ]
     #mainWin.setWindowState(mainWin.WindowFullScreen)
     mainWin.setGeometry(0,0,1080,1920)
@@ -218,3 +221,4 @@ if __name__ == '__main__':
     sys.exit(app.exec_())
 
     #pip3 install BeautifulSoup4
+    #pip3 install pyserial

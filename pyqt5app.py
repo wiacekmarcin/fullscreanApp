@@ -11,6 +11,7 @@ import calendar_day
 import pogoda5
 import read_serial
 import stats
+import rss
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -212,7 +213,8 @@ if __name__ == '__main__':
                 calendar_day.CalendarDay(mainWin.widget),
                 #pogoda5.Pogoda5(mainWin.widget),
                 read_serial.SerialReader(mainWin.widget),
-                stats.StatsWidget(mainWin.widget)]
+                stats.StatsWidget(mainWin.widget),
+                rss.RSS(mainWin.widget)]
     #mainWin.setWindowState(mainWin.WindowFullScreen)
     mainWin.setGeometry(0,0,1080,1920)
     mainWin.setPlugins(pluggins)
@@ -223,3 +225,4 @@ if __name__ == '__main__':
 
     #pip3 install BeautifulSoup4
     #pip3 install pyserial
+    #pip3 install feedparser

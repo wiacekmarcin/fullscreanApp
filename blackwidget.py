@@ -12,6 +12,7 @@ class BlackWidget(QFrame):
     def __init__(self, parent=None):
         super(BlackWidget, self).__init__(parent)
         self.mainWindow = None
+        self.cntSec = 0
         #self.setLineWidth(2)
         #self.setFrameStyle(QFrame.Box | QFrame.Plain)
         

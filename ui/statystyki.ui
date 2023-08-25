@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>250</width>
-    <height>300</height>
+    <height>270</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -333,40 +333,6 @@ background-color: rgb(0, 0, 0);</string>
         </property>
         <property name="text">
          <string>0.0.0.0</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="0">
-       <widget class="QLabel" name="etConnected">
-        <property name="font">
-         <font>
-          <family>Roboto Slab ExtraLight</family>
-          <pointsize>12</pointsize>
-         </font>
-        </property>
-        <property name="styleSheet">
-         <string notr="true">color: rgb(255, 255, 255);
-background-color: rgb(0, 0, 0);</string>
-        </property>
-        <property name="text">
-         <string>Połączenie</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="1">
-       <widget class="QLabel" name="netstatus">
-        <property name="font">
-         <font>
-          <family>Roboto Slab ExtraLight</family>
-          <pointsize>12</pointsize>
-         </font>
-        </property>
-        <property name="styleSheet">
-         <string notr="true">color: rgb(255, 255, 255);
-background-color: rgb(0, 0, 0);</string>
-        </property>
-        <property name="text">
-         <string>Brak internetu</string>
         </property>
        </widget>
       </item>

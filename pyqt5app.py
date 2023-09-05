@@ -13,7 +13,6 @@ import read_serial
 import stats
 import rss
 import pogoda5_1day
-import lazienka
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -55,9 +54,13 @@ class MainWindow(QMainWindow):
         self.repaint()    
 
     def update1Sec(self):
-        for p in self.plgs:
-            p.timeout(QDateTime.currentDateTime())
-        self.update()
+        try:
+            for p in self.plgs:
+                p.timeout(QDateTime.currentDateTime())
+            self.update()
+        except KeyboardInterrupt:
+            print("ctrl-c")
+            sys.exit(0)
 
     def sendNotification(self, valueDict):
         for p in self.plgs:
@@ -209,25 +212,26 @@ if __name__ == '__main__':
     
     mainWin = MainWindow()
     pluggins = [
-                analogclock.AnalogClock(mainWin.widget),
-                zegar.Zegar(mainWin.widget),
+                #analogclock.AnalogClock(mainWin.widget),
+                #zegar.Zegar(mainWin.widget),
                 #pogoda.Pogoda(mainWin.widget),
-                pogodav2.Pogodav2(mainWin.widget),
-                calendar_day.CalendarDay(mainWin.widget),
-                pogoda5.Pogoda5(mainWin.widget),
-                read_serial.SerialReader(mainWin.widget),
-                stats.StatsWidget(mainWin.widget),
-                rss.RSS(mainWin.widget),
-                pogoda5_1day.Pogoda5_1Day(mainWin.widget),
-                lazienka.Lazienka(mainWin.widget)
+                #pogodav2.Pogodav2(mainWin.widget),
+                #calendar_day.CalendarDay(mainWin.widget),
+                #pogoda5.Pogoda5(mainWin.widget),
+                #read_serial.SerialReader(mainWin.widget),
+                #stats.StatsWidget(mainWin.widget),
+                #rss.RSS(mainWin.widget),
+                pogoda5_1day.Pogoda5_1Day(mainWin.widget)
                 ]
     #mainWin.setWindowState(mainWin.WindowFullScreen)
     mainWin.setGeometry(0,0,1080,1920)
     mainWin.setPlugins(pluggins)
     #mainWin.showFullScreen()
     mainWin.show()
-    
-    sys.exit(app.exec_())
+    try:
+        sys.exit(app.exec_())
+    except KeyboardInterrupt:
+        sys.exit(-1)
 
     #pip3 install BeautifulSoup4
     #pip3 install pyserial

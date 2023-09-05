@@ -21,12 +21,13 @@ class Pogoda5_1Day(blackwidget.BlackWidget):
         self.font.setPointSize(12)
         self.font.setBold(False)
         self.font.setWeight(50)
-        self.w3h = 20
+        self.w3h = 25
         self.h1deg = 10
         self.maxRange = 30
         self.minRange = 10
         self.height = 300
-        self.margin = 10
+        self.margin = int((1024-(8*5*self.w3h)) / 2)
+        print(self.margin)
         self.daysName = [u'Niedziela',u'Poniedziałek',u'Wtorek',u'Środa',u'Czwartek',u'Piatek',u'Sobota']
         self.temp =  [15.27, 13.76, 14.84, 19.40, 22.43, 22.87, 18.48, 16.75, 15.57, 14.46, 17.77, 23.04, 25.37, 25.24, 20.43, 18.59, 16.91, 15.71, 18.73, 24.52, 27.10, 25.56,
                       22.04, 19.79, 18.15, 17.20, 19.71, 25.96, 25.56, 28.48, 28.30, 22.88, 20.22, 18.44, 17.28, 20.01, 25.85, 28.58, 28.63, 23.09, 20.63 ]

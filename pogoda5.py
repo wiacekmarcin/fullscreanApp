@@ -3,6 +3,9 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 
+import datetime
+import time
+
 import blackwidget
 import resources
 
@@ -26,70 +29,110 @@ class Pogoda5(blackwidget.BlackWidget):
         super(Pogoda5, self).__init__(parent)
         #QNetworkAccessManager netMng
         self.url = "https://api.openweathermap.org/data/2.5/forecast?appid=b176485875db690244cb8acf93637572&id=7532279&lang=pl&units=metric"
-        self.firstTime = False
-        self.today = "2023-03-19"
+        self.prevday = None
+        self.delaySec = 0
+        self.nodata = False
         
 
     def getRect(self):
         return QRect(0,0,0,0)
     
     def timeout(self, dt):
-        
-        print(self.firstTime)
-        if dt.time().hour() == 0 and dt.time().minute() == 0 and dt.time().second() == 0:
-           self.firstTime = False
-
-        if self.firstTime:
+        if not self.prevday is None or self.prevday == dt.date().day():
             return
-        self.today = "%d-%02d-%02d" % (dt.date().year(), dt.date().month(), dt.date().day())
-        print(self.today)
-        self.firstTime = True
+        self.prevday = dt.date().day()
+        month = dt.date().month()
+        year = dt.date().year()
+        
+        date_time = datetime.datetime(year, month, self.prevday, 0, 0, 0)
+        tdt = time.mktime(date_time.timetuple())
+
+        print(tdt)
+        offset = dt.offsetFromUtc()
+
+        if self.delaySec > 0:
+            self.delaySec -= 1
+            return
 
         response = urlopen(self.url)
         data_json = json.loads(response.read().decode('utf-8'))
 
+        cnt_items = int(data_json["cnt"]) or 0
+        if cnt_items == 0:
+            print("Brak danych")
+            self.delaySec = 60
+            show()
+            return
+
         items = data_json["list"]
         if items is None:
+            print("Brak danych")
+            self.delaySec = 60
+            show()
             return
         
+        clear(dt.dayOfWeek() - 1, cnt_items + 8)
         self.minTemp = None
         self.maxTemp = None
-
-        self.tempDays = {}
-        self.tempFeelsDays = {}
-        self.pressure = {}
-        self.humidity = {}
+        self.nodata = True
         for i in items:
+            dt_txt = i["dt_txt"]
             if i["dt_txt"] is None:
                 continue
+            fd,ft = dt_txt.split(' ')
+            year,month,day = fd.split('-')
+            hour,minute,second = ft.split(':')
+            day = int(day)
+            idt = int(i['dt'])
+            ih = (idt - tdt - offset)/3600
+            idx = ih/3
 
-            self.tempDays[i["dt_txt"]] = (i["main"]['temp_min'] + i["main"]['temp_max'])/2
-            self.tempFeelsDays[i["dt_txt"]] = i["main"]['feels_like']
-            self.pressure[i["dt_txt"]] = i["main"]['pressure']
-            self.humidity[i["dt_txt"]] = i["main"]['humidity']
+            m = i['main']
+            add(idx, day-self.prevday, m['temp'],m['feels_like'],m['temp_min'],m['temp_max'],m['pressure'],m['humidity'])
 
-            ddate, dtime = i["dt_txt"].split(" ")
-            print(ddate)
-            if (ddate == self.today):
-                print(i["main"])
-                print(self.minTemp)
-                print(self.maxTemp)
+            if day == self.prevday:
                 if self.minTemp is None:
-                   self.minTemp = i["main"]['temp_min'] 
-                elif i["main"]['temp_min'] < self.minTemp:
-                    self.minTemp = i["main"]['temp_min']
-                
+                    self.minTemp = m['temp_min']
+                elif self.minTemp > m['temp_min']:
+                    self.minTemp = m['temp_min']
+
                 if self.maxTemp is None:
-                    self.maxTemp = i["main"]['temp_max']
-                elif i["main"]['temp_max'] > self.maxTemp:
-                    self.maxTemp = i["main"]['temp_max']
-            
+                    self.maxTemp = m['temp_max']
+                elif self.maxTemp > m['temp_max']:
+                    self.minTemp = m['temp_max']
 
         if self.minTemp and self.maxTemp:
             value = { "minimum-temperature" : self.minTemp, "maximum-temperature" : self.maxTemp }
             self.sendNotification(value)
 
-        #print(data_json)
+        show()
+
+    def clear(self, dweek, cnt):
+        self.temp = []
+        self.feelstemp = []
+        for i in range(cnt):
+            self.temp.add(None)
+            self.feelstemp.add(None)
+        self.minTemp = [None, None, None, None, None, None]
+        self.maxTemp = [None, None, None, None, None, None]
+        self.minIdxTemp = [None, None, None, None, None, None]
+        self.maxIdxTemp = [None, None, None, None, None, None]
+
+
+    def add(self, idx, day, temp, feelstemp, temp_min, temp_max, pressure, humidity):
+        self.temp[idx] = temp
+        self.feelstemp[idx] = feelstemp
+        if self.minTemp[day] is None or self.minTemp[day] > temp_min:
+            self.minTemp[day] = temp_min
+            self.minIdxTemp[day] = idx
+        if self.minTemp[day] is None or self.minTemp[day] > temp_min:
+            self.minTemp[day] = temp_min
+            self.minIdxTemp[day] = idx
+        
+
+    def show(self):
+        pass
+
 
 
 

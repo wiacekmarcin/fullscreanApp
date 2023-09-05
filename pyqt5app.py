@@ -217,11 +217,11 @@ if __name__ == '__main__':
                 #pogoda.Pogoda(mainWin.widget),
                 #pogodav2.Pogodav2(mainWin.widget),
                 #calendar_day.CalendarDay(mainWin.widget),
-                #pogoda5.Pogoda5(mainWin.widget),
+                pogoda5.Pogoda5(mainWin.widget),
                 #read_serial.SerialReader(mainWin.widget),
                 #stats.StatsWidget(mainWin.widget),
                 #rss.RSS(mainWin.widget),
-                pogoda5_1day.Pogoda5_1Day(mainWin.widget)
+                #pogoda5_1day.Pogoda5_1Day(mainWin.widget)
                 ]
     #mainWin.setWindowState(mainWin.WindowFullScreen)
     mainWin.setGeometry(0,0,1080,1920)
@@ -236,3 +236,4 @@ if __name__ == '__main__':
     #pip3 install BeautifulSoup4
     #pip3 install pyserial
     #pip3 install feedparser
+    #pip3 install scipy

@@ -11,7 +11,10 @@ import resources
 
 from urllib.request import urlopen
 import json
+import pogoda5_ui
 
+import numpy as np
+from scipy.interpolate import splrep, splev
 
 
 
@@ -27,15 +30,33 @@ conditionalStyle = "font-size:22px;line-height:20px;color:#ccc;text-align:right;
 class Pogoda5(blackwidget.BlackWidget):
     def __init__(self, parent=None):
         super(Pogoda5, self).__init__(parent)
-        #QNetworkAccessManager netMng
+        self.oneday_ui = pogoda5_ui.Ui_Pogoda5_1Day()
         self.url = "https://api.openweathermap.org/data/2.5/forecast?appid=b176485875db690244cb8acf93637572&id=7532279&lang=pl&units=metric"
         self.prevday = None
         self.delaySec = 0
         self.nodata = False
-        
+        self.minTemp = [None, None, None, None, None, None, None]
+        self.maxTemp = [None, None, None, None, None, None, None]
+
+        self.font = QFont()
+        self.font.setFamily("Roboto Condensed Light")
+        self.font.setPointSize(12)
+        self.font.setBold(False)
+        self.font.setWeight(50)
+        self.w3h = 25
+        self.h1deg = 10
+        self.maxRange = 30
+        self.minRange = 10
+        self.height = 300
+        self.margin = int((1024-(8*5*self.w3h)) / 2)
+
+        self.daysName = [u'Niedziela',u'Poniedziałek',u'Wtorek',u'Środa',u'Czwartek',u'Piatek',u'Sobota']
 
     def getRect(self):
-        return QRect(0,0,0,0)
+        return QRect(0, 300,(5*8+1)*self.w3h+2*self.margin, 500)
+    
+    def setupUi(self, Pogoda5_1Day):
+        self.oneday_ui.setupUi(Pogoda5_1Day)
     
     def timeout(self, dt):
         if not self.prevday is None or self.prevday == dt.date().day():
@@ -61,20 +82,21 @@ class Pogoda5(blackwidget.BlackWidget):
         if cnt_items == 0:
             print("Brak danych")
             self.delaySec = 60
-            show()
+            self.show()
             return
 
         items = data_json["list"]
         if items is None:
             print("Brak danych")
             self.delaySec = 60
-            show()
+            self.show()
             return
         
-        clear(dt.dayOfWeek() - 1, cnt_items + 8)
-        self.minTemp = None
-        self.maxTemp = None
+        self.clear(dt.date().dayOfWeek() - 1, cnt_items + 8)
+    
         self.nodata = True
+        minTempL = None
+        maxTempL = None
         for i in items:
             dt_txt = i["dt_txt"]
             if i["dt_txt"] is None:
@@ -88,31 +110,32 @@ class Pogoda5(blackwidget.BlackWidget):
             idx = ih/3
 
             m = i['main']
-            add(idx, day-self.prevday, m['temp'],m['feels_like'],m['temp_min'],m['temp_max'],m['pressure'],m['humidity'])
+            self.add(idx, day-self.prevday, m['temp'],m['feels_like'],m['temp_min'],m['temp_max'],m['pressure'],m['humidity'])
 
-            if day == self.prevday:
-                if self.minTemp is None:
-                    self.minTemp = m['temp_min']
-                elif self.minTemp > m['temp_min']:
-                    self.minTemp = m['temp_min']
+            if int(day) == int(self.prevday):
+                if minTempL is None:
+                    minTempL = float(m['temp_min'])
+                elif minTempL > float(m['temp_min']):
+                    minTempL = float(m['temp_min'])
 
-                if self.maxTemp is None:
-                    self.maxTemp = m['temp_max']
-                elif self.maxTemp > m['temp_max']:
-                    self.minTemp = m['temp_max']
+                if maxTempL is None:
+                    maxTempL = float(m['temp_max'])
+                elif maxTempL < float(m['temp_max']):
+                    maxTempL = float(m['temp_max'])
 
-        if self.minTemp and self.maxTemp:
-            value = { "minimum-temperature" : self.minTemp, "maximum-temperature" : self.maxTemp }
+        if not minTempL is None and not maxTempL is None:
+            value = { "minimum-temperature" : minTempL, "maximum-temperature" : maxTempL }
             self.sendNotification(value)
+            print("Send", str(value))
 
-        show()
+        self.show()
 
     def clear(self, dweek, cnt):
         self.temp = []
         self.feelstemp = []
         for i in range(cnt):
-            self.temp.add(None)
-            self.feelstemp.add(None)
+            self.temp.append(None)
+            self.feelstemp.append(None)
         self.minTemp = [None, None, None, None, None, None]
         self.maxTemp = [None, None, None, None, None, None]
         self.minIdxTemp = [None, None, None, None, None, None]
@@ -120,18 +143,109 @@ class Pogoda5(blackwidget.BlackWidget):
 
 
     def add(self, idx, day, temp, feelstemp, temp_min, temp_max, pressure, humidity):
-        self.temp[idx] = temp
-        self.feelstemp[idx] = feelstemp
+        self.temp[int(idx)] = temp
+        self.feelstemp[int(idx)] = feelstemp
         if self.minTemp[day] is None or self.minTemp[day] > temp_min:
             self.minTemp[day] = temp_min
             self.minIdxTemp[day] = idx
-        if self.minTemp[day] is None or self.minTemp[day] > temp_min:
-            self.minTemp[day] = temp_min
-            self.minIdxTemp[day] = idx
+        if self.maxTemp[day] is None or self.maxTemp[day] < temp_max:
+            self.maxTemp[day] = temp_max
+            self.maxIdxTemp[day] = idx
         
 
     def show(self):
-        pass
+        scene = QGraphicsScene()
+        #scene.setForegroundBrush(QColor(0, 0, 0))
+        #scene.setBackgroundBrush(QColor(255, 255, 255))
+        scene.setBackgroundBrush(QColor(0, 0, 0))
+        #scene.setFont(self.font)
+
+        #t = scene.addText("Hello, world!", self.font)
+        #t.setPos(50,50)
+        #t.setDefaultTextColor(QColor(255, 255, 255))
+        pen = QPen(QColor(255, 255, 255))
+        pen.setWidth(1)
+
+        x = []
+        for i in range(8*5+1) :
+            #scene.addLine(QLineF(self.margin + self.w3h*i, 0, self.margin + self.w3h*i, self.height), pen)
+            if i % 2 == 0:
+                if i == 8*5:
+                    t = scene.addText("24", self.font)
+                else:
+                    t = scene.addText("%d" % ((i*3) % 24), self.font)
+                pos = QPointF(self.margin + self.w3h*i, self.height+16)                
+                #item.setPos(pos - item.boundingRect().center())
+                t.setPos(pos - t.boundingRect().center())
+                t.setDefaultTextColor(QColor(255, 255, 255))
+            if i % 8 == 0 and i < 5*8:
+                if int(i/8) % 2 == 0:
+                    b = QBrush(QColor(50, 50, 50))
+                else:
+                    b = QBrush(QColor(0, 0, 0, 0))
+                r = scene.addRect(self.margin + self.w3h*i, 0, self.w3h*8, self.height, QPen(QColor(0, 0, 0)), b)
+                t = scene.addText(self.daysName[int(i/8) % 7], self.font)
+                pos = QPointF(self.margin + self.w3h*i, self.height+32)
+                t.setDefaultTextColor(QColor(255, 255, 255))
+                t.setPos(pos)
+        prev2 = None
+        prev = None
+        points = []    
+        for x in range(len(self.temp)):
+            if self.temp[x] is None:
+                continue
+            pos = QRectF(self.margin + self.w3h*x -1 , (30-self.temp[x]) * self.h1deg +1, 3, 3)  
+            e = scene.addEllipse(pos,  QPen(QColor(255, 255, 255)), QBrush(QColor(255,255,255)))
+            points.append(pos)
+            if prev is None:
+                prev = pos.center()
+                continue
+
+            #pl = QLineF(prev, pos.center())
+            #l = scene.addLine(pl, pen)
+
+            if prev2 is None:
+                prev2 = prev
+                prev = pos.center()
+                continue
+
+            if prev2.y() < prev.y()  and prev.y() > pos.center().y():
+                t = scene.addText("%2.1f" % self.temp[x-1], self.font)
+                t.setDefaultTextColor(QColor(255, 255, 255))
+                t.setPos(prev)
+
+            if prev2.y() > prev.y()  and prev.y() < pos.center().y():
+                t = scene.addText("%2.1f" % self.temp[x-1], self.font)
+                t.setDefaultTextColor(QColor(255, 255, 255))
+                t.setPos(prev - QPointF(0, 32))
+
+            prev2 = prev
+            prev = pos.center()
+
+        x = np.array([p.x() for p in points])
+        y = np.array([p.y() for p in points])
+
+        spl = splrep(x, y)
+        f = splev(x, spl)
+
+# Estimate values
+        x_new = np.linspace(points[0].x(), points[-1].x(), (5*8+1)*self.w3h)
+        y_new = splev(x_new, spl)
+        poly = []
+        for i in range(len(x_new)):
+            poly.append(QPointF(x_new[i], y_new[i]))
+        polygon = QPolygonF(poly)
+        #scene.addPolygon(polygon, pen)
+        path = QPainterPath();
+        path.addPolygon(polygon);
+        contour = QGraphicsPathItem(path);
+        contour.setPen(pen);
+        scene.addItem(contour)
+
+
+
+        self.oneday_ui.graphicsView.setScene(scene)
+        self.oneday_ui.graphicsView.show()
 
 
 

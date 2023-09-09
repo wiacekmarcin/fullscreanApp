@@ -5,14 +5,12 @@ from PyQt5.QtGui import *
 
 import analogclock 
 import zegar
-#import pogoda
 import pogodav2
 import calendar_day
 import pogoda5
 import read_serial
 import stats
 import rss
-import pogoda5_1day
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -213,14 +211,12 @@ if __name__ == '__main__':
     pluggins = [
                 analogclock.AnalogClock(mainWin.widget),
                 zegar.Zegar(mainWin.widget),
-                #pogoda.Pogoda(mainWin.widget),
                 pogodav2.Pogodav2(mainWin.widget),
                 calendar_day.CalendarDay(mainWin.widget),
                 pogoda5.Pogoda5(mainWin.widget),
                 read_serial.SerialReader(mainWin.widget),
                 stats.StatsWidget(mainWin.widget),
                 rss.RSS(mainWin.widget),
-                #pogoda5_1day.Pogoda5_1Day(mainWin.widget)
                 ]
     #mainWin.setWindowState(mainWin.WindowFullScreen)
     mainWin.setGeometry(0,0,1080,1920)

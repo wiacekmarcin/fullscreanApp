@@ -42,7 +42,7 @@ class RSS(blackwidget.BlackWidget):
     
 
     def getRect(self):
-        return QRect(0, 700, 1024, 600)
+        return QRect(0, 800, 1024, 600)
 
     
     def setupUi(self, RSS):

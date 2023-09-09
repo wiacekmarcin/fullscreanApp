@@ -31,6 +31,7 @@ class Pogoda5(blackwidget.BlackWidget):
     def __init__(self, parent=None):
         super(Pogoda5, self).__init__(parent)
         self.oneday_ui = pogoda5_ui.Ui_Pogoda5_1Day()
+        self.setupUi(self)
         self.url = "https://api.openweathermap.org/data/2.5/forecast?appid=b176485875db690244cb8acf93637572&id=7532279&lang=pl&units=metric"
         self.prevday = None
         self.delaySec = 0
@@ -53,7 +54,7 @@ class Pogoda5(blackwidget.BlackWidget):
         self.daysName = [u'Niedziela',u'Poniedziałek',u'Wtorek',u'Środa',u'Czwartek',u'Piatek',u'Sobota']
 
     def getRect(self):
-        return QRect(0, 300,(5*8+1)*self.w3h+2*self.margin, 500)
+        return QRect(0, 500,(5*8+1)*self.w3h+2*self.margin, 300)
     
     def setupUi(self, Pogoda5_1Day):
         self.oneday_ui.setupUi(Pogoda5_1Day)
@@ -164,7 +165,7 @@ class Pogoda5(blackwidget.BlackWidget):
         #t.setPos(50,50)
         #t.setDefaultTextColor(QColor(255, 255, 255))
         pen = QPen(QColor(255, 255, 255))
-        pen.setWidth(1)
+        pen.setWidth(3)
 
         x = []
         for i in range(8*5+1) :
@@ -194,7 +195,7 @@ class Pogoda5(blackwidget.BlackWidget):
         for x in range(len(self.temp)):
             if self.temp[x] is None:
                 continue
-            pos = QRectF(self.margin + self.w3h*x -1 , (30-self.temp[x]) * self.h1deg +1, 3, 3)  
+            pos = QRectF(self.margin + self.w3h*x -1 , (30-self.temp[x]) * self.h1deg +1, 6, 6)  
             e = scene.addEllipse(pos,  QPen(QColor(255, 255, 255)), QBrush(QColor(255,255,255)))
             points.append(pos)
             if prev is None:

@@ -178,21 +178,20 @@ class MainWindow(QMainWindow):
 if __name__ == '__main__':
     import sys
     app = QApplication(sys.argv)
-    fonts = {}
+    #fonts = {}
 
-    database = QFontDatabase ()
-    fontFamilies = database.families()
-    for family in fontFamilies:
-        #print ("---\n%s : " % family)
-        fontStyles = database.styles(family)
-        for style in fontStyles:
-            #print ("\t"+style),
-            smoothSizes = database.smoothSizes(family, style)
-            sizes = ''
-            for points in smoothSizes:
-                sizes += str(points) + ' '
-
-            #print("\t"+sizes)
+    #database = QFontDatabase ()
+    #fontFamilies = database.families()
+    #for family in fontFamilies:
+    #    print ("---\n%s : " % family)
+    #    fontStyles = database.styles(family)
+    #    for style in fontStyles:
+    #        print ("\t"+style),
+    #        smoothSizes = database.smoothSizes(family, style)
+    #        sizes = ''
+    #        for points in smoothSizes:
+    #            sizes += str(points) + ' '
+    #        print("\t"+sizes)
     
     #idf = QFontDatabase.addApplicationFont(":/font/fonts/weathericons-regular-webfont.ttf")
     #for f in ["Black", "BlackItalic", "Bold", "BoldItalic", 
@@ -201,7 +200,7 @@ if __name__ == '__main__':
     #    idf = QFontDatabase.addApplicationFont("/usr/share/fonts/truetype/robotic/Roboto-%s.ttf" % f)
 
     #for f in ["Bold", "BoldItalic", "Light", "LightItalic", "Regular"
-              #, "RegularItalic"
+    #          , "RegularItalic"
     #          ]:
     #    idf = QFontDatabase.addApplicationFont("/usr/share/fonts/truetype/roboto-condensed/RobotoCondensed-%s.ttf" % f)
         
@@ -212,21 +211,21 @@ if __name__ == '__main__':
     
     mainWin = MainWindow()
     pluggins = [
-                #analogclock.AnalogClock(mainWin.widget),
-                #zegar.Zegar(mainWin.widget),
+                analogclock.AnalogClock(mainWin.widget),
+                zegar.Zegar(mainWin.widget),
                 #pogoda.Pogoda(mainWin.widget),
-                #pogodav2.Pogodav2(mainWin.widget),
-                #calendar_day.CalendarDay(mainWin.widget),
+                pogodav2.Pogodav2(mainWin.widget),
+                calendar_day.CalendarDay(mainWin.widget),
                 #pogoda5.Pogoda5(mainWin.widget),
-                #read_serial.SerialReader(mainWin.widget),
-                #stats.StatsWidget(mainWin.widget),
-                #rss.RSS(mainWin.widget),
-                pogoda5_1day.Pogoda5_1Day(mainWin.widget)
+                read_serial.SerialReader(mainWin.widget),
+                stats.StatsWidget(mainWin.widget),
+                rss.RSS(mainWin.widget),
+                #pogoda5_1day.Pogoda5_1Day(mainWin.widget)
                 ]
     #mainWin.setWindowState(mainWin.WindowFullScreen)
     mainWin.setGeometry(0,0,1080,1920)
     mainWin.setPlugins(pluggins)
-    #mainWin.showFullScreen()
+    mainWin.showFullScreen()
     mainWin.show()
     try:
         sys.exit(app.exec_())

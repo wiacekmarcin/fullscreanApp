@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>Pogoda5_1Day</class>
- <widget class="QWidget" name="Pogoda5_1Day">
+ <class>Kredyty</class>
+ <widget class="QWidget" name="Kredyty">
   <property name="geometry">
    <rect>
     <x>0</x>

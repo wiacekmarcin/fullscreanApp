@@ -1,0 +1,218 @@
+Szybciej znajdź to, czego szukasz … 
+Strona główna to nowa strona docelowa, na której znajdziesz najbardziej potrzebne pliki i foldery
+wykres_temp.py
+
+#-*- encoding : utf-8 -*-
+import sys
+from PIL import Image, ImageDraw, ImageFont, ImageOps, ImageColor
+
+import numpy as np
+from scipy.interpolate import splrep, splev
+
+from urllib.request import urlopen
+import json
+
+font = ImageFont.truetype("/usr/share/fonts/truetype/ubuntu-font-family/Ubuntu-L.ttf", 14)
+fontB = ImageFont.truetype("/usr/share/fonts/truetype/ubuntu-font-family/Ubuntu-L.ttf", 18)
+class Wykres:
+	def __init__(self):
+		self.url = "https://api.openweathermap.org/data/2.5/forecast?appid=b176485875db690244cb8acf93637572&id=7532279&lang=pl&units=metric"
+		self.prevday = None
+		self.delaySec = 0
+		self.nodata = False
+		self.minTemp = [None, None, None, None, None, None, None]
+		self.maxTemp = [None, None, None, None, None, None, None]
+		self.temp = [None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None]
+		self.tempmin = [None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None]
+		self.tempmax = [None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None]
+		self.font = ImageFont.truetype("/usr/share/fonts/truetype/freefont/FreeSansBold.ttf", 12)
+		self.feelstemp = [None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None]
+		self.minIdxTemp = [None, None, None, None, None, None, None]
+		self.maxIdxTemp = [None, None, None, None, None, None, None]
+		self.w3h = 25
+		self.h1deg = 10
+		self.maxRange = 30
+		self.minRange = 10
+		self.height = 300
+		self.margin = int((1024-(8*5*self.w3h)) / 2)
+
+		self.daysName = [u'Niedziela',u'Poniedzialek',u'Wtorek',u'Sroda',u'Czwartek',u'Piatek',u'Sobota']
+
+	def timeout(self):
+		response = urlopen(self.url)
+		data_json = json.loads(response.read().decode('utf-8'))
+
+		cnt_items = int(data_json["cnt"]) or 0
+		if cnt_items == 0:
+			print("Brak danych")
+			return
+
+		items = data_json["list"]
+		if items is None:
+			print("Brak danych")
+			return
+
+		self.minTempL = None
+		self.maxTempL = None
+		idx = 0
+		for i in items:
+
+			dt_txt = i["dt_txt"]
+			if i["dt_txt"] is None:
+				continue
+			fd,ft = dt_txt.split(' ')
+			year,month,day = fd.split('-')
+			hour,minute,second = ft.split(':')
+			day = int(day)
+			#idt = int(i['dt'])
+			#ih = (idt - tdt - offset)/3600
+			#idx = ih/3
+
+			m = i['main']
+			self.add(idx, int(idx / 8), m['temp'],m['feels_like'],m['temp_min'],m['temp_max'],m['pressure'],m['humidity'])
+			idx += 1
+
+		self.show()
+
+	def add(self, idx, day, temp, feelstemp, temp_min, temp_max, pressure, humidity):
+		print(idx)
+		self.temp[int(idx)] = temp
+		self.tempmin[int(idx)] = temp_min
+		self.tempmax[int(idx)] = temp_max
+		self.feelstemp[int(idx)] = feelstemp
+		if self.minTemp[day] is None or self.minTemp[day] > temp_min:
+			self.minTemp[day] = temp_min
+			self.minIdxTemp[day] = idx
+		if self.maxTemp[day] is None or self.maxTemp[day] < temp_max:
+			self.maxTemp[day] = temp_max
+			self.maxIdxTemp[day] = idx
+
+	def show(self):
+		width = 1024
+		height = 300
+		im = Image.new("RGB", (width, height+100), color="black")
+		draw = ImageDraw.Draw(im)
+
+		x = []
+		for i in range(8*5+1) :
+			print(i)
+			print(i%2)
+			print(i%8)
+			if i % 2 == 0:
+				c = (40, 40, 40)
+				if i == 8*5:
+					draw.text((self.margin + self.w3h*i, self.height+16), "24", font=self.font, fill="white")
+				else:
+					draw.text((self.margin + self.w3h*i, self.height+16), "%d" % ((i*3) % 24), font=self.font, fill="white")
+			else:
+				c = (0, 0, 0)
+			if int(i/8) % 2 == 1:
+				c = (c[0]+20, c[1]+20, c[2]+20)
+			draw.rectangle((self.margin + self.w3h*i, 0, self.margin + self.w3h*i+self.w3h*8, self.height), fill=c, outline=c, width=1)
+
+			if i % 8 == 0 and i <= 5*8:
+				draw.text((self.margin + self.w3h*i, self.height+32), self.daysName[int(i/8) % 7], font=self.font, fill="white")
+
+
+			#if i > 16:
+			#	break
+		#im.show()
+		#return
+		points1 = []
+		points2 = []
+		points3 = []
+		print(self.temp)
+		for x in range(len(self.temp)):
+			if self.temp[x] is None:
+				continue
+			draw.ellipse((self.margin + self.w3h*x -1 , (30-self.temp[x]) * self.h1deg +1, 6, 6), fill='white', outline='red', width=2)
+			points1.append((self.margin + self.w3h*x -1 , (30-self.tempmin[x]) * self.h1deg +1))
+			points2.append((self.margin + self.w3h*x -1 , (30-self.tempmax[x]) * self.h1deg +1))
+			points3.append((self.margin + self.w3h*x -1 , (30-self.feelstemp[x]) * self.h1deg +1))
+			#if prev is None:
+			#	prev = pos.center()
+			#	continue
+
+			#pl = QLineF(prev, pos.center())
+			#l = scene.addLine(pl, pen)
+
+			#if prev2 is None:
+			#	prev2 = prev
+			#	prev = pos.center()
+			#	continue
+
+			#if prev2.y() < prev.y()  and prev.y() > pos.center().y():
+			#	t = scene.addText("%2.1f" % self.temp[x-1], self.font)
+			#	t.setDefaultTextColor(QColor(255, 255, 255))
+			#	t.setPos(prev)
+
+			#if prev2.y() > prev.y()  and prev.y() < pos.center().y():
+			#	t = scene.addText("%2.1f" % self.temp[x-1], self.font)
+			#	t.setDefaultTextColor(QColor(255, 255, 255))
+			#	t.setPos(prev - QPointF(0, 32))
+
+			#prev2 = prev
+			#prev = pos.center()
+
+		x1 = np.array([p[0] for p in points1])
+		y1 = np.array([p[1] for p in points1])
+
+		x2 = np.array([p[0] for p in points2])
+		y2 = np.array([p[1] for p in points2])
+
+		x3 = np.array([p[0] for p in points3])
+		y3 = np.array([p[1] for p in points3])
+
+		spl_1 = splrep(x1, y1)
+		f_1 = splev(x1, spl_1)
+
+		spl_2 = splrep(x2, y2)
+		f_2 = splev(x2, spl_2)
+
+		spl_3 = splrep(x3, y3)
+		f_3 = splev(x3, spl_3)
+
+
+
+# Estimate values
+		x_new1 = np.linspace(points1[0][0], points1[-1][0], (5*8+1)*self.w3h)
+		y_new1 = splev(x_new1, spl_1)
+
+		x_new2 = np.linspace(points2[0][0], points2[-1][0], (5*8+1)*self.w3h)
+		y_new2 = splev(x_new2, spl_2)
+		poly = []
+		for i in range(len(x_new1)):
+			poly.append((x_new1[i], y_new1[i]))
+
+		for i in range(len(x_new2)):
+			poly.append((x_new2[len(x_new2)-i-1], y_new2[len(x_new2)-i-1]))
+
+		draw.polygon(poly, fill=(250, 0, 0), outline=(0, 250, 0), width=2)
+
+		draw.line(points3, fill=(0, 0, 250), width=2)
+		im.show()
+
+w = Wykres()
+#print(str(w))
+w.timeout()
+
+#def createZarysWykresu():
+#	width = 1024
+#	height = 300
+#	im = Image.new("RGB", (width, height), color="black")
+#	draw = ImageDraw.Draw(im)
+#	for x in range(rowmajor):
+#		for y in range(cols):
+#			for z in range(rowminor):
+#				posx = bsize * y + int(0.5* bsize)
+#				posy = ( rowminor * x + z ) * bsize + int(0.5* bsize)
+#				draw.point((posx,posy), fill="black")
+#
+#	for y in range(cols+1):
+#		draw.line((y*bsize, 0, y*bsize, (rowmajor * rowminor + 1) * bsize), fill="black", width=1)
+#
+#	for x in range(rowmajor+1):
+#		draw.line((0, x*rowminor*bsize, (cols + 1) * bsize, x*rowminor*bsize), fill="black", width=1)
+#	im = im.resize((2* im.size[0], 2*im.size[1]), Image.ANTIALIAS)
+#	im.show()
+#createZarysPlytki()

@@ -11,6 +11,7 @@ import pogoda5
 import read_serial
 import stats
 import rss
+import kredyty
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -217,6 +218,7 @@ if __name__ == '__main__':
                 read_serial.SerialReader(mainWin.widget),
                 stats.StatsWidget(mainWin.widget),
                 rss.RSS(mainWin.widget),
+                kredyty.Kredyty(mainWin.widget),
                 ]
     #mainWin.setWindowState(mainWin.WindowFullScreen)
     mainWin.setGeometry(0,0,1080,1920)

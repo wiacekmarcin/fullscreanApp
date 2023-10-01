@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'ui/pogoda5.ui'
+# Form implementation generated from reading ui file 'kredyty.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.6
 #
@@ -11,22 +11,22 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 
-class Ui_Pogoda5_1Day(object):
-    def setupUi(self, Pogoda5_1Day):
-        Pogoda5_1Day.setObjectName("Pogoda5_1Day")
-        Pogoda5_1Day.resize(326, 152)
-        self.verticalLayout = QtWidgets.QVBoxLayout(Pogoda5_1Day)
+class Ui_Kredyty(object):
+    def setupUi(self, Kredyty):
+        Kredyty.setObjectName("Kredyty")
+        Kredyty.resize(326, 152)
+        self.verticalLayout = QtWidgets.QVBoxLayout(Kredyty)
         self.verticalLayout.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout.setSpacing(0)
         self.verticalLayout.setObjectName("verticalLayout")
-        self.label = QtWidgets.QLabel(Pogoda5_1Day)
+        self.label = QtWidgets.QLabel(Kredyty)
         self.label.setText("")
         self.label.setObjectName("label")
         self.verticalLayout.addWidget(self.label)
 
-        self.retranslateUi(Pogoda5_1Day)
-        QtCore.QMetaObject.connectSlotsByName(Pogoda5_1Day)
+        self.retranslateUi(Kredyty)
+        QtCore.QMetaObject.connectSlotsByName(Kredyty)
 
-    def retranslateUi(self, Pogoda5_1Day):
+    def retranslateUi(self, Kredyty):
         _translate = QtCore.QCoreApplication.translate
-        Pogoda5_1Day.setWindowTitle(_translate("Pogoda5_1Day", "Form"))
+        Kredyty.setWindowTitle(_translate("Kredyty", "Form"))

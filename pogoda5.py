@@ -29,6 +29,7 @@ class Pogoda5(blackwidget.BlackWidget):
         self.oneday_ui.setupUi(Pogoda5_1Day)
     
     def timeout(self, dt):
+        print("PG-1")
         ddate = dt.date()
         ttime = dt.time()
         h = ttime.hour()
@@ -43,8 +44,8 @@ class Pogoda5(blackwidget.BlackWidget):
         if d < 10: fstr += '0'
         fstr += '%d' % d
 
-
-        fpath = os.path.join("/tmp", fstr) + ".png"
+        print("PG-2")
+        fpath = os.path.join("/home/pi/tmp", fstr) + ".png"
         if os.path.exists(fpath):
             if not self.isImage:
                 self.isImage = True

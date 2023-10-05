@@ -6,19 +6,47 @@ import math
 from PIL import Image, ImageDraw, ImageFont, ImageOps, ImageColor
 from dateutil.relativedelta import relativedelta
 
-kredyty = [
-	('Santander',  148.52, (2024, 10), 1000),
-	('mbank',  494.77, (2030, 4), 1000),
-	('Agricol 1', 469.78, (2027, 2), 1000),
-	('Agricol 2', 303.99, (2028, 7), 1000),
-	('Agricol 3', 310.73, (2025, 5), 1000),
-	('Millenium', 700.00, (2027, 5), 1000),
-	('Pekao S.A 1', 1100.00, (2023, 12), 1000),
-	('Pekao S.A 2', 1500.00, (2027, 12), 1000)
+def countL(y, m):
+	return y*12+m
+
+def wylicz_pozostala_kwota(kwota, stopa, rata, ilosc_rat, rat_do_konca):
+	sumazob=kwota
+	r = ilosc_rat
+	while r != rat_do_konca:
+		odsetki = sumazob*stopa/1200
+		splkap = rata-odsetki
+		sumazob = sumazob-splkap
+		r-=1
+	return sumazob
+
+dane_kredytow = [
+	('Santander 0%',  148.52, (2024, 10), (2019, 10), 8911, 0),
+	('mbank 13.35%',  494.77, (2030, 4), (2023, 4), 26900, 13.35),
+	('Agricol 7.2%', 469.78, (2027, 2), (2021, 2), 27400, 7.2),
+	('Agricol 7.2%', 303.99, (2028, 7), (2021, 7), 20000, 7.2),
+	('Agricol 0%', 310.73, (2025, 5), (2021, 1), 12429, 0),
+	('Millenium 6.7%', 694.02, (2028, 3	), (2020, 3), 51466.14, 6.7),
+	#('Pekao S.A 1', 1100.00, (2023, 12), 1000),
+	#('Pekao S.A 2', 1500.00, (2027, 12), 1000)
 ]
 
-kredyty.sort(key=lambda x : 12*x[2][0]+x[2][1])
-print(kredyty)
+ddact = datetime.date.today()
+liczba = countL(ddact.year, ddact.month)
+
+kredyty = []
+for kr in dane_kredytow:
+	kredyt = [kr[0], kr[1], kr[2], kr[3], kr[4], kr[5]]
+	nr_rest = countL(kr[2][0], kr[2][1]) - liczba
+	nr_raty = liczba - countL(kr[3][0], kr[3][1])
+	if nr_rest < 0:
+		continue
+	kredyt.append(nr_raty)
+	kredyt.append(nr_rest)
+	kredyt.append(wylicz_pozostala_kwota(kr[4], kr[5], kr[1], nr_raty+nr_rest, nr_rest))
+	kredyty.append(kredyt)
+
+
+kredyty.sort(key=lambda x : countL(x[2][0],x[2][1]))
 	
 
 #fontpath = '/home/marcin/git.devel.marcin/fulscreanapp/fullscreanApp/fonts/robotic/Roboto-Regular.ttf'
@@ -40,27 +68,35 @@ def createBackground():
 	im = Image.new("RGB", (width, height), color="black")
 	draw = ImageDraw.Draw(im)
 	
-	suma = 0.0
+	sumaRat = 0.0
+	sumaKredytow = 0.0
+	sumaPozostalo = 0.0
 	for h in range(len(kredyty)):
-		opis, kwota, _, _ = kredyty[h]
+		opis, kwota, _, _, cala_kwota, _, _, _, zostala_kwota = kredyty[h]
 		draw.text((0, 16+h*wh), "%s - %.2f" % (opis, kwota), font = font8, fill="white")
-		suma += kwota 
-	draw.text((0, 16+len(kredyty)*wh), "Razem - %.2f" % (suma), font = font8, fill="white")
+		sumaRat += kwota 
+		sumaKredytow += cala_kwota
+		sumaPozostalo += zostala_kwota
+
+	draw.text((0, 16+len(kredyty)*wh), u"Razem - %.2f" % (sumaRat), font = font8, fill="white")
+	if sumaKredytow > 0:
+		draw.text((100, 16+len(kredyty)*wh), u"Zostalo do splacenia %.2f z %.2f (%.0f %%)" % (sumaPozostalo, sumaKredytow, 100*sumaPozostalo/sumaKredytow), font = font8, fill="white")
 	
 	for mon in range(maxM):
 		dd = ddact + relativedelta(months=mon)
 		m = dd.month
 		y = dd.year
-		print(y, m)
+		#print(y, m)
 		if m == 1:
 			draw.text((margin+mon*wm, 0), "%d" % y, font = font, fill="white")
 			
 		for h in range(len(kredyty)):
-			opis, kwota, k, all = kredyty[h]
+			opis, kwota, k, _, cala_kwota, _, _, _, zostala_kwota = kredyty[h]
 			if k[0]*12+k[1] >= y*12+m:
 				draw.rectangle((margin+mon*wm+1, h*wh+16+1, margin+mon*wm+4, h*wh+16+wh-1), fill="gray", outline="gray")
 			if k[0]*12+k[1] == y*12+m:
-				draw.text((margin+mon*wm+5, 16+h*wh), "%.2f" % all, font = font8, fill="white")
-	fpath = '/tmp/kredyty_%d_%02d.png' % (ddact.year, ddact.month)
+				draw.text((margin+mon*wm+5, 16+h*wh), "%.2f / %.2f (%.0f %%)" % (zostala_kwota, cala_kwota, 100*zostala_kwota/cala_kwota), font = font8, fill="white")
+	fpath = '/home/pi/tmp/kredyty_%d_%02d.png' % (ddact.year, ddact.month)
+	#im.show()
 	im.save(fpath)
 createBackground()

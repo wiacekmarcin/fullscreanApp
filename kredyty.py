@@ -8,14 +8,14 @@ import datetime
 import time
 
 import blackwidget
-import pogoda5_ui
+import kredyty_ui
 
 
 
-class Pogoda5(blackwidget.BlackWidget):
+class Kredyty(blackwidget.BlackWidget):
     def __init__(self, parent=None):
-        super(Pogoda5, self).__init__(parent)
-        self.oneday_ui = pogoda5_ui.Ui_Pogoda5_1Day()
+        super(Kredyty, self).__init__(parent)
+        self.kred = kredyty_ui.Ui_Kredyty()
         self.setupUi(self)
         self.isImage = False
         self.maxCnt = 0
@@ -23,25 +23,21 @@ class Pogoda5(blackwidget.BlackWidget):
         
 
     def getRect(self):
-        return QRect(0, 500, 1024, 300)
+        return QRect(0, 1750, 600, 250)
     
-    def setupUi(self, Pogoda5_1Day):
-        self.oneday_ui.setupUi(Pogoda5_1Day)
+    def setupUi(self, Kredyty):
+        self.kred.setupUi(Kredyty)
     
     def timeout(self, dt):
         ddate = dt.date()
-        ttime = dt.time()
-        h = ttime.hour()
-        m = ttime.minute()
-        s = ttime.second()
+
         y = ddate.year()
         mm = ddate.month()
-        d = ddate.day()
-        fstr = '%d_' % y
+
+        fstr = 'kredyty_%d_' % y
         if mm < 10: fstr += '0'
-        fstr += '%d_' % mm
-        if d < 10: fstr += '0'
-        fstr += '%d' % d
+        fstr += '%d' % mm
+        
 
 
         fpath = os.path.join("/tmp", fstr) + ".png"
@@ -49,8 +45,8 @@ class Pogoda5(blackwidget.BlackWidget):
             if not self.isImage:
                 self.isImage = True
                 pixmap = QPixmap (fpath)
-                self.oneday_ui.label.setPixmap(pixmap);
-                self.oneday_ui.label.setMask(pixmap.mask());
+                self.kred.label.setPixmap(pixmap);
+                self.kred.label.setMask(pixmap.mask());
         else:
             self.isImage = False
 

@@ -528,6 +528,51 @@
      </property>
     </widget>
    </item>
+   
+   <item>
+    <widget class="QLabel" name="przyslowia">
+     <property name="font">
+      <font>
+       <family>Roboto Condensed</family>
+       <pointsize>12</pointsize>
+       <weight>50</weight>
+       <bold>false</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>-</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   
+   <item>
+    <widget class="QLabel" name="cytat">
+     <property name="font">
+      <font>
+       <family>Roboto Condensed</family>
+       <pointsize>12</pointsize>
+       <weight>50</weight>
+       <bold>false</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>-</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   
    <item>
     <spacer name="verticalSpacer">
      <property name="orientation">

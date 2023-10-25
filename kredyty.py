@@ -23,12 +23,13 @@ class Kredyty(blackwidget.BlackWidget):
         
 
     def getRect(self):
-        return QRect(0, 1750, 600, 250)
+        return QRect(1080-710, 1920-125, 710, 125)
     
     def setupUi(self, Kredyty):
         self.kred.setupUi(Kredyty)
     
     def timeout(self, dt):
+        print("kr-1")
         ddate = dt.date()
 
         y = ddate.year()
@@ -39,8 +40,9 @@ class Kredyty(blackwidget.BlackWidget):
         fstr += '%d' % mm
         
 
-
-        fpath = os.path.join("/tmp", fstr) + ".png"
+        print("kr-2")
+        fpath = os.path.join("/home/pi/tmp", fstr) + ".png"
+        print(fpath)
         if os.path.exists(fpath):
             if not self.isImage:
                 self.isImage = True

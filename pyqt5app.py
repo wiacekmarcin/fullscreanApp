@@ -53,9 +53,15 @@ class MainWindow(QMainWindow):
         self.repaint()    
 
     def update1Sec(self):
+        dt = QDateTime.currentDateTime()
+        #print("--")
         try:
             for p in self.plgs:
-                p.timeout(QDateTime.currentDateTime())
+                #print(p)
+                try:
+                    p.timeout(dt)
+                except :
+                    pass
             self.update()
         except KeyboardInterrupt:
             print("ctrl-c")
@@ -177,37 +183,7 @@ class MainWindow(QMainWindow):
 if __name__ == '__main__':
     import sys
     app = QApplication(sys.argv)
-    #fonts = {}
 
-    #database = QFontDatabase ()
-    #fontFamilies = database.families()
-    #for family in fontFamilies:
-    #    print ("---\n%s : " % family)
-    #    fontStyles = database.styles(family)
-    #    for style in fontStyles:
-    #        print ("\t"+style),
-    #        smoothSizes = database.smoothSizes(family, style)
-    #        sizes = ''
-    #        for points in smoothSizes:
-    #            sizes += str(points) + ' '
-    #        print("\t"+sizes)
-    
-    #idf = QFontDatabase.addApplicationFont(":/font/fonts/weathericons-regular-webfont.ttf")
-    #for f in ["Black", "BlackItalic", "Bold", "BoldItalic", 
-    #        "Light", "LightItalic", "Medium", "MediumItalic",
-    #        "Regular", "RegularItalic", "Thin", "ThinItalic"]:
-    #    idf = QFontDatabase.addApplicationFont("/usr/share/fonts/truetype/robotic/Roboto-%s.ttf" % f)
-
-    #for f in ["Bold", "BoldItalic", "Light", "LightItalic", "Regular"
-    #          , "RegularItalic"
-    #          ]:
-    #    idf = QFontDatabase.addApplicationFont("/usr/share/fonts/truetype/roboto-condensed/RobotoCondensed-%s.ttf" % f)
-        
-    #for f in ["Black", "Bold", "ExtraBold", "ExtraLight","Light", "Regular", "Thin", "Medium", "SemiBold"]:
-    #    idf = QFontDatabase.addApplicationFont("/usr/share/fonts/truetype/roboto-slab/RobotoSlab-%s.ttf" % f)
-    
-            
-    
     mainWin = MainWindow()
     pluggins = [
                 analogclock.AnalogClock(mainWin.widget),

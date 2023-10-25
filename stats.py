@@ -292,7 +292,7 @@ class StatsWidget(blackwidget.BlackWidget):
 
 
     def getRect(self):
-        return QRect(1080-250, 1920-270, 250, 270)
+        return QRect(0, 1920-270, 250, 270)
     
     def setupUi(self, StatsWidget):
         self.statsUi.setupUi(StatsWidget)

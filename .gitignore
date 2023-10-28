@@ -6,6 +6,7 @@
 *.lo
 *.o
 *.obj
+*.pyc
 
 # Precompiled Headers
 *.gch
@@ -30,3 +31,20 @@
 *.exe
 *.out
 *.app
+qjson4/QJson4.pro.user
+FullScreanApp.pro.user
+ui_zegar.h
+ui_pogoda.h
+ui_ip.h
+ui_informacje.h
+moc_zegar.cpp
+moc_predefs.h
+moc_pogoda.cpp
+moc_mainwindow.cpp
+moc_ip.cpp
+moc_informacje.cpp
+moc_blackwidget.cpp
+Makefile
+FullScreanApp
+.qmake.stash
+

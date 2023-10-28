@@ -1,8 +1,0 @@
-<RCC>
-    <qresource lang="pl" prefix="/new/prefix1">
-        <file alias="tlo">Bez nazwy.png</file>
-        <file alias="analog">analog.png</file>
-        <file>sun.png</file>
-        <file>moon.png</file>
-    </qresource>
-</RCC>

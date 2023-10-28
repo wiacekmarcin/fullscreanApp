@@ -27,7 +27,7 @@ dane_kredytow = [
 	('mbank 13.35%',  494.77, (2030, 4), (2023, 4), 26900, 13.35),
 	('Agricol 7.2% 1', 469.78, (2027, 2), (2021, 2), 27400, 7.2),
 	('Agricol 7.2% 2', 303.99, (2028, 7), (2021, 7), 20000, 7.2),
-	('Agricol 0%', 310.73, (2025, 5), (2021, 1), 12429, 0),
+	('Agricol 0%', 310.73, (2024, 4), (2021, 1), 12429, 0),
 	('Millenium 6.7%', 694.02, (2028, 3	), (2020, 3), 51466.14, 6.7),
 	('Pekao S.A 10.8%', 1141.02, (2024, 1), (2017, 1), 97043.80, 10.76),
 	('Pekao S.A 10.3%', 1500.58, (2028, 10), (2018, 10), 121212.12, 10.26),
@@ -83,7 +83,7 @@ for kr in dane_kredytow:
 	kredyty.append(kredyt)
 
 
-kredyty.sort(key=lambda x : countL(x['koniec'][0],x['koniec'][1]))
+kredyty.sort(key=lambda x : x['stopa']*x['do_splacenia'])
 	
 
 #fontpath = '/home/marcin/git.devel.marcin/fulscreanapp/fullscreanApp/fonts/robotic/Roboto-Regular.ttf'

@@ -29,7 +29,6 @@ class Kredyty(blackwidget.BlackWidget):
         self.kred.setupUi(Kredyty)
     
     def timeout(self, dt):
-        print("kr-1")
         ddate = dt.date()
 
         y = ddate.year()
@@ -40,9 +39,7 @@ class Kredyty(blackwidget.BlackWidget):
         fstr += '%d' % mm
         
 
-        print("kr-2")
         fpath = os.path.join("/home/pi/tmp", fstr) + ".png"
-        print(fpath)
         if os.path.exists(fpath):
             if not self.isImage:
                 self.isImage = True

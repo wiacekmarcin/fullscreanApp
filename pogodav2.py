@@ -17,6 +17,7 @@ class Pogodav2(blackwidget.BlackWidget):
         self.PogodaUi = pogodav2_ui.Ui_Pogoda()
         self.setupUi(self)
         self.firstTime = True
+        self.lastTime = None
 
         self.resize(self.getRect().width(), self.getRect().height())
         self.m_h = 0
@@ -54,13 +55,24 @@ class Pogodav2(blackwidget.BlackWidget):
 
 
         self.PogodaUi.tempIcon.setText("\uf055")
+        self.PogodaUi.lazienkaTempIkona.setText("\uf055")
         self.PogodaUi.ikonaCisnienia.setText("\uf079")
         self.PogodaUi.ikonaWilgotnosci.setText("\uf07a")
+        self.PogodaUi.lazienkaHumiIkona.setText("\uf07a")
         self.PogodaUi.ikonaWidocznosci.setText("\uf075")
-        
 
-
+        self.tempLazienka = 0.0
+        self.wilgotnoscLazienka = 0
         
+    def receiveNotfication(self, values):
+        if  'lazienka_temp' in values:
+            self.tempLazienka = values['lazienka_temp']
+            self.PogodaUi.lazienkaTemp.setText("%s\u00B0C" % self.tempLazienka)
+        if  'lazienka_humi' in values:
+            self.wilgotnoscLazienka = values['lazienka_humi']
+            self.PogodaUi.lazienkaHumi.setText("%s %%" % self.wilgotnoscLazienka)
+
+ 
 
     def getRect(self):
         return QRect(0,115,300,400)
@@ -69,13 +81,30 @@ class Pogodav2(blackwidget.BlackWidget):
         hour = dt.time().hour()
         min = dt.time().minute()
         sec = dt.time().second()
-        if self.firstTime == False and min % 10 != 0 and sec != 0:
-            return
 
+        self.PogodaUi.frameTemp2.setVisible(sec >= 15)
+        self.PogodaUi.frameTempLaz.setVisible(sec < 15)
+
+        il_sec = hour*3600 + 60*min + sec
+        if il_sec < 30:
+           self.lastTime = None
+           return 
+
+        #print("Get Data", "T" if self.lastTime is not None else "N", "T" if self.lastTime + 600 < il_sec else "N")
+
+        if self.lastTime is None:
+            self.lastTime = il_sec
+        else:
+            if self.lastTime + 600 > il_sec:
+                #print("Skip")
+                return
+        #print("Get Data")
+
+        self.lastTime = il_sec
         self.firstTime = False
 
-        self.PogodaUi.nazwamiasta.setText(self.citiname)
-        self.PogodaUi.czasAktualnoscidanych.setText(self.__getTimeRemaing(hour-self.pog_h, min-self.pog_m))
+        #self.PogodaUi.nazwamiasta.setText(self.citiname)
+        #self.PogodaUi.czasAktualnoscidanych.setText(self.__getTimeRemaing(hour-self.pog_h, min-self.pog_m))
         
         self.m_h = hour
         self.m_m = min
@@ -90,7 +119,7 @@ class Pogodav2(blackwidget.BlackWidget):
             
             self.pog_h = dtw.hour()
             self.pog_m = dtw.minute()
-            self.PogodaUi.czasAktualnoscidanych.setText("Dane aktualne")
+            #self.PogodaUi.czasAktualnoscidanych.setText("Dane aktualne")
 
             self.sunrise = QDateTime.fromMSecsSinceEpoch(data_json["sys"]["sunrise"]*1000)
             self.sunset = QDateTime.fromMSecsSinceEpoch(data_json["sys"]["sunset"]*1000)

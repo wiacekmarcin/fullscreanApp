@@ -90,11 +90,11 @@ class Pogoda(blackwidget.BlackWidget):
         self.iconMap["13n"]="\uf038" #"wi-night-snow",
         self.iconMap["50n"]="\uf023" #"wi-night-alt-cloudy-windy"
 
-        self.citydate = QLabel(self)
-        self.citydate.setObjectName("citydate")
-        self.citydate.setGeometry(QRect(0, 0, self.width(), 40))
-        self.citydate.setStyleSheet(citiStyle)
-        self.citydate.setTextFormat(Qt.RichText)
+        #self.citydate = QLabel(self)
+        #self.citydate.setObjectName("citydate")
+        #self.citydate.setGeometry(QRect(0, 0, self.width(), 40))
+        #self.citydate.setStyleSheet(citiStyle)
+        #self.citydate.setTextFormat(Qt.RichText)
 
         actHLevel = 40
         line = QFrame(self)
@@ -236,9 +236,9 @@ class Pogoda(blackwidget.BlackWidget):
         return QRect(0,115,300,400)
     
     def timeout(self, dt):
-        if not self.firstTime and dt.time().second() == 0:
-            self.citydate.setText("%s <span style=\"font-size:15px;color:#666\">Dane sprzed %s</span>" % (self.citiname, 
-                        self.__getTimeRemaing(dt.time().hour()-self.pog_h, dt.time().minute()-self.pog_m)))
+        #if not self.firstTime and dt.time().second() == 0:
+            #self.citydate.setText("%s <span style=\"font-size:15px;color:#666\">Dane sprzed %s</span>" % (self.citiname, 
+            #            self.__getTimeRemaing(dt.time().hour()-self.pog_h, dt.time().minute()-self.pog_m)))
         aMin = dt.time().hour()*60 + dt.time().minute()
         if not self.firstTime and aMin % 5 != 0:
             return;
@@ -257,7 +257,7 @@ class Pogoda(blackwidget.BlackWidget):
             
             self.pog_h = dtw.hour()
             self.pog_m = dtw.minute()
-            self.citydate.setText("%s <span style=\"font-size:15px;color:#666\">Dane aktualne</span>" % (self.citiname))
+            #self.citydate.setText("%s <span style=\"font-size:15px;color:#666\">Dane aktualne</span>" % (self.citiname))
 
 
             self.sunrise = QDateTime.fromMSecsSinceEpoch(data_json["sys"]["sunrise"]*1000)
@@ -296,8 +296,8 @@ class Pogoda(blackwidget.BlackWidget):
         #except:
         else:
             self.wIcon.setText(" ")
-            self.citiname = "Piastów"
-            self.citydate.setText("%s <span style=\"font-size:15px;color:#666\">Brak danych</span>" % (self.citiname))
+            #self.citiname = "Piastów"
+            #self.citydate.setText("%s <span style=\"font-size:15px;color:#666\">Brak danych</span>" % (self.citiname))
             self.windB.setText("--")
             self.windD.setText("--")
             self.windS.setText("--")

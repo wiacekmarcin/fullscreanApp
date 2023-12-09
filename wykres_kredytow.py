@@ -6,10 +6,7 @@ import math
 from PIL import Image, ImageDraw, ImageFont, ImageOps, ImageColor
 from dateutil.relativedelta import relativedelta
 
-import sqlite3
-
-conn = sqlite3.connect('/home/pi/database/kredyty.sqlite')
-cur = conn.cursor()
+import mysql.connector
 
 def countL(y, m):
 	return y*12+m
@@ -17,58 +14,43 @@ def countL(y, m):
 def textlength(draw, str, font):
 	return draw.textsize(str, font)[0]
 
-
-
-
-ddact = datetime.date.today()
-liczba = countL(ddact.year-2000, ddact.month)
-
-sql='SELECT * from kredyty where data_zakonczenia >= %d' % liczba
-#print(sql)
-cur.execute(sql)
-dane_kredytow = []
-for k in cur.fetchall():
-	kred = (k[0], k[1], k[3], k[2], k[4], k[5], k[6])
-	dane_kredytow.append(kred)
-
+cnx = mysql.connector.connect(user='kredyty', password='kredyty',
+                              host='192.168.10.254',
+                              database='kredyty')
 kredyty = []
-for kr in dane_kredytow:
-	kredyt = {
-		#'kredyt_id' : kr[0],
-		'opis' : kr[1], 
-		'wys_raty' : 0, 
-		'koniec': int(kr[2]), 
-		'poczatek' : int(kr[3]), 
-		'wolumen' : float(kr[4]),
-		'dzien' : int(kr[5]),
-		'stopa' : float(kr[6]),
-		'nr_raty' : 0,
-		'poz_rat' : 0,
-		'rata_ods' : 0,
-		'rata_kap' : 0,
-		'do_splacenia' : 0}
-	nr_rest = kr[2] - liczba
-	nr_raty = liczba - kr[3]
-	if nr_rest < 0:
-		continue
-	kredyt['nr_raty'] = nr_raty
-	kredyt['poz_rat'] = nr_rest
-	
-	kredyt_id = kr[0]
-	cur.execute("select * from raty where kredyt_id = %d and data = %d" % (kredyt_id, liczba))
-	ods = cur.fetchone()
-	rata_kap = float(ods[3])
-	rata_ods = float(ods[4])
-	kredyt['rata_ods'] = rata_ods
-	kredyt['rata_kap'] = rata_kap
-	kredyt['do_splacenia'] = float(ods[5])
-	kredyt['wys_raty'] = rata_ods + rata_kap
-	kredyty.append(kredyt)
-	
+maxMonth = 0
+if cnx and cnx.is_connected():
+	with cnx.cursor() as cursor:
+		ddact = datetime.date.today()
+		liczba = countL(ddact.year-2000, ddact.month)
 
+		sql='SELECT * FROM `RataWidok` WHERE data = %d' % liczba
+		print(sql)
+		cursor.execute(sql)
 
+		for k in cursor.fetchall():
+			print(k)
+			kred = {}
+			kred['opis'] = k[5]
+			kred['wys_raty'] = k[8]
+			kred['koniec'] = k[10]
+			kred['poczatek'] = k[9]
+			kred['wolumen'] = k[6]
+			kred['dzien'] = k[7]
+			kred['stopa'] = k[11]
+			kred['nr_raty'] = k[12]
+			kred['poz_rat'] = k[13]
+			kred['rata_ods'] = k[3]
+			kred['rata_kap'] = k[2]
+			kred['do_splacenia'] = k[4]
+			if maxMonth < kred['koniec']:
+				maxMonth = kred['koniec'] 
+			kredyty.append(kred)
+
+		
+maxMonth += 6
 kredyty.sort(key=lambda x : x['stopa']*x['do_splacenia'])
-#print(kredyty)
+print(kredyty)
 #sys.exit(0)
 
 #fontpath = '/home/marcin/git.devel.marcin/fulscreanapp/fullscreanApp/fonts/robotic/Roboto-Regular.ttf'
@@ -78,8 +60,13 @@ font8 = ImageFont.truetype(fontpath,  10)
 
 def createBackground():
 	
-	maxM = 85
+	
 	ddact = datetime.date.today()
+	print(maxMonth)
+	print(ddact.year)
+	print(ddact.month)
+	maxM = maxMonth - 12* (ddact.year -2000) - ddact.month
+	print(maxM)
 	wm = 5
 	wh = 12
 	width = 330+maxM*wm
@@ -99,7 +86,7 @@ def createBackground():
 	max_dzien = 0
 	max_kwota_raty = 0
 	max_odsetki = 0
-	max_zostało_kwota = 0
+	max_zostalo_kwota = 0
 	max_wolumen = 0
 	sum_kwota_raty = 0
 	sum_odsetki = 0
@@ -121,7 +108,7 @@ def createBackground():
 		sum_odsetki +=  k['rata_ods']
 		
 		tk = textlength(draw, "%0.2f" % k['do_splacenia'], font=font8)
-		if tk > max_zostało_kwota : max_zostało_kwota = tk
+		if tk > max_zostalo_kwota : max_zostalo_kwota = tk
 		sum_zostalo += k['do_splacenia']
 		
 		tk = textlength(draw, "%0.2f" % k['wolumen'], font=font8)
@@ -135,7 +122,7 @@ def createBackground():
 	if tk > max_odsetki : max_odsetki = tk
 	
 	tk = textlength(draw, "%0.2f" % sum_zostalo, font=font8)
-	if tk > max_zostało_kwota : max_zostało_kwota = tk
+	if tk > max_zostalo_kwota : max_zostalo_kwota = tk
 		
 	tk = textlength(draw, "%0.2f" % sum_wolumen, font=font8)
 	if tk > max_wolumen : max_wolumen = tk
@@ -147,7 +134,7 @@ def createBackground():
 	#draw.text((max_opis + max_dzien + max_kwota_raty + max_odsetki + 20, 0), u"Miesieczne raty", font = font8, fill="white")
 	margin = max_opis + max_dzien + max_kwota_raty + max_odsetki + 20
 	draw.text((width-max_wolumen-5, 0), u"Wolumen", font = font8, fill="white")
-	draw.text((width-max_wolumen-max_zostało_kwota-10, 0), u"Zostalo", font = font8, fill="white")
+	draw.text((width-max_wolumen-max_zostalo_kwota-10, 0), u"Zostalo", font = font8, fill="white")
 		
 	for h in range(len(kredyty)):
 		opis = kredyty[h]['opis']
@@ -208,15 +195,15 @@ def createBackground():
 			ilosc_rat_przyszlych = kredyty[h]['poz_rat']
 			ilosc_rat_wszystkich = ilosc_rat_przeszlych + ilosc_rat_przyszlych
 			k = kredyty[h]['koniec']
-			if k >= y*12+m:
+			if k > y*12+m:
 				draw.rectangle((margin+mon*wm+1, h*wh+16+1, margin+mon*wm+4, h*wh+16+wh-1), fill="gray", outline="gray")
 			if k == y*12+m:
-				draw.text((margin+mon*wm+15, 16+h*wh), "Rata %d z %d" % (ilosc_rat_przeszlych, ilosc_rat_przeszlych + ilosc_rat_przyszlych), font = font8, fill="white")
+				draw.text((margin+mon*wm+5, 16+h*wh), "Rata %d z %d" % (ilosc_rat_przeszlych, ilosc_rat_przeszlych + ilosc_rat_przyszlych), font = font8, fill="white")
 				#tl = textlength(draw, "%.2f / %.2f" % (cala_kwota-zostala_kwota, cala_kwota), font = font8)
 				#draw.text((width-tl, 16+h*wh), "%.2f / %.2f" % (cala_kwota-zostala_kwota, cala_kwota), font = font8, fill="white")
 	
 	fpath = '/home/pi/tmp/kredyty_%d_%02d.png' % (ddact.year, ddact.month)
-	#im.show()
+	im.show()
 	print(im.size)
 	im.save(fpath)
 createBackground()
